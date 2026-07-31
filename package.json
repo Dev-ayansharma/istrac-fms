@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "mock-api": "prism mock openapi.yaml -p 3010"
+  },
+  "devDependencies": {
+    "@stoplight/prism-cli": "^5.x.x"
+  }
+}

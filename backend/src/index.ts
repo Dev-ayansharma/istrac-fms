@@ -11,7 +11,7 @@ app.use(cors(corsOptions))
 app.use(express.json())
 
 app.get('/health', (_req, res) => {
-  res.json({ status: 'ok' })
+  res.json({ status: 'okok' })
 })
 
 app.get('/health/redis', async (_req, res) => {
