@@ -1,2 +1,21 @@
 @import "tailwindcss";
 
+:root {
+  --color-navy-50: #f0f4f8;
+  --color-navy-100: #d9e2ec;
+  --color-navy-500: #1f2937;
+  --color-navy-700: #111827;
+  --color-navy-900: #0b1220;
+
+  --color-orange-400: #f59e0b;
+  --color-orange-500: #d97706;
+  --color-orange-600: #b45309;
+
+  --color-slate-50: #f8fafc;
+  --color-slate-100: #f1f5f9;
+  --color-slate-500: #64748b;
+  --color-slate-900: #0f172a;
+
+  --font-sans: "Lato", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "DejaVu Sans Mono", ui-monospace, monospace;
+}
