@@ -4,6 +4,7 @@ import { AppShell } from './layouts/AppShell'
 import { ProtectedRoute } from './routes/ProtectedRoute'
 import { AdminRoute } from './routes/AdminRoute'
 import { ComponentDemo } from './pages/ComponentDemo'
+import { useInitAuth } from './hooks/useInitAuth'
 
 
 function Landing() { return <div>Landing (public)</div> }
@@ -13,6 +14,12 @@ function Dashboard() { return <div>User Dashboard</div> }
 function AdminHome() { return <div>Admin Home</div> }
 
 export default function App() {
+
+   const { isChecking } = useInitAuth()
+
+  if (isChecking) {
+    return <div className="flex items-center justify-center min-h-screen">Loading...</div>
+  }
   return (
     <BrowserRouter>
       <Routes>
