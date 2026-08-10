@@ -5,10 +5,10 @@ import { ProtectedRoute } from './routes/ProtectedRoute'
 import { AdminRoute } from './routes/AdminRoute'
 import { ComponentDemo } from './pages/ComponentDemo'
 import { useInitAuth } from './hooks/useInitAuth'
-
+import { Login } from './pages/Login'
 
 function Landing() { return <div>Landing (public)</div> }
-function Login() { return <div>Login</div> }
+
 function Register() { return <div>Register</div> }
 function Dashboard() { return <div>User Dashboard</div> }
 function AdminHome() { return <div>Admin Home</div> }
