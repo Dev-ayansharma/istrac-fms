@@ -1,15 +1,14 @@
-import type { ReactNode } from "react"
-
+import type  { ReactNode } from 'react'
 
 interface CardProps {
-  variant?: 'default' | 'bordered'
+  variant?: 'default' | 'interactive'
   children: ReactNode
   className?: string
 }
 
 const variantStyles = {
-  default: 'bg-white shadow-sm',
-  bordered: 'bg-white border border-slate-100',
+  default: 'bg-card border border-border-subtle',
+  interactive: 'bg-card border border-border-subtle hover:border-border-default hover:bg-card-hover transition-colors cursor-pointer',
 }
 
 export function Card({ variant = 'default', children, className = '' }: CardProps) {

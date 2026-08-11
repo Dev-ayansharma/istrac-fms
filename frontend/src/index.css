@@ -34,21 +34,69 @@
 @import "tailwindcss";
 
 :root {
-  --color-navy-50: #f0f4f8;
-  --color-navy-100: #d9e2ec;
-  --color-navy-500: #1f2937;
-  --color-navy-700: #111827;
-  --color-navy-900: #0b1220;
+  /* Backgrounds — layered dark navy, darkest at the page level */
+  --bg-page: #0a0e1a;
+  --bg-surface: #0d1220;
+  --bg-card: #111827;
+  --bg-card-hover: #161e2e;
 
-  --color-orange-400: #f59e0b;
-  --color-orange-500: #d97706;
-  --color-orange-600: #b45309;
+  /* Borders */
+  --border-subtle: #1f2937;
+  --border-default: #253044;
 
-  --color-slate-50: #f8fafc;
-  --color-slate-100: #f1f5f9;
-  --color-slate-500: #64748b;
-  --color-slate-900: #0f172a;
+  /* Text */
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+
+  /* Accent — the solid blue used for primary actions (Login/Sign Up) */
+  --accent: #3b82f6;
+  --accent-hover: #2563eb;
+  --accent-light: #60a5fa;
+
+  /* Status colors — satellite/system state indicators */
+  --status-nominal: #22c55e;
+  --status-nominal-bg: #14291d;
+  --status-warning: #f59e0b;
+  --status-warning-bg: #2b2210;
+  --status-critical: #ef4444;
+  --status-critical-bg: #2b1414;
+  --status-special: #a855f7;
+  --status-special-bg: #241a2e;
+}
+
+
+:root {
+  --color-page: var(--bg-page);
+  --color-surface: var(--bg-surface);
+  --color-card: var(--bg-card);
+  --color-card-hover: var(--bg-card-hover);
+
+  --color-border-subtle: var(--border-subtle);
+  --color-border-default: var(--border-default);
+
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-light: var(--accent-light);
+
+  --color-nominal: var(--status-nominal);
+  --color-nominal-bg: var(--status-nominal-bg);
+  --color-warning: var(--status-warning);
+  --color-warning-bg: var(--status-warning-bg);
+  --color-critical: var(--status-critical);
+  --color-critical-bg: var(--status-critical-bg);
+  --color-special: var(--status-special);
+  --color-special-bg: var(--status-special-bg);
 
   --font-sans: "Lato", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "DejaVu Sans Mono", ui-monospace, monospace;
+}
+
+body {
+  background-color: var(--bg-page);
+  color: var(--text-primary);
 }
