@@ -6,6 +6,7 @@ interface User {
   name: string
   email: string
   role: 'SUPER_ADMIN' | 'DEPT_ADMIN' | 'MEMBER' | 'GUEST'
+  tempPass?: boolean
 }
 
 interface AuthState {

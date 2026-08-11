@@ -1,22 +1,26 @@
 import { z } from 'zod'
 
+export const forgotPasswordSchema = z.object({
+  email: z.email('Enter a valid email address'),
+})
 
+export const otpSchema = z.object({
+  otp: z.string().length(6, 'Enter the 6-digit code'),
+})
+
+export const newPasswordSchema = z
+  .object({
+    newPassword: z.string().min(10),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ['confirmPassword'],
+  })
 
 export const loginSchema = z.object({
   email: z.email('Enter a valid email address'),
-  password: z.string().min(10, 'Password must be at least 10 characters long').refine(
-    (password) => /[A-Z]/.test(password),
-    { message: 'Password must contain at least one uppercase letter' }
-  ).refine(
-    (password) => /[a-z]/.test(password),
-    { message: 'Password must contain at least one lowercase letter' }
-  ).refine(
-    (password) => /[0-9]/.test(password),
-    { message: 'Password must contain at least one number' }
-  ).refine(
-    (password) => /[!@#$%^&*(),.?":{}|<>]/.test(password),
-    { message: 'Password must contain at least one special character' }
-  )
+  password: z.string().min(10, 'Password must be at least 10 characters long')
   
 })
 

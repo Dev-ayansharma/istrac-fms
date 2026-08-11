@@ -8,6 +8,9 @@ import { useInitAuth } from './hooks/useInitAuth'
 import { Login } from './pages/Login'
 import { Register } from './pages/Register'
 import { CmsProvider } from './context/cmsContext'
+import { ForcePasswordGuard } from './routes/ForcePasswordGuard'
+import { ForcePasswordChange } from './pages/ForcePasswordChange'
+import { ForgotPassword } from './pages/ForgetPassword'
 function Landing() { return <div>Landing (public)</div> }
 
 function Dashboard() { return <div>User Dashboard</div> }
@@ -29,11 +32,14 @@ export default function App() {
             <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/demo" element={<ComponentDemo />} />
         </Route>
 
         {/* Protected — any authenticated user, nested inside AppShell */}
         <Route element={<ProtectedRoute />}>
+          <Route path="/force-password-change" element={<ForcePasswordChange />} />
+  <Route element={<ForcePasswordGuard />}></Route>
           <Route element={<AppShell />}>
             <Route path="/dashboard" element={<Dashboard />} />
 
