@@ -20,4 +20,13 @@ export const loginSchema = z.object({
   
 })
 
+export const registerSchema = z.object({
+  name: z.string().min(2, 'Name is required'),
+  email: z.email('Enter a valid email address'),
+  employeeId: z.string().min(1, 'Employee ID is required'),
+  departmentPreference: z.string().min(1, 'Select a department'),
+  reasonForAccess: z.string().min(10, 'Please provide at least a brief reason (10+ characters)'),
+})
+
+export type RegisterFormData = z.infer<typeof registerSchema>
 export type LoginFormData = z.infer<typeof loginSchema>

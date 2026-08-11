@@ -6,7 +6,7 @@ import { AxiosError } from 'axios'
 import { api } from '../lib/axios'
 import { useAuthStore } from '../store/authStore'
 import { Button, Input } from '../components'
-import { loginSchema, type LoginFormData,  } from '../schemas/authSchemas'
+import { loginSchema, type LoginFormData } from '../../schemas/authSchemas'
 
 export function Login() {
   const navigate = useNavigate()

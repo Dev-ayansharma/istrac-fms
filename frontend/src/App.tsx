@@ -6,10 +6,9 @@ import { AdminRoute } from './routes/AdminRoute'
 import { ComponentDemo } from './pages/ComponentDemo'
 import { useInitAuth } from './hooks/useInitAuth'
 import { Login } from './pages/Login'
-
+import { Register } from './pages/Register'
 function Landing() { return <div>Landing (public)</div> }
 
-function Register() { return <div>Register</div> }
 function Dashboard() { return <div>User Dashboard</div> }
 function AdminHome() { return <div>Admin Home</div> }
 
