@@ -1,5 +1,4 @@
-import type { ReactNode,ButtonHTMLAttributes} from "react"
-
+import {type  ButtonHTMLAttributes, type ReactNode } from 'react'
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'outline' | 'danger'
@@ -8,10 +7,10 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantStyles = {
-  primary: 'bg-navy-900 text-white hover:bg-navy-700',
-  secondary: 'bg-orange-500 text-white hover:bg-orange-600',
-  outline: 'border border-navy-900 text-navy-900 hover:bg-navy-50',
-  danger: 'bg-red-600 text-white hover:bg-red-700',
+  primary: 'bg-accent text-white hover:bg-accent-hover',
+  secondary: 'bg-card text-text-primary border border-border-default hover:bg-card-hover',
+  outline: 'border border-border-default text-text-primary hover:bg-card',
+  danger: 'bg-critical text-white hover:opacity-90',
 }
 
 const sizeStyles = {

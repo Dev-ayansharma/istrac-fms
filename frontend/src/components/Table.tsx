@@ -1,5 +1,4 @@
-import type { ReactNode } from "react"
-
+import type  { ReactNode } from 'react'
 
 interface Column<T> {
   key: keyof T
@@ -10,29 +9,25 @@ interface Column<T> {
 interface TableProps<T> {
   columns: Column<T>[]
   data: T[]
-  variant?: 'default' | 'striped'
 }
 
-export function Table<T extends { id: string | number }>({ columns, data, variant = 'default' }: TableProps<T>) {
+export function Table<T extends { id: string | number }>({ columns, data }: TableProps<T>) {
   return (
     <table className="w-full border-collapse text-sm">
       <thead>
-        <tr className="bg-navy-900 text-white">
+        <tr className="border-b border-border-subtle">
           {columns.map((col) => (
-            <th key={String(col.key)} className="text-left px-3 py-2 font-medium">
+            <th key={String(col.key)} className="text-left px-3 py-2 font-medium text-text-secondary">
               {col.header}
             </th>
           ))}
         </tr>
       </thead>
       <tbody>
-        {data.map((row, i) => (
-          <tr
-            key={row.id}
-            className={variant === 'striped' && i % 2 === 1 ? 'bg-slate-50' : 'bg-white'}
-          >
+        {data.map((row) => (
+          <tr key={row.id} className="border-b border-border-subtle hover:bg-card">
             {columns.map((col) => (
-              <td key={String(col.key)} className="px-3 py-2 border-b border-slate-100">
+              <td key={String(col.key)} className="px-3 py-2 text-text-primary">
                 {col.render ? col.render(row) : String(row[col.key])}
               </td>
             ))}

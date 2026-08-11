@@ -48,54 +48,32 @@ export function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50">
-      <div className="w-full max-w-sm bg-white rounded-lg shadow-sm p-8">
-        <h1 className="text-xl font-semibold text-navy-900 mb-6 font-sans">Sign in to ISTRAC-FMS</h1>
+     <div className="min-h-screen flex items-center justify-center bg-page">
+      <div className="w-full max-w-sm bg-card border border-border-subtle rounded-lg shadow-xl p-8">
+        <h1 className="text-xl font-semibold text-text-primary mb-6 font-sans">Sign in to ISTRAC-FMS</h1>
 
         {lockoutRemaining !== null && (
-          <div className="mb-4 p-3 rounded-md bg-red-50 text-red-700 text-sm">
+          <div className="mb-4 p-3 rounded-md bg-critical-bg text-critical text-sm">
             Too many failed attempts. Try again in {Math.ceil(lockoutRemaining / 60)} minute
             {Math.ceil(lockoutRemaining / 60) !== 1 ? 's' : ''}.
           </div>
         )}
 
         {serverError && lockoutRemaining === null && (
-          <div className="mb-4 p-3 rounded-md bg-red-50 text-red-700 text-sm">{serverError}</div>
+          <div className="mb-4 p-3 rounded-md bg-critical-bg text-critical text-sm">{serverError}</div>
         )}
 
         <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-4">
-          <Input
-            id="email"
-            label="Email"
-            type="email"
-            autoComplete="username"
-            disabled={lockoutRemaining !== null}
-            error={errors.email?.message}
-            {...register('email')}
-          />
-
-          <Input
-            id="password"
-            label="Password"
-            type="password"
-            autoComplete="current-password"
-            disabled={lockoutRemaining !== null}
-            error={errors.password?.message}
-            {...register('password')}
-          />
+          <Input id="email" label="Email" type="email" autoComplete="username" disabled={lockoutRemaining !== null} error={errors.email?.message} {...register('email')} />
+          <Input id="password" label="Password" type="password" autoComplete="current-password" disabled={lockoutRemaining !== null} error={errors.password?.message} {...register('password')} />
 
           <div className="flex justify-end">
-            <Link to="/forgot-password" className="text-sm text-navy-500 hover:underline">
+            <Link to="/forgot-password" className="text-sm text-accent-light hover:underline">
               Forgot password?
             </Link>
           </div>
 
-          <Button
-            type="submit"
-            variant="primary"
-            className="w-full"
-            disabled={isSubmitting || lockoutRemaining !== null}
-          >
+          <Button type="submit" variant="primary" className="w-full" disabled={isSubmitting || lockoutRemaining !== null}>
             {isSubmitting ? (
               <span className="flex items-center justify-center gap-2">
                 <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
