@@ -7,6 +7,7 @@ import { ComponentDemo } from './pages/ComponentDemo'
 import { useInitAuth } from './hooks/useInitAuth'
 import { Login } from './pages/Login'
 import { Register } from './pages/Register'
+import { CmsProvider } from './context/cmsContext'
 function Landing() { return <div>Landing (public)</div> }
 
 function Dashboard() { return <div>User Dashboard</div> }
@@ -20,11 +21,12 @@ export default function App() {
     return <div className="flex items-center justify-center min-h-screen">Loading...</div>
   }
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* Public routes */}
-        <Route element={<PublicLayout />}>
-          <Route path="/" element={<Landing />} />
+    <CmsProvider>
+      <BrowserRouter>
+        <Routes>
+          {/* Public routes */}
+          <Route element={<PublicLayout />}>
+            <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/demo" element={<ComponentDemo />} />
@@ -46,5 +48,6 @@ export default function App() {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
+    </CmsProvider>
   )
 }
