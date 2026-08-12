@@ -11,10 +11,11 @@ import { CmsProvider } from './context/cmsContext'
 import { ForcePasswordGuard } from './routes/ForcePasswordGuard'
 import { ForcePasswordChange } from './pages/ForcePasswordChange'
 import { ForgotPassword } from './pages/ForgetPassword'
+import { AdminHome } from './pages/AdminHome'
 function Landing() { return <div>Landing (public)</div> }
 
 function Dashboard() { return <div>User Dashboard</div> }
-function AdminHome() { return <div>Admin Home</div> }
+
 
 export default function App() {
 
