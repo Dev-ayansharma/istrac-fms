@@ -12,6 +12,8 @@ import { ForcePasswordGuard } from './routes/ForcePasswordGuard'
 import { ForcePasswordChange } from './pages/ForcePasswordChange'
 import { ForgotPassword } from './pages/ForgetPassword'
 import { AdminHome } from './pages/AdminHome'
+import { ToastContainer } from './components/ToastContainer'
+import { ApprovalQueue } from './pages/ApprovalQueue'
 function Landing() { return <div>Landing (public)</div> }
 
 function Dashboard() { return <div>User Dashboard</div> }
@@ -27,6 +29,7 @@ export default function App() {
   return (
     <CmsProvider>
       <BrowserRouter>
+      <ToastContainer />
         <Routes>
           {/* Public routes */}
           <Route element={<PublicLayout />}>
@@ -47,6 +50,7 @@ export default function App() {
             {/* Admin-only — nested one level deeper, requires SUPER_ADMIN/DEPT_ADMIN */}
             <Route element={<AdminRoute />}>
               <Route path="/admin" element={<AdminHome />} />
+              <Route path="/admin/approvals" element={<ApprovalQueue />} />
             </Route>
           </Route>
         </Route>
