@@ -333,7 +333,31 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Department' }
-
+  /departments/{id}:
+    put:
+      summary: Update department (name, hddPath, or archived status)
+      parameters:
+      - { name: id, in: path, required: true, schema: { type: string } }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: { type: string }
+                hddPath: { type: string }
+                archived: { type: boolean }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Department' }
+        '409':
+          description: Name already exists
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
   /departments/{id}/members:
     post:
       summary: Add user to department
