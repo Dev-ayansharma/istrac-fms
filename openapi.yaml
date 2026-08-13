@@ -280,9 +280,17 @@ paths:
         - { name: id, in: path, required: true, schema: { type: string } }
       responses:
         '200': { description: Session invalidated }
+  
+  /users/{id}/suspend:
+    post:
+      summary: Suspend a user account
+      parameters:
+      - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: User suspended, session invalidated }
 
   /admin/stats:
-    get:
+    get:  
       summary: Admin home stats (FE-018)
       responses:
         '200':

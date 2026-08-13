@@ -14,6 +14,7 @@ import { ForgotPassword } from './pages/ForgetPassword'
 import { AdminHome } from './pages/AdminHome'
 import { ToastContainer } from './components/ToastContainer'
 import { ApprovalQueue } from './pages/ApprovalQueue'
+import { UserManagement } from './pages/UserManagement'
 function Landing() { return <div>Landing (public)</div> }
 
 function Dashboard() { return <div>User Dashboard</div> }
@@ -51,6 +52,7 @@ export default function App() {
             <Route element={<AdminRoute />}>
               <Route path="/admin" element={<AdminHome />} />
               <Route path="/admin/approvals" element={<ApprovalQueue />} />
+              <Route path="/admin/users" element={<UserManagement />} />
             </Route>
           </Route>
         </Route>
