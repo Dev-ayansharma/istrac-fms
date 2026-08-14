@@ -1,0 +1,14 @@
+export interface FileNode {
+  id: string
+  name: string
+  nodeType: 'FOLDER' | 'FILE'
+  departmentId: string
+  parentId: string | null
+  sizeBytes: number | null
+  mimeType: string | null
+  status: 'ACTIVE' | 'ORPHANED' | 'DELETED' | 'UNREGISTERED'
+  createdAt: string
+}
+
+export type SortField = 'name' | 'createdAt' | 'sizeBytes'
+export type SortDirection = 'asc' | 'desc'

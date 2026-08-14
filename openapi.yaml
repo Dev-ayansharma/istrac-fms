@@ -456,6 +456,34 @@ paths:
             application/json:
               schema: { type: array, items: { type: object } }
 
+  /files/bulk-delete:
+    post:
+      summary: Bulk soft-delete files
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fileIds: { type: array, items: { type: string } }
+      responses:
+        '200': { description: Deleted, with per-item failure list if any }
+
+  /files/bulk-tag:
+    post:
+      summary: Bulk add or remove tags
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fileIds: { type: array, items: { type: string } }
+                tags: { type: array, items: { type: string } }
+                action: { type: string, enum: [add, remove] }
+      responses:
+        '200': { description: Tags applied }
+
   /admin/audit-logs:
     get:
       summary: View audit log (FE-025, paginated)
