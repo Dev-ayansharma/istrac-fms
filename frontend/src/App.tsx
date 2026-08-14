@@ -16,6 +16,7 @@ import { ToastContainer } from './components/ToastContainer'
 import { ApprovalQueue } from './pages/ApprovalQueue'
 import { UserManagement } from './pages/UserManagement'
 import { DepartmentManager } from './pages/DepartmentManager'
+import { Files } from './pages/Files'
 function Landing() { return <div>Landing (public)</div> }
 
 function Dashboard() { return <div>User Dashboard</div> }
@@ -48,6 +49,7 @@ export default function App() {
   <Route element={<ForcePasswordGuard />}></Route>
           <Route element={<AppShell />}>
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard/files" element={<Files />} />
 
             {/* Admin-only — nested one level deeper, requires SUPER_ADMIN/DEPT_ADMIN */}
             <Route element={<AdminRoute />}>
