@@ -483,7 +483,46 @@ paths:
                 action: { type: string, enum: [add, remove] }
       responses:
         '200': { description: Tags applied }
+  /files/upload/chunk:
+    post:
+      summary: Upload a single chunk
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                chunk: { type: string, format: binary }
+                fileName: { type: string }
+                chunkIndex: { type: integer }
+                totalChunks: { type: integer }
+                departmentId: { type: string }
+                parentId: { type: string, nullable: true }
+      responses:
+        '200': { description: Chunk received }
 
+  /files/upload/complete:
+    post:
+      summary: Finalize a chunked upload — server assembles, validates checksum, commits
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fileName: { type: string }
+                departmentId: { type: string }
+                parentId: { type: string, nullable: true }
+                checksum: { type: string }
+                totalChunks: { type: integer }
+      responses:
+        '201':
+          description: File committed
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/FileNode' }
+        '409':
+          description: Checksum mismatch
   /admin/audit-logs:
     get:
       summary: View audit log (FE-025, paginated)

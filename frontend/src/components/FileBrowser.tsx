@@ -7,9 +7,9 @@ import { formatFileSize } from '../lib/formatFileSize'
 import { FileIcon } from '../components/FileIcon'
 import { BulkActionBar } from '../components/BulkActionBar'
 import { TagModal } from '../components/TagModal'
-import { Card } from '../components'
+import { Button, Card } from '../components'
 import type  { SortField, SortDirection } from '../types/file'
-
+import { UploadModal } from './UploadModal'
 interface FileBrowserProps {
   deptId: string
   parentId?: string | null
@@ -21,6 +21,7 @@ export function FileBrowser({ deptId, parentId = null }: FileBrowserProps) {
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc')
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
   const [tagModalOpen, setTagModalOpen] = useState(false)
+  const [uploadModalOpen, setUploadModalOpen] = useState(false)
 
   const { data: files, isLoading } = useDeptFiles({ deptId, parentId, sortField, sortDirection })
   const bulkDelete = useBulkDeleteFiles()
@@ -101,6 +102,10 @@ export function FileBrowser({ deptId, parentId = null }: FileBrowserProps) {
         </div>
       </div>
 
+
+<Button variant="primary" size="sm" onClick={() => setUploadModalOpen(true)}>
+  Upload
+</Button>
       <BulkActionBar
         selectedCount={selectedIds.size}
         onDelete={handleBulkDelete}
@@ -162,6 +167,12 @@ export function FileBrowser({ deptId, parentId = null }: FileBrowserProps) {
         onConfirm={handleBulkTag}
         isSubmitting={bulkTag.isPending}
       />
+      <UploadModal
+  isOpen={uploadModalOpen}
+  onClose={() => setUploadModalOpen(false)}
+  departmentId={deptId}
+  parentId={parentId}
+/>
     </div>
   )
 }
