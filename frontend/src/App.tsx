@@ -18,6 +18,7 @@ import { UserManagement } from './pages/UserManagement'
 import { DepartmentManager } from './pages/DepartmentManager'
 import { Files } from './pages/Files'
 import { AuditLogViewer } from './pages/AuditLogViewer'
+import { BroadcastNotification } from './pages/BroadcastNotification'
 function Landing() { return <div>Landing (public)</div> }
 
 function Dashboard() { return <div>User Dashboard</div> }
@@ -59,6 +60,7 @@ export default function App() {
               <Route path="/admin/users" element={<UserManagement />} />
               <Route path="/admin/departments" element={<DepartmentManager />} />
               <Route path="/admin/audit-logs" element={<AuditLogViewer />} />
+              <Route path="/admin/broadcast" element={<BroadcastNotification />} />
             </Route>
           </Route>
         </Route>

@@ -1,4 +1,4 @@
-import { LayoutDashboard, FileText, Bell, Upload, Users, ClipboardList, Settings,Building2 } from 'lucide-react'
+import { LayoutDashboard, FileText, Bell, Upload, Users, ClipboardList, Settings,Building2,Megaphone } from 'lucide-react'
 
 export interface NavItem {
   label: string
@@ -17,4 +17,5 @@ export const navItems: NavItem[] = [
   { label: 'Settings', path: '/admin/settings', icon: Settings, adminOnly: true },
   { label: 'Departments', path: '/admin/departments', icon: Building2, adminOnly: true },
   { label: 'Audit Log', path: '/admin/audit-logs', icon: ClipboardList, adminOnly: true },
+  { label: 'Broadcast', path: '/admin/broadcast', icon: Megaphone, adminOnly: true },
 ]

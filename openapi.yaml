@@ -577,7 +577,21 @@ paths:
                         newValue: { type: object, nullable: true }
                         createdAt: { type: string, format: date-time }
                   nextCursor: { type: string, nullable: true }
-
+  /admin/broadcast:
+    post:
+      summary: Send a broadcast notification to all users or selected departments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [message, target]
+              properties:
+                message: { type: string }
+                target: { type: string, enum: [all, departments] }
+                departmentIds: { type: array, items: { type: string } }
+      responses:
+        '200': { description: Notification queued for delivery }
   # ---------- SEARCH (FE-034) ----------
   /search:
     get:
