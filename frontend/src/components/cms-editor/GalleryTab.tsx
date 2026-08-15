@@ -5,7 +5,7 @@ import { useUpdateCmsBlock } from '../../hooks/useUpdateCmsBlock'
 import { useToastStore } from '../../store/toastStore'
 import { Card, Input, Button } from '..'
 import { SaveBar } from './SaveBar'
-
+import { usePreviewRefresh } from '../../context/PreviewRefreshContext'
 interface GalleryItem {
   url: string
   label: string
@@ -19,7 +19,7 @@ export function GalleryTab() {
   const addToast = useToastStore((s) => s.addToast)
 
   const [items, setItems] = useState<GalleryItem[]>([])
-
+  const { triggerRefresh } = usePreviewRefresh()
   useEffect(() => {
     setItems(existing?.items ?? [])
   }, [existing])
@@ -40,7 +40,10 @@ export function GalleryTab() {
     updateBlock.mutate(
       { blockKey: 'gallery', content: { items } },
       {
-        onSuccess: () => addToast('Gallery updated', 'success'),
+        onSuccess: () => {
+          addToast('Gallery updated', 'success')
+          triggerRefresh()
+        },
         onError: () => addToast('Failed to save', 'error'),
       }
     )

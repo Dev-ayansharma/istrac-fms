@@ -4,12 +4,13 @@ import { useUpdateCmsBlock } from '../../hooks/useUpdateCmsBlock'
 import { useToastStore } from '../../store/toastStore'
 import { Card, Input } from '..'
 import { SaveBar } from './SaveBar'
-
+import { usePreviewRefresh } from '../../context/PreviewRefreshContext'
 export function InfoTab() {
   const { cmsBlocks } = useCms()
   const contact = cmsBlocks['contact_info'] as { email?: string; phone?: string } | undefined
   const overview = cmsBlocks['org_overview'] as { text?: string } | undefined
   const updateBlock = useUpdateCmsBlock()
+  const { triggerRefresh } = usePreviewRefresh()
   const addToast = useToastStore((s) => s.addToast)
 
   const [email, setEmail] = useState('')
@@ -29,6 +30,7 @@ export function InfoTab() {
         updateBlock.mutateAsync({ blockKey: 'org_overview', content: { text: overviewText } }),
       ])
       addToast('Info updated', 'success')
+      triggerRefresh()
     } catch {
       addToast('Failed to save', 'error')
     }

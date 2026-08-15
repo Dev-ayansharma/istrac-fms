@@ -4,7 +4,7 @@ import { useUpdateCmsBlock } from '../../hooks/useUpdateCmsBlock'
 import { useToastStore } from '../../store/toastStore'
 import { Card, Input } from '..'
 import { SaveBar } from './SaveBar'
-
+import { usePreviewRefresh } from '../../context/PreviewRefreshContext'
 export function BannerTab() {
   const { cmsBlocks } = useCms()
   const existing = cmsBlocks['banner'] as
@@ -17,7 +17,7 @@ export function BannerTab() {
   const [title, setTitle] = useState('')
   const [subtitle, setSubtitle] = useState('')
   const [ctaText, setCtaText] = useState('')
-
+  const { triggerRefresh } = usePreviewRefresh()
   useEffect(() => {
     setVisible(existing?.visible ?? false)
     setTitle(existing?.title ?? '')
@@ -29,7 +29,10 @@ export function BannerTab() {
     updateBlock.mutate(
       { blockKey: 'banner', content: { visible, title, subtitle, ctaText } },
       {
-        onSuccess: () => addToast('Banner updated', 'success'),
+        onSuccess: () => {
+          addToast('Banner updated', 'success')
+          triggerRefresh()
+        },
         onError: () => addToast('Failed to save', 'error'),
       }
     )

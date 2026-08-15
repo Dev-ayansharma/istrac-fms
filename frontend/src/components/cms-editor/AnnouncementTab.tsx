@@ -4,7 +4,7 @@ import { useUpdateCmsBlock } from '../../hooks/useUpdateCmsBlock'
 import { useToastStore } from '../../store/toastStore'
 import { Card, Input } from '..'
 import { SaveBar } from './SaveBar'
-
+import { usePreviewRefresh } from '../../context/PreviewRefreshContext'
 const COLOR_OPTIONS = ['orange', 'red', 'navy'] as const
 
 export function AnnouncementTab() {
@@ -14,7 +14,7 @@ export function AnnouncementTab() {
     | undefined
   const updateBlock = useUpdateCmsBlock()
   const addToast = useToastStore((s) => s.addToast)
-
+  const { triggerRefresh } = usePreviewRefresh()
   const [visible, setVisible] = useState(false)
   const [text, setText] = useState('')
   const [backgroundColor, setBackgroundColor] = useState<(typeof COLOR_OPTIONS)[number]>('navy')
@@ -29,7 +29,10 @@ export function AnnouncementTab() {
     updateBlock.mutate(
       { blockKey: 'announcements', content: { visible, text, backgroundColor } },
       {
-        onSuccess: () => addToast('Announcement updated', 'success'),
+        onSuccess: () => {
+          addToast('Announcement updated', 'success')
+          triggerRefresh()
+        },
         onError: () => addToast('Failed to save', 'error'),
       }
     )

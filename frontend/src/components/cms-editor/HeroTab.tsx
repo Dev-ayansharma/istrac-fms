@@ -4,17 +4,18 @@ import { useUpdateCmsBlock } from '../../hooks/useUpdateCmsBlock'
 import { useToastStore } from '../../store/toastStore'
 import { Card, Input } from '..'
 import { SaveBar } from './SaveBar'
-
+import { usePreviewRefresh } from '../../context/PreviewRefreshContext'
 export function HeroTab() {
   const { cmsBlocks } = useCms()
   const existing = cmsBlocks['hero'] as { title?: string; subtitle?: string; ctaText?: string } | undefined
   const updateBlock = useUpdateCmsBlock()
   const addToast = useToastStore((s) => s.addToast)
+   const { triggerRefresh } = usePreviewRefresh()
 
   const [title, setTitle] = useState('')
   const [subtitle, setSubtitle] = useState('')
   const [ctaText, setCtaText] = useState('')
-
+  
   useEffect(() => {
     setTitle(existing?.title ?? '')
     setSubtitle(existing?.subtitle ?? '')
@@ -25,7 +26,10 @@ export function HeroTab() {
     updateBlock.mutate(
       { blockKey: 'hero', content: { title, subtitle, ctaText } },
       {
-        onSuccess: () => addToast('Hero section updated', 'success'),
+        onSuccess: () => {
+          addToast('Hero section updated', 'success')
+          triggerRefresh()
+        },
         onError: () => addToast('Failed to save', 'error'),
       }
     )
