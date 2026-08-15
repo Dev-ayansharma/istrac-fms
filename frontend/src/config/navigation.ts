@@ -16,5 +16,5 @@ export const navItems: NavItem[] = [
   { label: 'Approvals', path: '/admin/approvals', icon: ClipboardList, adminOnly: true },
   { label: 'Settings', path: '/admin/settings', icon: Settings, adminOnly: true },
   { label: 'Departments', path: '/admin/departments', icon: Building2, adminOnly: true },
-  
+  { label: 'Audit Log', path: '/admin/audit-logs', icon: ClipboardList, adminOnly: true },
 ]

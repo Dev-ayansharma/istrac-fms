@@ -546,10 +546,14 @@ paths:
           description: Checksum mismatch
   /admin/audit-logs:
     get:
-      summary: View audit log (FE-025, paginated)
+      summary: View audit log (FE-025, cursor-paginated per Ch.9.3)
       parameters:
-        - { name: page, in: query, schema: { type: integer } }
-        - { name: pageSize, in: query, schema: { type: integer } }
+        - { name: cursor, in: query, schema: { type: string } }
+        - { name: pageSize, in: query, schema: { type: integer, default: 30 } }
+        - { name: action, in: query, schema: { type: string } }
+        - { name: dateFrom, in: query, schema: { type: string, format: date } }
+        - { name: dateTo, in: query, schema: { type: string, format: date } }
+        - { name: export, in: query, schema: { type: string, enum: [csv] } }
       responses:
         '200':
           description: Audit log entries
@@ -558,8 +562,21 @@ paths:
               schema:
                 type: object
                 properties:
-                  data: { type: array, items: { type: object } }
-                  pagination: { $ref: '#/components/schemas/Pagination' }
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id: { type: integer }
+                        userId: { type: string, nullable: true }
+                        userName: { type: string }
+                        action: { type: string }
+                        resourceType: { type: string, nullable: true }
+                        resourceId: { type: string, nullable: true }
+                        oldValue: { type: object, nullable: true }
+                        newValue: { type: object, nullable: true }
+                        createdAt: { type: string, format: date-time }
+                  nextCursor: { type: string, nullable: true }
 
   # ---------- SEARCH (FE-034) ----------
   /search:

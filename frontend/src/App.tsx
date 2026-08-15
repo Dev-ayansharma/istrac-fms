@@ -17,6 +17,7 @@ import { ApprovalQueue } from './pages/ApprovalQueue'
 import { UserManagement } from './pages/UserManagement'
 import { DepartmentManager } from './pages/DepartmentManager'
 import { Files } from './pages/Files'
+import { AuditLogViewer } from './pages/AuditLogViewer'
 function Landing() { return <div>Landing (public)</div> }
 
 function Dashboard() { return <div>User Dashboard</div> }
@@ -57,6 +58,7 @@ export default function App() {
               <Route path="/admin/approvals" element={<ApprovalQueue />} />
               <Route path="/admin/users" element={<UserManagement />} />
               <Route path="/admin/departments" element={<DepartmentManager />} />
+              <Route path="/admin/audit-logs" element={<AuditLogViewer />} />
             </Route>
           </Route>
         </Route>
