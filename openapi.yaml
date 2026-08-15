@@ -454,7 +454,28 @@ paths:
           description: Version list
           content:
             application/json:
-              schema: { type: array, items: { type: object } }
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id: { type: string }
+                    versionNum: { type: integer }
+                    sizeBytes: { type: integer, nullable: true }
+                    uploadedBy: { type: string }
+                    uploaderName: { type: string }
+                    createdAt: { type: string, format: date-time }
+  /files/{id}/versions/{versionId}/download:
+    get:
+      summary: Download a specific historical version
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+        - { name: versionId, in: path, required: true, schema: { type: string } }
+      responses:
+        '200':
+          description: File stream
+          content:
+            application/octet-stream: {}            
 
   /files/bulk-delete:
     post:

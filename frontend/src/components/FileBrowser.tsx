@@ -10,6 +10,7 @@ import { TagModal } from '../components/TagModal'
 import { Button, Card } from '../components'
 import type  { SortField, SortDirection } from '../types/file'
 import { UploadModal } from './UploadModal'
+import { VersionHistoryPanel } from './VersionHistoryPanel'
 interface FileBrowserProps {
   deptId: string
   parentId?: string | null
@@ -22,6 +23,7 @@ export function FileBrowser({ deptId, parentId = null }: FileBrowserProps) {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
   const [tagModalOpen, setTagModalOpen] = useState(false)
   const [uploadModalOpen, setUploadModalOpen] = useState(false)
+  const [versionPanelFile, setVersionPanelFile] = useState<{ id: string; name: string } | null>(null)
 
   const { data: files, isLoading } = useDeptFiles({ deptId, parentId, sortField, sortDirection })
   const bulkDelete = useBulkDeleteFiles()
@@ -136,6 +138,15 @@ export function FileBrowser({ deptId, parentId = null }: FileBrowserProps) {
                 <FileIcon nodeType={file.nodeType} mimeType={file.mimeType} />
                 <span className="text-xs text-text-primary text-center truncate w-full">{file.name}</span>
                 <span className="text-xs text-text-muted">{formatFileSize(file.sizeBytes)}</span>
+                <span
+  className="text-xs text-text-primary text-center truncate w-full cursor-pointer hover:text-accent-light"
+  onClick={(e) => {
+    e.stopPropagation()
+    if (file.nodeType === 'FILE') setVersionPanelFile({ id: file.id, name: file.name })
+  }}
+>
+  {file.name}
+</span>
               </div>
             </Card>
           ))}
@@ -172,6 +183,11 @@ export function FileBrowser({ deptId, parentId = null }: FileBrowserProps) {
   onClose={() => setUploadModalOpen(false)}
   departmentId={deptId}
   parentId={parentId}
+/>
+<VersionHistoryPanel
+  fileId={versionPanelFile?.id ?? null}
+  fileName={versionPanelFile?.name ?? ''}
+  onClose={() => setVersionPanelFile(null)}
 />
     </div>
   )
