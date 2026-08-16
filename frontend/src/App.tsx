@@ -20,6 +20,7 @@ import { Files } from './pages/Files'
 import { AuditLogViewer } from './pages/AuditLogViewer'
 import { BroadcastNotification } from './pages/BroadcastNotification'
 import { CmsEditor } from './pages/CmsEditor'
+import { SystemConfigPanel } from './pages/SystemConfigPanel'
 function Landing() { return <div>Landing (public)</div> }
 
 function Dashboard() { return <div>User Dashboard</div> }
@@ -63,6 +64,7 @@ export default function App() {
               <Route path="/admin/audit-logs" element={<AuditLogViewer />} />
               <Route path="/admin/broadcast" element={<BroadcastNotification />} />
               <Route path="/admin/cms" element={<CmsEditor />} />
+              <Route path="/admin/settings" element={<SystemConfigPanel />} />
             </Route>
           </Route>
         </Route>
