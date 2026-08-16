@@ -22,6 +22,7 @@ import { BroadcastNotification } from './pages/BroadcastNotification'
 import { CmsEditor } from './pages/CmsEditor'
 import { SystemConfigPanel } from './pages/SystemConfigPanel'
 import { UserHome } from './pages/UserHome'
+import { DeptFileBrowser } from './pages/DeptFileBrowser'
 function Landing() { return <div>Landing (public)</div> }
 
 
@@ -55,6 +56,7 @@ export default function App() {
           <Route element={<AppShell />}>
             <Route path="/dashboard" element={<UserHome />} />
             <Route path="/dashboard/files" element={<Files />} />
+            <Route path="/dashboard/files/:deptId" element={<DeptFileBrowser />} />
 
             {/* Admin-only — nested one level deeper, requires SUPER_ADMIN/DEPT_ADMIN */}
             <Route element={<AdminRoute />}>

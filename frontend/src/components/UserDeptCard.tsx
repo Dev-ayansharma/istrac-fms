@@ -11,7 +11,7 @@ interface UserDeptCardProps {
 
 export function UserDeptCard({ id, name, fileCount, lastUpdated }: UserDeptCardProps) {
   return (
-    <Link to={`/dashboard/files?dept=${id}`}>
+    <Link to={`/dashboard/files/${id}`}>
       <Card variant="interactive">
         <div className="flex items-start justify-between">
           <div>

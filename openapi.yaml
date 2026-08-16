@@ -380,10 +380,12 @@ paths:
   # ---------- FILES (FE-021 through FE-025, FE-031 through FE-034) ----------
   /browse/{deptId}:
     get:
-      summary: Navigate folder tree (FE-032)
+      summary: Navigate folder tree (FE-032) or list a single level (FE-022)
       parameters:
         - { name: deptId, in: path, required: true, schema: { type: string } }
         - { name: parentId, in: query, schema: { type: string } }
+        - { name: nodeType, in: query, schema: { type: string, enum: [FOLDER, FILE] } }
+        - { name: flat, in: query, schema: { type: boolean }, description: "If true, returns the full subtree flat rather than one level" }
       responses:
         '200':
           description: Files/folders at this level
