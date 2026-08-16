@@ -23,8 +23,13 @@ export const env: EnvConfig = {
   JWT_SECRET: required('JWT_SECRET'),
   JWT_REFRESH_SECRET: required('JWT_REFRESH_SECRET'),
   HDD_MOUNT_PATH: required('HDD_MOUNT_PATH'),
-  PORT: Number(process.env.PORT) || 3000,
-  NODE_ENV: (process.env.NODE_ENV as EnvConfig['NODE_ENV']) || 'development',
-  ALLOWED_ORIGINS: process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:5173']
- 
+  PORT: required('PORT') ? Number(process.env.PORT) : 3000,
+  NODE_ENV: (required('NODE_ENV') as EnvConfig['NODE_ENV']) || 'development',
+  ALLOWED_ORIGINS: process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:5173'],
+  MYSQL_ROOT_PASSWORD: required('MYSQL_ROOT_PASSWORD'),
+  MYSQL_DATABASE: required('MYSQL_DATABASE'),
+  MYSQL_USER: required('MYSQL_USER'),
+  MYSQL_PASSWORD: required('MYSQL_PASSWORD'),
+  MYSQL_HOST: required('MYSQL_HOST'),
+  MYSQL_PORT: Number(process.env.MYSQL_PORT) || 3306
 }

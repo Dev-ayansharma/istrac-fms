@@ -1,14 +1,14 @@
-import { PrismaPg } from "@prisma/adapter-pg";
-import { env } from './env.js'
 import { PrismaClient } from '../../generated/prisma/client.js'
-
-const adapter = new PrismaPg({
-  connectionString: env.DATABASE_URL,
+import { env } from './env.js'
+import { PrismaMariaDb } from "@prisma/adapter-mariadb";
+const adapter = new PrismaMariaDb({
+  host: env.MYSQL_HOST,
+  port: env.MYSQL_PORT || 3306,
+  user: env.MYSQL_USER,
+  password: env.MYSQL_PASSWORD,
+  database: env.MYSQL_DATABASE
 });
-
-export const prisma = new PrismaClient({ 
+export const prisma = new PrismaClient({
   adapter,
- log: env.NODE_ENV === 'development'
-    ? ['query', 'warn', 'error']
-    : ['warn', 'error'],
-   });
+  log: env.NODE_ENV === 'development' ? ['query', 'warn', 'error'] : ['warn', 'error'],
+})
