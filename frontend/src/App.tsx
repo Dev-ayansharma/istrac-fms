@@ -21,9 +21,10 @@ import { AuditLogViewer } from './pages/AuditLogViewer'
 import { BroadcastNotification } from './pages/BroadcastNotification'
 import { CmsEditor } from './pages/CmsEditor'
 import { SystemConfigPanel } from './pages/SystemConfigPanel'
+import { UserHome } from './pages/UserHome'
 function Landing() { return <div>Landing (public)</div> }
 
-function Dashboard() { return <div>User Dashboard</div> }
+
 
 
 export default function App() {
@@ -52,7 +53,7 @@ export default function App() {
           <Route path="/force-password-change" element={<ForcePasswordChange />} />
   <Route element={<ForcePasswordGuard />}></Route>
           <Route element={<AppShell />}>
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard" element={<UserHome />} />
             <Route path="/dashboard/files" element={<Files />} />
 
             {/* Admin-only — nested one level deeper, requires SUPER_ADMIN/DEPT_ADMIN */}

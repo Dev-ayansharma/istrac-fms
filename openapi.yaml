@@ -309,6 +309,9 @@ paths:
   /departments:
     get:
       summary: List departments (scoped to user access)
+      parameters:
+        - { name: scope, in: query, schema: { type: string, enum: [assigned, all] } }
+        - { name: withCounts, in: query, schema: { type: boolean } }
       responses:
         '200':
           description: Department list
@@ -544,6 +547,27 @@ paths:
               schema: { $ref: '#/components/schemas/FileNode' }
         '409':
           description: Checksum mismatch
+
+  /files/recent:
+    get:
+      summary: Recently uploaded files across the user's assigned departments (FE-031)
+      parameters:
+        - { name: limit, in: query, schema: { type: integer, default: 5 } }
+      responses:
+        '200':
+          description: Recent files
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id: { type: string }
+                    name: { type: string }
+                    departmentName: { type: string }
+                    uploadedAt: { type: string, format: date-time }
+                    mimeType: { type: string, nullable: true }
   /admin/audit-logs:
     get:
       summary: View audit log (FE-025, cursor-paginated per Ch.9.3)
