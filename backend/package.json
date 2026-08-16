@@ -23,7 +23,7 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "@prisma/adapter-pg": "^7.9.1",
+    "@prisma/adapter-mariadb": "^7.9.1",
     "@prisma/client": "^7.9.1",
     "@types/cors": "^2.8.19",
     "@types/dotenv": "^6.1.1",

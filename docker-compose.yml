@@ -1,18 +1,19 @@
 
 services:
-  postgres:
-    image: postgres:17
+  mysql:
+    image: mysql:8.0
     env_file: .env
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     ports:
-      - "5432:5432"
+      - "3306:3306"
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - mysqldata:/var/lib/mysql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "${MYSQL_USER}", "-p${MYSQL_PASSWORD}"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -32,7 +33,7 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      postgres:
+      mysql:
         condition: service_healthy
       redis:
         condition: service_started
@@ -49,4 +50,4 @@ services:
       - backend
 
 volumes:
-  pgdata:
+  mysqldata:
