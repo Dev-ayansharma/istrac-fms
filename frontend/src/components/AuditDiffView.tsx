@@ -3,35 +3,88 @@ interface AuditDiffViewProps {
   newValue: Record<string, unknown> | null
 }
 
-export function AuditDiffView({ oldValue, newValue }: AuditDiffViewProps) {
-  const allKeys = new Set([...Object.keys(oldValue ?? {}), ...Object.keys(newValue ?? {})])
+function formatValue(value: unknown) {
+  if (value === undefined) return '—'
+  if (value === null) return 'null'
+
+  if (typeof value === 'string') {
+    return `"${value}"`
+  }
+
+  return JSON.stringify(value)
+}
+
+export function AuditDiffView({
+  oldValue,
+  newValue,
+}: AuditDiffViewProps) {
+  const allKeys = new Set([
+    ...Object.keys(oldValue ?? {}),
+    ...Object.keys(newValue ?? {}),
+  ])
 
   if (allKeys.size === 0) {
-    return <p className="text-text-muted text-xs font-mono">No field-level detail recorded.</p>
+    return (
+      <div className="rounded-lg border border-border-subtle bg-surface/50 px-3 py-3">
+        <p className="font-mono text-[11px] text-text-muted">
+          No field-level detail recorded.
+        </p>
+      </div>
+    )
   }
 
   return (
-    <div className="font-mono text-xs space-y-1">
-      {Array.from(allKeys).map((key) => {
-        const before = oldValue?.[key]
-        const after = newValue?.[key]
-        const changed = JSON.stringify(before) !== JSON.stringify(after)
+    <div className="overflow-hidden rounded-lg border border-border-subtle bg-surface/50">
+      {/* Header */}
+      <div className="border-b border-border-subtle bg-card/60 px-3 py-2">
+        <p className="font-mono text-[10px] font-medium uppercase tracking-wider text-text-muted">
+          Field Changes
+        </p>
+      </div>
 
-        return (
-          <div key={key} className="flex gap-2">
-            <span className="text-text-muted w-32 shrink-0">{key}:</span>
-            {changed ? (
-              <span>
-                <span className="text-critical line-through">{JSON.stringify(before)}</span>
-                {' → '}
-                <span className="text-nominal">{JSON.stringify(after)}</span>
+      {/* Changes */}
+      <div className="divide-y divide-border-subtle/50">
+        {Array.from(allKeys).map((key) => {
+          const before = oldValue?.[key]
+          const after = newValue?.[key]
+
+          const changed =
+            JSON.stringify(before) !== JSON.stringify(after)
+
+          return (
+            <div
+              key={key}
+              className="flex flex-col gap-1.5 px-3 py-2.5 sm:flex-row sm:items-start sm:gap-4"
+            >
+              {/* Field name */}
+              <span className="w-full shrink-0 font-mono text-[11px] font-medium text-text-muted sm:w-32">
+                {key}
               </span>
-            ) : (
-              <span className="text-text-secondary">{JSON.stringify(after ?? before)}</span>
-            )}
-          </div>
-        )
-      })}
+
+              {/* Value */}
+              {changed ? (
+                <div className="min-w-0 break-all font-mono text-[11px]">
+                  <span className="text-critical line-through decoration-critical/60">
+                    {formatValue(before)}
+                  </span>
+
+                  <span className="mx-2 text-text-muted">
+                    →
+                  </span>
+
+                  <span className="text-nominal">
+                    {formatValue(after)}
+                  </span>
+                </div>
+              ) : (
+                <span className="min-w-0 break-all font-mono text-[11px] text-text-secondary">
+                  {formatValue(after ?? before)}
+                </span>
+              )}
+            </div>
+          )
+        })}
+      </div>
     </div>
   )
 }

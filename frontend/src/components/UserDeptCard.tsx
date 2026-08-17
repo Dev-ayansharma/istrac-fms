@@ -1,5 +1,6 @@
-import { Link } from 'react-router-dom'
 import { Building2 } from 'lucide-react'
+import { Link } from 'react-router-dom'
+
 import { Card } from '.'
 
 interface UserDeptCardProps {
@@ -9,19 +10,44 @@ interface UserDeptCardProps {
   lastUpdated: string
 }
 
-export function UserDeptCard({ id, name, fileCount, lastUpdated }: UserDeptCardProps) {
+export function UserDeptCard({
+  id,
+  name,
+  fileCount,
+  lastUpdated,
+}: UserDeptCardProps) {
   return (
-    <Link to={`/dashboard/files/${id}`}>
-      <Card variant="interactive">
-        <div className="flex items-start justify-between">
-          <div>
-            <p className="text-text-primary font-medium">{name}</p>
-            <p className="text-text-muted text-xs mt-1">{fileCount} file{fileCount !== 1 ? 's' : ''}</p>
-            <p className="text-text-muted text-xs">
-              Updated {new Date(lastUpdated).toLocaleDateString()}
+    <Link
+      to={`/dashboard/files/${id}`}
+      className="block h-full"
+    >
+      <Card
+        variant="interactive"
+        className="h-full"
+      >
+        <div className="flex items-center justify-between gap-4">
+          {/* Department information */}
+          <div className="min-w-0 flex-1">
+            <p className="truncate font-medium text-text-primary">
+              {name}
             </p>
+
+            <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1">
+              <p className="text-xs text-text-muted">
+                {fileCount} file{fileCount !== 1 ? 's' : ''}
+              </p>
+
+              <span className="text-text-muted">•</span>
+
+              <p className="text-xs text-text-muted">
+                Updated{' '}
+                {new Date(lastUpdated).toLocaleDateString()}
+              </p>
+            </div>
           </div>
-          <div className="bg-accent/10 text-accent-light p-2 rounded-md">
+
+          {/* Department icon */}
+          <div className="flex shrink-0 items-center justify-center rounded-md bg-accent/10 p-2 text-accent-light">
             <Building2 size={18} />
           </div>
         </div>

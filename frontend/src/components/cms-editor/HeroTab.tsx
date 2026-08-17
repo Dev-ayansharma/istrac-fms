@@ -1,47 +1,91 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useCms } from '../../context/cmsContext'
+import { usePreviewRefresh } from '../../context/PreviewRefreshContext'
 import { useUpdateCmsBlock } from '../../hooks/useUpdateCmsBlock'
 import { useToastStore } from '../../store/toastStore'
 import { Card, Input } from '..'
 import { SaveBar } from './SaveBar'
-import { usePreviewRefresh } from '../../context/PreviewRefreshContext'
+
+interface HeroContent {
+  title?: string
+  subtitle?: string
+  ctaText?: string
+}
+
 export function HeroTab() {
   const { cmsBlocks } = useCms()
-  const existing = cmsBlocks['hero'] as { title?: string; subtitle?: string; ctaText?: string } | undefined
   const updateBlock = useUpdateCmsBlock()
   const addToast = useToastStore((s) => s.addToast)
-   const { triggerRefresh } = usePreviewRefresh()
+  const { triggerRefresh } = usePreviewRefresh()
+
+  const existing = cmsBlocks['hero'] as HeroContent | undefined
 
   const [title, setTitle] = useState('')
   const [subtitle, setSubtitle] = useState('')
   const [ctaText, setCtaText] = useState('')
-  
+
   useEffect(() => {
     setTitle(existing?.title ?? '')
     setSubtitle(existing?.subtitle ?? '')
     setCtaText(existing?.ctaText ?? '')
-  }, [existing]);
+  }, [existing])
 
   function handleSave() {
     updateBlock.mutate(
-      { blockKey: 'hero', content: { title, subtitle, ctaText } },
+      {
+        blockKey: 'hero',
+        content: {
+          title,
+          subtitle,
+          ctaText,
+        },
+      },
       {
         onSuccess: () => {
           addToast('Hero section updated', 'success')
           triggerRefresh()
         },
-        onError: () => addToast('Failed to save', 'error'),
-      }
+        onError: () => {
+          addToast('Failed to save', 'error')
+        },
+      },
     )
   }
 
   return (
     <Card>
-      <div className="space-y-4">
-        <Input label="Title" value={title} onChange={(e) => setTitle(e.target.value)} />
-        <Input label="Subtitle" value={subtitle} onChange={(e) => setSubtitle(e.target.value)} />
-        <Input label="CTA button text" value={ctaText} onChange={(e) => setCtaText(e.target.value)} />
-        <SaveBar onSave={handleSave} isPending={updateBlock.isPending} />
+      <div className="space-y-5">
+        {/* Hero title */}
+        <Input
+          label="Title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Enter hero title..."
+        />
+
+        {/* Hero subtitle */}
+        <Input
+          label="Subtitle"
+          value={subtitle}
+          onChange={(e) => setSubtitle(e.target.value)}
+          placeholder="Enter hero subtitle..."
+        />
+
+        {/* CTA */}
+        <Input
+          label="CTA button text"
+          value={ctaText}
+          onChange={(e) => setCtaText(e.target.value)}
+          placeholder="e.g. Get started"
+        />
+
+        {/* Save */}
+        <div className="flex justify-end border-t border-border-subtle pt-4">
+          <SaveBar
+            onSave={handleSave}
+            isPending={updateBlock.isPending}
+          />
+        </div>
       </div>
     </Card>
   )

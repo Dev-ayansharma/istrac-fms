@@ -11,21 +11,47 @@ interface DeptBreadcrumbProps {
   onNavigate: (folderId: string | null) => void
 }
 
-export function DeptBreadcrumb({ deptName, path, onNavigate }: DeptBreadcrumbProps) {
+export function DeptBreadcrumb({
+  deptName,
+  path,
+  onNavigate,
+}: DeptBreadcrumbProps) {
   return (
-    <div className="flex items-center gap-1.5 text-sm text-text-secondary flex-wrap">
-      <button onClick={() => onNavigate(null)} className="flex items-center gap-1 hover:text-accent-light">
+    <nav
+      aria-label="Department breadcrumb"
+      className="flex flex-wrap items-center gap-1.5 text-sm text-text-secondary"
+    >
+      {/* Department root */}
+      <button
+        type="button"
+        onClick={() => onNavigate(null)}
+        className="flex items-center gap-1 hover:text-accent-light"
+      >
         <Home size={14} />
-        {deptName}
+        <span>{deptName}</span>
       </button>
+
+      {/* Folder path */}
       {path.map((segment) => (
-        <span key={segment.id} className="flex items-center gap-1.5">
-          <ChevronRight size={12} className="text-text-muted" />
-          <button onClick={() => onNavigate(segment.id)} className="hover:text-accent-light">
+        <span
+          key={segment.id ?? 'root'}
+          className="flex items-center gap-1.5"
+        >
+          <ChevronRight
+            size={12}
+            className="text-text-muted"
+            aria-hidden="true"
+          />
+
+          <button
+            type="button"
+            onClick={() => onNavigate(segment.id)}
+            className="hover:text-accent-light"
+          >
             {segment.name}
           </button>
         </span>
       ))}
-    </div>
+    </nav>
   )
 }

@@ -1,28 +1,66 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { Search } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 
 export function QuickSearchBar() {
   const [query, setQuery] = useState('')
   const navigate = useNavigate()
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    if (!query.trim()) return
-    // Pre-fills the query on the search page via URL param — the search page itself
-    // reads this on mount (built alongside FE-034), rather than this component
-    // holding any search state of its own beyond the input.
-    navigate(`/dashboard/search?q=${encodeURIComponent(query.trim())}`)
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+
+    const trimmedQuery = query.trim()
+
+    if (!trimmedQuery) {
+      return
+    }
+
+    navigate(
+      `/dashboard/search?q=${encodeURIComponent(trimmedQuery)}`
+    )
   }
 
   return (
-    <form onSubmit={handleSubmit} className="relative">
-      <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
+    <form
+      onSubmit={handleSubmit}
+      className="relative w-full"
+    >
+      <Search
+        size={16}
+        className="
+          pointer-events-none
+          absolute
+          left-3
+          top-1/2
+          -translate-y-1/2
+          text-text-muted
+        "
+      />
+
       <input
+        type="search"
         value={query}
-        onChange={(e) => setQuery(e.target.value)}
+        onChange={(event) => setQuery(event.target.value)}
         placeholder="Search files, departments, tags..."
-        className="w-full pl-9 pr-3 py-2.5 rounded-md bg-surface border border-border-default text-text-primary text-sm outline-none focus:border-accent"
+        aria-label="Search files, departments, and tags"
+        className="
+          w-full
+          rounded-md
+          border
+          border-border-default
+          bg-surface
+          py-2.5
+          pl-9
+          pr-3
+          text-sm
+          text-text-primary
+          outline-none
+          placeholder:text-text-muted
+          transition-colors
+          focus:border-accent
+          focus:ring-1
+          focus:ring-accent/30
+        "
       />
     </form>
   )

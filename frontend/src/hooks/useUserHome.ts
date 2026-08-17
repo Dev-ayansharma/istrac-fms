@@ -14,6 +14,7 @@ interface RecentFile {
   departmentName: string
   uploadedAt: string
   mimeType: string | null
+  size: number
 }
 
 export function useUserDepartments() {

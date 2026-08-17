@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { createJSONStorage, persist } from 'zustand/middleware/persist'
+import { persist, createJSONStorage } from 'zustand/middleware'
 
 interface UIState {
   sidebarCollapsed: boolean

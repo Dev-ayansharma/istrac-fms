@@ -23,6 +23,7 @@ import { CmsEditor } from './pages/CmsEditor'
 import { SystemConfigPanel } from './pages/SystemConfigPanel'
 import { UserHome } from './pages/UserHome'
 import { DeptFileBrowser } from './pages/DeptFileBrowser'
+import { DevIndex } from './pages/DevIndex'
 function Landing() { return <div>Landing (public)</div> }
 
 
@@ -40,6 +41,7 @@ export default function App() {
       <BrowserRouter>
       <ToastContainer />
         <Routes>
+            <Route path="/dev" element={<DevIndex />} />
           {/* Public routes */}
           <Route element={<PublicLayout />}>
             <Route path="/" element={<Landing />} />
