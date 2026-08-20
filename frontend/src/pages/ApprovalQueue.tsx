@@ -8,9 +8,10 @@ import {
 import { useToastStore } from '../store/toastStore'
 import { Card, Button } from '../components'
 import { RejectModal } from '../components/RejectModal'
-
+import { pendingUsersFixture } from '../mocks/Fixtures'
 export function ApprovalQueue() {
   const { data: pendingUsers, isLoading } = usePendingUsers()
+  const displayUsers = pendingUsers && pendingUsers.length > 0 ? pendingUsers : pendingUsersFixture
   const approveUser = useApproveUser()
   const rejectUser = useRejectUser()
   const addToast = useToastStore((s) => s.addToast)
@@ -76,16 +77,16 @@ export function ApprovalQueue() {
           </p>
         </div>
 
-        {pendingUsers && pendingUsers.length > 0 && (
+        {displayUsers && displayUsers.length > 0 && (
           <div className="inline-flex w-fit items-center gap-1.5 rounded-full border border-warning/20 bg-warning-bg px-2.5 py-1 text-xs font-medium text-warning">
             <Clock3 size={13} />
-            {pendingUsers.length} pending
+            {displayUsers.length} pending
           </div>
         )}
       </div>
 
       {/* Empty State */}
-      {(!pendingUsers || pendingUsers.length === 0) && (
+      {(!displayUsers || displayUsers.length === 0) && (
         <Card className="py-10">
           <div className="flex flex-col items-center justify-center text-center">
             <div className="flex items-center justify-center w-10 h-10 mb-3 rounded-full bg-nominal-bg text-nominal">
@@ -104,7 +105,7 @@ export function ApprovalQueue() {
       )}
 
       {/* Pending Users */}
-      {pendingUsers?.map((user) => (
+      {displayUsers?.map((user) => (
         <Card key={user.id} variant="interactive">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             {/* User Information */}

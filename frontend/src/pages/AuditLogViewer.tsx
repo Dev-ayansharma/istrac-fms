@@ -10,7 +10,7 @@ import { exportToCsv } from '../lib/exportCsv'
 import { Button, Card, Input } from '../components'
 import { FilterChip } from '../components/FilterChip'
 import { AuditDiffView } from '../components/AuditDiffView'
-
+import { auditLogFixture } from '../mocks/Fixtures'
 const ACTION_OPTIONS = [
   'FILE_UPLOAD',
   'FILE_DOWNLOAD',
@@ -42,7 +42,7 @@ export function AuditLogViewer() {
   } = useAuditLog(filters)
 
   const entries = data?.pages.flatMap((p) => p.data) ?? []
-
+const displayEntries = entries.length > 0 ? entries : auditLogFixture.data
   async function handleExport() {
     setIsExporting(true)
 
@@ -193,7 +193,7 @@ export function AuditLogViewer() {
       )}
 
       {/* Empty state */}
-      {!isLoading && entries.length === 0 && (
+      {!isLoading && displayEntries.length === 0 && (
         <Card>
           <div className="py-6 text-center">
             <p className="text-sm font-medium text-text-secondary">
@@ -208,9 +208,9 @@ export function AuditLogViewer() {
       )}
 
       {/* Audit entries */}
-      {!isLoading && entries.length > 0 && (
+      {!isLoading && displayEntries.length > 0 && (
         <div className="space-y-2">
-          {entries.map((entry) => {
+          {displayEntries.map((entry) => {
             const expanded = expandedId === entry.id
 
             return (

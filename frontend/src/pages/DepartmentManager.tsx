@@ -10,11 +10,12 @@ import { useToastStore } from '../store/toastStore'
 import { Card, Button, Badge } from '../components'
 import { CreateDeptModal } from '../components/CreateDeptModal'
 import { HDD_ROOT } from '../../schemas/departmentSchema'
-
+import { departmentsFixture } from '../mocks/Fixtures'
 type Tab = 'active' | 'archived'
 
 export function DepartmentManager() {
   const { data: departments, isLoading } = useDepartments()
+ const displayDepartments = departments && departments.length > 0 ? departments : departmentsFixture
   const createDept = useCreateDepartment()
   const updateDept = useUpdateDepartment()
   const archiveDept = useArchiveDepartment()
@@ -30,15 +31,15 @@ export function DepartmentManager() {
   } | null>(null)
 
   const filtered =
-    departments?.filter((dept) =>
+    displayDepartments?.filter((dept) =>
       tab === 'active' ? !dept.archived : dept.archived
     ) ?? []
 
   const activeCount =
-    departments?.filter((dept) => !dept.archived).length ?? 0
+    displayDepartments?.filter((dept) => !dept.archived).length ?? 0
 
   const archivedCount =
-    departments?.filter((dept) => dept.archived).length ?? 0
+    displayDepartments?.filter((dept) => dept.archived).length ?? 0
 
   async function handleCreate(data: {
     name: string

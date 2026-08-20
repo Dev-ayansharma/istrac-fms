@@ -1,10 +1,10 @@
 import { Filter, Search, ShieldCheck, Users } from 'lucide-react'
 import { useState } from 'react'
-import { useUsers, useSuspendUser, useForceLogout } from '../hooks/useUsers'
+import { useUsers, useSuspendUser, useForceLogout, } from '../hooks/useUsers'
 import { useToastStore } from '../store/toastStore'
 import { Table, Badge, Button, Input } from '../components'
 import { ConfirmDialog } from '../components/ConfirmDialog'
-
+import { usersFixture } from '../mocks/Fixtures'
 const statusVariant: Record<
   string,
   'nominal' | 'warning' | 'critical' | 'neutral'
@@ -31,6 +31,7 @@ export function UserManagement() {
     status,
     role,
   })
+const displayData = data && data.data.length > 0 ? data : usersFixture
 
   const suspendUser = useSuspendUser()
   const forceLogout = useForceLogout()
@@ -55,8 +56,8 @@ export function UserManagement() {
     })
   }
 
-  const totalPages = data?.pagination.totalPages ?? 1
-  const totalUsers = data?.pagination.total ?? 0
+  const totalPages = displayData?.pagination.totalPages ?? 1
+  const totalUsers = displayData?.pagination.total ?? 0
 
   return (
     <div className="space-y-5 sm:space-y-6">
@@ -218,7 +219,7 @@ export function UserManagement() {
                 ),
               },
             ]}
-            data={data?.data ?? []}
+            data={displayData?.data ?? []}
             emptyMessage="No users found."
           />
         </div>

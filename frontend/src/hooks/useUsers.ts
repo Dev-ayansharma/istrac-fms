@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { api } from '../lib/axios'
 
-interface User {
+export interface User {
   id: string
   name: string
   email: string
@@ -11,7 +11,7 @@ interface User {
   createdAt: string
 }
 
-interface UsersResponse {
+export interface UsersResponse {
   data: User[]
   pagination: { total: number; page: number; pageSize: number; totalPages: number }
 }
@@ -21,6 +21,7 @@ interface UseUsersParams {
   search: string
   status: string
   role: string
+  
 }
 
 export function useUsers({ page, search, status, role }: UseUsersParams) {

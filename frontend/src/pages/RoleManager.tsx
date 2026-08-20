@@ -5,11 +5,13 @@ import { useToastStore } from '../store/toastStore'
 import { Card, Button, Input, Badge } from '../components'
 import { PermissionGrid } from '../components/PermissionGrid'
 import { UserTypeahead } from '../components/UserTypeahead'
+import { customRolesFixture } from '../mocks/Fixtures'
 
 export function RoleManager() {
   const { data: departments } = useDepartments()
   const [deptId, setDeptId] = useState('')
   const { data: roles, isLoading } = useCustomRoles(deptId)
+  const displayRoles = roles && roles.length > 0 ? roles : customRolesFixture
   const [editingRoleId, setEditingRoleId] = useState<string | null>(null)
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
@@ -87,7 +89,7 @@ export function RoleManager() {
       {isLoading && <p className="text-text-muted">Loading...</p>}
 
       <div className="space-y-3">
-        {roles?.map((role) => (
+        {displayRoles?.map((role) => (
           <Card key={role.id}>
             <div className="flex items-start justify-between mb-2">
               <div>

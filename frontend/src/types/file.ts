@@ -8,6 +8,7 @@ export interface FileNode {
   mimeType: string | null
   status: 'ACTIVE' | 'ORPHANED' | 'DELETED' | 'UNREGISTERED'
   createdAt: string
+  versionCount?: number
 }
 
 export type SortField = 'name' | 'createdAt' | 'sizeBytes'
