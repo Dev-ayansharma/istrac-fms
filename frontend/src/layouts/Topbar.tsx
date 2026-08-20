@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
 import { useNotificationStore } from '../store/notificationStore'
 import { Avatar } from '../components'
-
+import { useNotifications } from '../hooks/useNotifications'
 export function Topbar() {
   const navigate = useNavigate()
 
@@ -17,7 +17,9 @@ export function Topbar() {
 
   const [menuOpen, setMenuOpen] = useState(false)
   const [utcTime, setUtcTime] = useState('')
-
+const [bellMenuOpen, setBellMenuOpen] = useState(false)
+const { data } = useNotifications()
+const recentFive = data?.pages[0]?.data.slice(0, 5) ?? []
   useEffect(() => {
     function updateTime() {
       setUtcTime(
@@ -66,7 +68,36 @@ export function Topbar() {
               : 'Notifications'
           }
         >
-          <Bell size={20} />
+          <div className="relative">
+  <button onClick={() => setBellMenuOpen((v) => !v)} className="relative text-text-secondary hover:text-text-primary">
+    <Bell size={20} />
+    {unreadCount > 0 && (
+      <span className="absolute -top-1 -right-1 bg-critical text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center">
+        {unreadCount > 9 ? '9+' : unreadCount}
+      </span>
+    )}
+  </button>
+  {bellMenuOpen && (
+    <>
+      <div className="fixed inset-0 z-10" onClick={() => setBellMenuOpen(false)} />
+      <div className="absolute right-0 top-full mt-2 w-72 bg-card border border-border-default rounded-md shadow-xl z-20">
+        <div className="px-3 py-2 border-b border-border-subtle text-xs text-text-muted">Notifications</div>
+        {recentFive.length === 0 && <p className="text-text-muted text-sm px-3 py-4">No notifications yet.</p>}
+        {recentFive.map((n) => (
+          <div key={n.id} className="px-3 py-2 text-sm text-text-secondary border-b border-border-subtle last:border-0">
+            {n.message}
+          </div>
+        ))}
+        <button
+          onClick={() => { setBellMenuOpen(false); navigate('/notifications') }}
+          className="w-full text-center py-2 text-xs text-accent-light hover:underline"
+        >
+          View all →
+        </button>
+      </div>
+    </>
+  )}
+</div>
 
           {unreadCount > 0 && (
             <span className="absolute -top-1 -right-1 bg-critical text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center">

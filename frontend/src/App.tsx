@@ -24,6 +24,7 @@ import { SystemConfigPanel } from './pages/SystemConfigPanel'
 import { UserHome } from './pages/UserHome'
 import { DeptFileBrowser } from './pages/DeptFileBrowser'
 import { DevIndex } from './pages/DevIndex'
+import { SearchPage } from './pages/SearchPage'
 function Landing() { return <div>Landing (public)</div> }
 
 
@@ -59,6 +60,7 @@ export default function App() {
             <Route path="/dashboard" element={<UserHome />} />
             <Route path="/dashboard/files" element={<Files />} />
             <Route path="/dashboard/files/:deptId" element={<DeptFileBrowser />} />
+            <Route path="/dashboard/search" element={<SearchPage />} />
 
             {/* Admin-only — nested one level deeper, requires SUPER_ADMIN/DEPT_ADMIN */}
             <Route element={<AdminRoute />}>

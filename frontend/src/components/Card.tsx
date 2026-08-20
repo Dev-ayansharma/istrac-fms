@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 
-interface CardProps {
+interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   variant?: 'default' | 'interactive'
   children: ReactNode
   className?: string
@@ -15,11 +15,11 @@ const variantStyles = {
 export function Card({
   variant = 'default',
   children,
-  className = '',
+  className = '',...props
 }: CardProps) {
   return (
     <div
-      className={`rounded-xl p-4 sm:p-5 ${variantStyles[variant]} ${className}`}
+      className={`rounded-xl p-4 sm:p-5 ${variantStyles[variant]} ${className}`} {...props}
     >
       {children}
     </div>
