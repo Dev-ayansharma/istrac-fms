@@ -2,7 +2,6 @@ import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AxiosError } from 'axios'
-import { FolderPlus } from 'lucide-react'
 import { Modal, Button, Input } from '.'
 import {
   departmentSchema,
@@ -80,34 +79,9 @@ export function CreateDeptModal({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={isEditing ? 'Edit Department' : 'Create Department'}
+      title={isEditing ? 'Edit department' : 'Create department'}
     >
-      <form
-        onSubmit={handleSubmit(handleFormSubmit)}
-        className="space-y-5"
-      >
-        {/* Header */}
-        <div className="flex items-center gap-2.5 pb-1">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-accent/20 bg-accent/10">
-            <FolderPlus
-              size={15}
-              className="text-accent-light"
-            />
-          </div>
-
-          <div>
-            <p className="text-sm font-medium text-text-primary">
-              {isEditing
-                ? 'Update department'
-                : 'New department'}
-            </p>
-
-            <p className="text-[11px] text-text-muted">
-              Configure the department and storage location.
-            </p>
-          </div>
-        </div>
-
+      <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-5">
         {/* Department Name */}
         <Input
           id="name"
@@ -117,54 +91,50 @@ export function CreateDeptModal({
           {...register('name')}
         />
 
-        {/* HDD Folder */}
+        {/* HDD Folder — the root is fixed, so it's shown as an inert prefix. */}
         <div className="flex flex-col gap-1.5">
-          <label
-            htmlFor="folderName"
-            className="text-sm font-medium text-text-secondary"
-          >
+          <label htmlFor="folderName" className="col-label">
             HDD folder
           </label>
 
-          <div className="flex w-full overflow-hidden rounded-lg border border-border-default bg-surface transition-colors focus-within:border-accent focus-within:ring-2 focus-within:ring-accent/20">
-            <span className="flex shrink-0 items-center border-r border-border-default bg-card px-3 py-2.5 font-mono text-xs text-text-muted">
+          <div className="flex w-full overflow-hidden rounded-md border border-border-default bg-surface transition-colors duration-150 focus-within:border-accent">
+            <span className="num flex shrink-0 items-center border-r border-border-default bg-card px-3 py-2.5 text-xs text-text-dim">
               {HDD_ROOT}
             </span>
 
             <input
               id="folderName"
-              className="min-w-0 flex-1 bg-transparent px-3 py-2.5 font-mono text-xs text-text-primary outline-none placeholder:text-text-muted"
+              className="num min-w-0 flex-1 bg-transparent px-3 py-2.5 text-xs text-text-primary outline-none placeholder:text-text-dim"
               placeholder="department-folder"
               {...register('folderName')}
             />
           </div>
 
           {errors.folderName && (
-            <span className="text-xs text-critical">
+            <span className="text-[11px] leading-4 text-critical">
               {errors.folderName.message}
             </span>
           )}
+        </div>
 
-          {/* Full path preview */}
-          <div className="mt-1 rounded-lg border border-border-subtle bg-card/60 px-3 py-2">
-            <p className="text-[10px] uppercase tracking-wider text-text-muted">
-              Full path
-            </p>
+        {/* Resolved path — the exact string that will be written. */}
+        <div className="border-t border-border-subtle pt-4">
+          <p className="col-label">Resolves to</p>
 
-            <p className="mt-0.5 break-all font-mono text-[11px] text-text-secondary">
-              {HDD_ROOT}
-              <span className="text-accent-light">
-                {folderName || '...'}
-              </span>
-            </p>
-          </div>
+          <p className="num mt-1.5 break-all text-[11px] leading-5 text-text-dim">
+            {HDD_ROOT}
+            <span className="text-accent-light">
+              {folderName || '…'}
+            </span>
+          </p>
         </div>
 
         {/* Actions */}
-        <div className="flex flex-col-reverse gap-2 pt-1 sm:flex-row sm:justify-end">
+        <div className="flex flex-col-reverse gap-2 border-t border-border-subtle pt-4 sm:flex-row sm:justify-end">
           <Button
             type="button"
             variant="outline"
+            size="sm"
             onClick={onClose}
             disabled={isSubmitting}
             className="w-full sm:w-auto"
@@ -175,11 +145,12 @@ export function CreateDeptModal({
           <Button
             type="submit"
             variant="primary"
+            size="sm"
             disabled={isSubmitting}
             className="w-full sm:w-auto"
           >
             {isSubmitting
-              ? 'Saving...'
+              ? 'Saving…'
               : isEditing
                 ? 'Save changes'
                 : 'Create department'}

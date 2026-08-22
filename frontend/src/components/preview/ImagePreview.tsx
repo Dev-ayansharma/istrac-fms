@@ -5,8 +5,8 @@ export function ImagePreview({ fileUrl, fileName }: { fileUrl: string; fileName:
   const [zoom, setZoom] = useState(1)
 
   return (
-    <div className="flex flex-col items-center gap-3">
-      <div className="overflow-auto max-h-[60vh] border border-border-subtle rounded-md bg-page flex items-center justify-center">
+    <div className="flex flex-col gap-3">
+      <div className="flex max-h-[60vh] items-center justify-center overflow-auto rounded-lg border border-border-subtle bg-page">
         <img
           src={fileUrl}
           alt={fileName}
@@ -14,17 +14,47 @@ export function ImagePreview({ fileUrl, fileName }: { fileUrl: string; fileName:
           className="max-w-none"
         />
       </div>
-      <div className="flex items-center gap-3">
-        <button onClick={() => setZoom((z) => Math.max(0.25, z - 0.25))} className="text-text-secondary">
-          <ZoomOut size={18} />
-        </button>
-        <span className="text-sm text-text-secondary w-12 text-center">{Math.round(zoom * 100)}%</span>
-        <button onClick={() => setZoom((z) => Math.min(4, z + 0.25))} className="text-text-secondary">
-          <ZoomIn size={18} />
-        </button>
-        <button onClick={() => setZoom(1)} className="text-text-secondary" aria-label="Reset zoom">
-          <RotateCcw size={16} />
-        </button>
+
+      {/* Zoom transport — one hairline frame, mono readout in the middle. */}
+      <div className="flex items-center justify-center">
+        <div className="flex items-center overflow-hidden rounded-md border border-border-default">
+          <button
+            type="button"
+            onClick={() => setZoom((z) => Math.max(0.25, z - 0.25))}
+            aria-label="Zoom out"
+            className="p-1.5 text-text-muted transition-colors duration-150 hover:bg-card-hover hover:text-text-primary"
+          >
+            <ZoomOut size={14} strokeWidth={1.8} />
+          </button>
+
+          <span aria-hidden="true" className="w-px self-stretch bg-border-default" />
+
+          <span className="num w-14 text-center text-[11px] text-text-secondary">
+            {Math.round(zoom * 100)}%
+          </span>
+
+          <span aria-hidden="true" className="w-px self-stretch bg-border-default" />
+
+          <button
+            type="button"
+            onClick={() => setZoom((z) => Math.min(4, z + 0.25))}
+            aria-label="Zoom in"
+            className="p-1.5 text-text-muted transition-colors duration-150 hover:bg-card-hover hover:text-text-primary"
+          >
+            <ZoomIn size={14} strokeWidth={1.8} />
+          </button>
+
+          <span aria-hidden="true" className="w-px self-stretch bg-border-default" />
+
+          <button
+            type="button"
+            onClick={() => setZoom(1)}
+            aria-label="Reset zoom"
+            className="p-1.5 text-text-muted transition-colors duration-150 hover:bg-card-hover hover:text-text-primary"
+          >
+            <RotateCcw size={13} strokeWidth={1.8} />
+          </button>
+        </div>
       </div>
     </div>
   )

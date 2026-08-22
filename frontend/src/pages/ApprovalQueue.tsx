@@ -1,4 +1,4 @@
-import { Check, Clock3, UserCheck, X } from 'lucide-react'
+import { Check, UserCheck, X } from 'lucide-react'
 import { useState } from 'react'
 import {
   usePendingUsers,
@@ -6,12 +6,12 @@ import {
   useRejectUser,
 } from '../hooks/usePendingUsers'
 import { useToastStore } from '../store/toastStore'
-import { Card, Button } from '../components'
+import { Avatar, Badge, Button, PageHeader, Panel } from '../components'
 import { RejectModal } from '../components/RejectModal'
-import { pendingUsersFixture } from '../mocks/Fixtures'
+
 export function ApprovalQueue() {
   const { data: pendingUsers, isLoading } = usePendingUsers()
-  const displayUsers = pendingUsers && pendingUsers.length > 0 ? pendingUsers : pendingUsersFixture
+
   const approveUser = useApproveUser()
   const rejectUser = useRejectUser()
   const addToast = useToastStore((s) => s.addToast)
@@ -20,8 +20,8 @@ export function ApprovalQueue() {
 
   function handleApprove(userId: string, name: string) {
     approveUser.mutate(userId, {
-      onSuccess: () => addToast(`${name} approved`, 'success'),
-      onError: () => addToast('Failed to approve — try again', 'error'),
+      onSuccess: () => addToast({ message: `${name} approved`, variant: 'success' }),
+      onError: () => addToast({ message: 'Failed to approve — try again', variant: 'error' }),
     })
   }
 
@@ -34,156 +34,163 @@ export function ApprovalQueue() {
       { userId: rejectingUserId, reason },
       {
         onSuccess: () => {
-          addToast(`${user?.name ?? 'User'} rejected`, 'info')
+          addToast({ message: `${user?.name ?? 'User'} rejected`, variant: 'info' })
           setRejectingUserId(null)
         },
-        onError: () => addToast('Failed to reject — try again', 'error'),
+        onError: () => addToast({ message: 'Failed to reject — try again', variant: 'error' }),
       },
     )
   }
 
   if (isLoading) {
     return (
-      <div className="space-y-4">
-        <div>
-          <div className="w-40 h-6 rounded bg-card-hover animate-pulse" />
-          <div className="w-56 h-3 mt-2 rounded bg-card-hover animate-pulse" />
+      <div className="space-y-6">
+        <div className="border-b border-border-subtle pb-4">
+          <div className="h-2.5 w-20 animate-pulse rounded-xs bg-card-hover" />
+          <div className="mt-3 h-6 w-44 animate-pulse rounded-xs bg-card-hover" />
         </div>
 
-        {Array.from({ length: 3 }).map((_, index) => (
-          <Card key={index}>
-            <div className="space-y-3 animate-pulse">
-              <div className="w-40 h-4 rounded bg-card-hover" />
-              <div className="w-64 h-3 rounded bg-card-hover" />
-              <div className="w-48 h-3 rounded bg-card-hover" />
-            </div>
-          </Card>
-        ))}
+        <div className="overflow-hidden rounded-xl border border-border-subtle bg-card shadow-card">
+          <div className="divide-y divide-border-subtle">
+            {Array.from({ length: 3 }).map((_, index) => (
+              <div key={index} className="animate-pulse space-y-3 px-4 py-5">
+                <div className="h-3.5 w-40 rounded-xs bg-card-hover" />
+                <div className="h-2.5 w-64 rounded-xs bg-card-hover" />
+                <div className="h-2.5 w-48 rounded-xs bg-card-hover" />
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="space-y-4">
-      {/* Page Header */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-xl font-semibold tracking-tight text-text-primary">
-            Approval Queue
-          </h1>
-
-          <p className="mt-1 text-xs text-text-muted">
-            Review and manage pending access requests.
-          </p>
-        </div>
-
-        {displayUsers && displayUsers.length > 0 && (
-          <div className="inline-flex w-fit items-center gap-1.5 rounded-full border border-warning/20 bg-warning-bg px-2.5 py-1 text-xs font-medium text-warning">
-            <Clock3 size={13} />
-            {displayUsers.length} pending
-          </div>
-        )}
-      </div>
+    <div className="space-y-6">
+      <PageHeader
+        eyebrow="Administration"
+        title="Approval queue"
+        description="Review and decide on pending access requests."
+        meta={
+          pendingUsers && pendingUsers.length > 0 ? (
+            <Badge variant="warning">{pendingUsers.length} pending</Badge>
+          ) : (
+            <Badge variant="nominal">Clear</Badge>
+          )
+        }
+      />
 
       {/* Empty State */}
-      {(!displayUsers || displayUsers.length === 0) && (
-        <Card className="py-10">
-          <div className="flex flex-col items-center justify-center text-center">
-            <div className="flex items-center justify-center w-10 h-10 mb-3 rounded-full bg-nominal-bg text-nominal">
-              <UserCheck size={18} />
-            </div>
+      {(!pendingUsers || pendingUsers.length === 0) && (
+        <div className="rounded-xl border border-border-subtle bg-card px-6 py-14 text-center shadow-card">
+          <UserCheck
+            size={20}
+            strokeWidth={1.5}
+            aria-hidden="true"
+            className="mx-auto text-nominal"
+          />
 
-            <p className="text-sm font-medium text-text-primary">
-              No pending registrations
-            </p>
+          <p className="mt-4 text-[13px] text-text-primary">
+            No pending registrations
+          </p>
 
-            <p className="mt-1 text-xs text-text-muted">
-              All access requests have been reviewed.
-            </p>
-          </div>
-        </Card>
+          <p className="mt-1.5 text-[13px] text-text-muted">
+            All access requests have been reviewed.
+          </p>
+        </div>
       )}
 
       {/* Pending Users */}
-      {displayUsers?.map((user) => (
-        <Card key={user.id} variant="interactive">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-            {/* User Information */}
-            <div className="min-w-0">
-              <div className="flex items-center gap-2">
-                <div className="flex items-center justify-center w-8 h-8 shrink-0 rounded-full bg-accent/10 text-accent-light text-xs font-semibold">
-                  {user.name.charAt(0).toUpperCase()}
-                </div>
-
+      {pendingUsers && pendingUsers.length > 0 && (
+        <Panel
+          title="Requests"
+          meta={
+            <span className="num text-[10px] text-text-dim">
+              {pendingUsers.length} awaiting decision
+            </span>
+          }
+          flush
+        >
+          <div className="divide-y divide-border-subtle">
+            {pendingUsers.map((user) => (
+              <article
+                key={user.id}
+                className="flex flex-col gap-4 px-4 py-4 transition-colors duration-150 hover:bg-card-hover lg:flex-row lg:items-start lg:justify-between"
+              >
+                {/* Identity + record */}
                 <div className="min-w-0">
-                  <p className="font-medium text-sm truncate text-text-primary">
-                    {user.name}
-                  </p>
+                  <div className="flex items-center gap-2.5">
+                    <Avatar name={user.name} size="sm" />
 
-                  <p className="text-xs truncate text-text-muted">
-                    {user.email}
-                  </p>
+                    <div className="min-w-0">
+                      <p className="truncate text-[13px] text-text-primary">
+                        {user.name}
+                      </p>
+
+                      <p className="num truncate text-[11px] text-text-dim">
+                        {user.email}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Machine facts, as a record */}
+                  <dl className="mt-3.5 flex flex-wrap gap-x-8 gap-y-2.5">
+                    <div>
+                      <dt className="col-label">Employee ID</dt>
+                      <dd className="num mt-1 text-[11px] text-text-secondary">
+                        {user.employeeId}
+                      </dd>
+                    </div>
+
+                    <div>
+                      <dt className="col-label">Department requested</dt>
+                      <dd className="mt-1 text-[11px] text-text-secondary">
+                        {user.departmentPreference}
+                      </dd>
+                    </div>
+                  </dl>
+
+                  {/* Reason — human language, so it gets prose treatment. */}
+                  {user.reasonForAccess && (
+                    <div className="mt-3.5 max-w-2xl border-t border-border-subtle pt-3.5">
+                      <p className="col-label">Reason for access</p>
+
+                      <p className="mt-1.5 text-[13px] leading-6 text-text-secondary">
+                        {user.reasonForAccess}
+                      </p>
+                    </div>
+                  )}
                 </div>
-              </div>
 
-              {/* Employee / Department */}
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-3">
-                <p className="text-xs text-text-secondary">
-                  Employee ID:{' '}
-                  <span className="text-text-primary">
-                    {user.employeeId}
-                  </span>
-                </p>
+                {/* Actions */}
+                <div className="flex w-full shrink-0 gap-2 lg:w-auto">
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    onClick={() => handleApprove(user.id, user.name)}
+                    disabled={approveUser.isPending}
+                    className="flex-1 lg:flex-none"
+                  >
+                    <Check size={13} strokeWidth={2.2} />
+                    {approveUser.isPending ? 'Approving…' : 'Approve'}
+                  </Button>
 
-                <p className="text-xs text-text-secondary">
-                  Department:{' '}
-                  <span className="text-text-primary">
-                    {user.departmentPreference}
-                  </span>
-                </p>
-              </div>
-
-              {/* Reason */}
-              {user.reasonForAccess && (
-                <div className="mt-3 max-w-2xl">
-                  <p className="mb-1 text-[10px] font-medium uppercase tracking-wide text-text-muted">
-                    Reason for access
-                  </p>
-
-                  <p className="text-xs leading-relaxed text-text-secondary">
-                    {user.reasonForAccess}
-                  </p>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setRejectingUserId(user.id)}
+                    disabled={rejectUser.isPending}
+                    className="flex-1 lg:flex-none"
+                  >
+                    <X size={13} strokeWidth={2.2} />
+                    Reject
+                  </Button>
                 </div>
-              )}
-            </div>
-
-            {/* Actions */}
-            <div className="flex w-full shrink-0 gap-2 lg:w-auto">
-              <Button
-                variant="primary"
-                size="sm"
-                onClick={() => handleApprove(user.id, user.name)}
-                disabled={approveUser.isPending}
-                className="flex-1 lg:flex-none"
-              >
-                <Check size={14} />
-                {approveUser.isPending ? 'Approving...' : 'Approve'}
-              </Button>
-
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setRejectingUserId(user.id)}
-                disabled={rejectUser.isPending}
-                className="flex-1 lg:flex-none"
-              >
-                <X size={14} />
-                Reject
-              </Button>
-            </div>
+              </article>
+            ))}
           </div>
-        </Card>
-      ))}
+        </Panel>
+      )}
 
       {/* Reject Modal */}
       <RejectModal

@@ -1,5 +1,4 @@
 import type { LucideIcon } from 'lucide-react'
-import { Card } from '.'
 
 interface StatCardProps {
   label: string
@@ -8,37 +7,36 @@ interface StatCardProps {
   trend?: string
 }
 
-export function StatCard({
-  label,
-  value,
-  icon: Icon,
-  trend,
-}: StatCardProps) {
+/**
+ * A single telemetry readout. The figure is set in mono because it came from
+ * the system, and it's the largest thing in the cell — the icon is reduced to
+ * a quiet marker in the corner rather than a coloured badge competing with it.
+ */
+export function StatCard({ label, value, icon: Icon, trend }: StatCardProps) {
   return (
-    <Card className="relative overflow-hidden">
+    <div className="group relative rounded-xl border border-border-subtle bg-card p-4 shadow-card transition-colors duration-150 hover:border-border-default">
       <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <p className="text-xs font-medium text-text-secondary">
-            {label}
-          </p>
+        <p className="col-label">{label}</p>
 
-          <p className="mt-1 text-2xl font-semibold tracking-tight text-text-primary">
-            {value}
-          </p>
-
-          {trend && (
-            <p className="mt-1.5 text-[10px] text-text-muted">
-              {trend}
-            </p>
-          )}
-        </div>
-
-        <div className="flex shrink-0 items-center justify-center w-9 h-9 rounded-lg border border-accent/10 bg-accent/10 text-accent-light">
-          <Icon size={18} strokeWidth={1.8} />
-        </div>
+        <Icon
+          size={15}
+          strokeWidth={1.6}
+          className="shrink-0 text-text-dim transition-colors duration-150 group-hover:text-accent-light"
+          aria-hidden="true"
+        />
       </div>
 
-      <div className="absolute right-0 bottom-0 w-16 h-16 rounded-full bg-accent/5 blur-2xl pointer-events-none" />
-    </Card>
+      <p className="num mt-3 text-[26px] leading-none text-text-primary">{value}</p>
+
+      {trend && (
+        <p className="mt-2.5 truncate text-[11px] text-text-dim">{trend}</p>
+      )}
+
+      {/* Hairline foot: reads as the base line of a gauge. */}
+      <span
+        aria-hidden="true"
+        className="absolute inset-x-4 bottom-0 h-px bg-gradient-to-r from-accent/40 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+      />
+    </div>
   )
 }

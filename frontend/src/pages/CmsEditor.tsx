@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 import { PreviewRefreshProvider } from '../context/PreviewRefreshContext'
+import { PageHeader } from '../components'
 import { LivePreviewPanel } from '../components/LivePreviewPanel'
 import { HeroTab } from '../components/cms-editor/HeroTab'
 import { AnnouncementTab } from '../components/cms-editor/AnnouncementTab'
@@ -45,44 +46,39 @@ export function CmsEditor() {
 
   return (
     <PreviewRefreshProvider>
-      <div className="space-y-4">
-        <h1 className="text-xl font-semibold text-text-primary">
-          CMS Editor
-        </h1>
+      <div className="space-y-5">
+        <PageHeader
+          eyebrow="Administration"
+          title="Landing page"
+          description="Edit the public page block by block. The preview reloads each time you save."
+        />
 
-        <div className="grid h-[calc(100vh-180px)] grid-cols-1 gap-4 lg:grid-cols-2">
+        {/* Block rail */}
+        <div className="flex gap-1 overflow-x-auto border-b border-border-subtle">
+          {TABS.map((tab) => {
+            const isActive = activeTab === tab.key
+
+            return (
+              <button
+                key={tab.key}
+                type="button"
+                onClick={() => setActiveTab(tab.key)}
+                aria-pressed={isActive}
+                className={`-mb-px shrink-0 border-b-2 px-3 py-2.5 text-[11px] font-bold tracking-[0.1em] uppercase transition-colors duration-150 ${
+                  isActive
+                    ? 'border-b-accent text-accent-light'
+                    : 'border-b-transparent text-text-dim hover:text-text-primary'
+                }`}
+              >
+                {tab.label}
+              </button>
+            )
+          })}
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 lg:h-[calc(100vh-19rem)] lg:grid-cols-2">
           {/* Editor */}
-          <div className="space-y-4 overflow-auto">
-            {/* Tabs */}
-            <div className="flex gap-1 overflow-x-auto border-b border-border-subtle">
-              {TABS.map((tab) => {
-                const isActive = activeTab === tab.key
-
-                return (
-                  <button
-                    key={tab.key}
-                    type="button"
-                    onClick={() => setActiveTab(tab.key)}
-                    className={`
-                      shrink-0
-                      border-b-2
-                      px-4 py-2
-                      text-sm
-                      transition-colors
-                      ${
-                        isActive
-                          ? 'border-accent text-accent-light'
-                          : 'border-transparent text-text-secondary hover:text-text-primary'
-                      }
-                    `}
-                  >
-                    {tab.label}
-                  </button>
-                )
-              })}
-            </div>
-
-            {/* Active tab */}
+          <div className="min-w-0 lg:overflow-y-auto lg:pr-1">
             <ActiveComponent />
           </div>
 

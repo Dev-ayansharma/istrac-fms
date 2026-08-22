@@ -3,11 +3,10 @@ import {
   FileText,
   Building2,
   HardDrive,
-  Activity,
 } from 'lucide-react'
 import { useAdminStats } from '../hooks/useAdminStats'
-import { StatCard, AuditFeed } from '../components'
-import {adminStatsFixture} from '../mocks/Fixtures'
+import { StatCard, AuditFeed, PageHeader } from '../components'
+
 function formatBytes(bytes: number) {
   if (bytes < 1024 ** 3) {
     return `${(bytes / 1024 ** 2).toFixed(1)} MB`
@@ -18,76 +17,53 @@ function formatBytes(bytes: number) {
 
 export function AdminHome() {
   const { data: stats, isLoading } = useAdminStats()
-  const statsData = stats || adminStatsFixture
+
 
   return (
-    <div className="space-y-5 sm:space-y-6">
-      {/* Page Header */}
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <div className="flex items-center gap-2">
-            <Activity size={16} className="text-accent-light" />
-
-            <span className="text-[10px] font-medium uppercase tracking-widest text-text-muted">
-              System Overview
-            </span>
-          </div>
-
-          <h1 className="mt-1 text-xl font-semibold tracking-tight text-text-primary sm:text-2xl">
-            Admin Overview
-          </h1>
-
-          <p className="mt-1 text-xs text-text-muted sm:text-sm">
-            Monitor users, files, departments and system storage.
-          </p>
-        </div>
-      </div>
+    <div className="space-y-6">
+      <PageHeader
+        eyebrow="System overview"
+        title="Admin overview"
+        description="Monitor users, files, departments and system storage."
+      />
 
       {/* Statistics */}
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           label="Users"
-          value={isLoading ? '—' : statsData.users}
+          value={isLoading ? '—' : stats!.users}
           icon={Users}
-          trend={!isLoading ? 'Total registered users' : undefined}
+          trend={!isLoading ? 'Registered accounts' : undefined}
         />
 
         <StatCard
           label="Files"
-          value={isLoading ? '—' : statsData.files}
+          value={isLoading ? '—' : stats!.files}
           icon={FileText}
-          trend={!isLoading ? 'Files stored in system' : undefined}
+          trend={!isLoading ? 'Stored in system' : undefined}
         />
 
         <StatCard
           label="Departments"
-          value={isLoading ? '—' : statsData.departments}
+          value={isLoading ? '—' : stats!.departments}
           icon={Building2}
-          trend={!isLoading ? 'Active departments' : undefined}
+          trend={!isLoading ? 'Active' : undefined}
         />
 
         <StatCard
-          label="Storage Used"
+          label="Storage used"
           value={
             isLoading
               ? '—'
-              : formatBytes(statsData.storageUsedBytes)
+              : formatBytes(stats!.storageUsedBytes)
           }
           icon={HardDrive}
-          trend={!isLoading ? 'Current storage usage' : undefined}
+          trend={!isLoading ? 'Across all departments' : undefined}
         />
       </div>
 
       {/* Recent Activity */}
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <div className="lg:col-span-2">
-          <AuditFeed />
-        </div>
-
-        <div className="hidden lg:block">
-          {/* Reserved for future admin dashboard widgets */}
-        </div>
-      </div>
+      <AuditFeed />
     </div>
   )
 }

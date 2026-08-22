@@ -7,12 +7,18 @@ export function AppShell() {
   useAutoCollapseSidebar()
 
   return (
-    <div className="flex min-h-screen bg-page">
+    /* The rail and the readout strip are fixed furniture — only the work area
+       scrolls, so the UTC clock and navigation never leave the screen. */
+    <div className="flex h-screen overflow-hidden bg-page">
       <Sidebar />
-      <div className="flex-1 flex flex-col">
+
+      <div className="flex min-w-0 flex-1 flex-col">
         <Topbar />
-        <main className="flex-1 p-6 overflow-auto">
-          <Outlet />
+
+        <main className="flex-1 overflow-y-auto">
+          <div className="shell-wide py-6">
+            <Outlet />
+          </div>
         </main>
       </div>
     </div>

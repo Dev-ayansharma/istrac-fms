@@ -14,6 +14,10 @@ function formatValue(value: unknown) {
   return JSON.stringify(value)
 }
 
+/**
+ * Field-level before/after. Everything here is machine output, so the whole
+ * block is mono; changed rows are the only ones that carry colour.
+ */
 export function AuditDiffView({
   oldValue,
   newValue,
@@ -25,25 +29,23 @@ export function AuditDiffView({
 
   if (allKeys.size === 0) {
     return (
-      <div className="rounded-lg border border-border-subtle bg-surface/50 px-3 py-3">
-        <p className="font-mono text-[11px] text-text-muted">
-          No field-level detail recorded.
-        </p>
-      </div>
+      <p className="num text-[11px] text-text-dim">
+        No field-level detail recorded.
+      </p>
     )
   }
 
   return (
-    <div className="overflow-hidden rounded-lg border border-border-subtle bg-surface/50">
-      {/* Header */}
-      <div className="border-b border-border-subtle bg-card/60 px-3 py-2">
-        <p className="font-mono text-[10px] font-medium uppercase tracking-wider text-text-muted">
-          Field Changes
-        </p>
+    <div className="overflow-hidden rounded-lg border border-border-subtle bg-card">
+      <div className="flex items-center justify-between gap-4 border-b border-border-subtle px-3 py-2">
+        <span className="col-label">Field changes</span>
+
+        <span className="num text-[10px] text-text-dim">
+          {allKeys.size}
+        </span>
       </div>
 
-      {/* Changes */}
-      <div className="divide-y divide-border-subtle/50">
+      <div className="divide-y divide-border-subtle">
         {Array.from(allKeys).map((key) => {
           const before = oldValue?.[key]
           const after = newValue?.[key]
@@ -54,30 +56,30 @@ export function AuditDiffView({
           return (
             <div
               key={key}
-              className="flex flex-col gap-1.5 px-3 py-2.5 sm:flex-row sm:items-start sm:gap-4"
+              className={`flex flex-col gap-1.5 border-l-2 px-3 py-2.5 sm:flex-row sm:items-start sm:gap-4 ${
+                changed ? 'border-l-accent' : 'border-l-transparent'
+              }`}
             >
-              {/* Field name */}
-              <span className="w-full shrink-0 font-mono text-[11px] font-medium text-text-muted sm:w-32">
+              <span className="num w-full shrink-0 text-[11px] text-text-dim sm:w-36">
                 {key}
               </span>
 
-              {/* Value */}
               {changed ? (
-                <div className="min-w-0 break-all font-mono text-[11px]">
-                  <span className="text-critical line-through decoration-critical/60">
+                <span className="num min-w-0 break-all text-[11px]">
+                  <span className="text-critical line-through decoration-critical/50">
                     {formatValue(before)}
                   </span>
 
-                  <span className="mx-2 text-text-muted">
+                  <span aria-hidden="true" className="mx-2 text-text-dim">
                     →
                   </span>
 
                   <span className="text-nominal">
                     {formatValue(after)}
                   </span>
-                </div>
+                </span>
               ) : (
-                <span className="min-w-0 break-all font-mono text-[11px] text-text-secondary">
+                <span className="num min-w-0 break-all text-[11px] text-text-secondary">
                   {formatValue(after ?? before)}
                 </span>
               )}

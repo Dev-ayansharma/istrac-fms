@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useAuthStore } from '../store/authStore'
+import { Button, PageHeader, Panel } from '../components'
 
 const TEST_USERS = {
   superAdmin: { id: '1', name: 'Test Admin', email: 'admin@istrac.local', role: 'SUPER_ADMIN' as const, tempPass: false },
@@ -26,7 +27,7 @@ const ADMIN_PAGES = [
   { path: '/admin/audit-logs', label: 'Audit Log Viewer' },
   { path: '/admin/broadcast', label: 'Broadcast Notification' },
   { path: '/admin/cms', label: 'CMS Editor (5 tabs)' },
-  
+
 ]
 
 export function DevIndex() {
@@ -36,49 +37,69 @@ export function DevIndex() {
 
   if (import.meta.env.PROD) return null
 
-  function Section({ title, pages }: { title: string; pages: { path: string; label: string }[] }) {
+  function Section({ title, meta, pages }: { title: string; meta: string; pages: { path: string; label: string }[] }) {
     return (
-      <div>
-        <h2 className="text-text-secondary text-sm font-medium mb-2">{title}</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+      <Panel title={title} meta={meta} flush>
+        <div className="grid grid-cols-1 divide-y divide-border-subtle sm:grid-cols-2 sm:divide-y-0">
           {pages.map((p) => (
             <Link
               key={p.path}
               to={p.path}
-              className="block bg-card border border-border-subtle rounded-md px-3 py-2 text-sm text-text-primary hover:border-accent hover:text-accent-light"
+              className="group flex items-baseline justify-between gap-3 border-l-2 border-l-transparent px-4 py-2.5 transition-colors duration-150 hover:border-l-accent hover:bg-card-hover"
             >
-              {p.label}
-              <span className="block text-xs text-text-muted font-mono mt-0.5">{p.path}</span>
+              <span className="min-w-0 truncate text-[13px] text-text-secondary group-hover:text-text-primary">
+                {p.label}
+              </span>
+
+              <span className="num shrink-0 text-[10px] text-text-dim group-hover:text-accent-light">
+                {p.path}
+              </span>
             </Link>
           ))}
         </div>
-      </div>
+      </Panel>
     )
   }
 
   return (
-    <div className="min-h-screen bg-page p-8 space-y-8 max-w-3xl mx-auto">
-      <div>
-        <h1 className="text-2xl font-semibold text-text-primary mb-1">Dev Page Index</h1>
-        <p className="text-text-muted text-sm">
-          Current user: {user ? `${user.name} (${user.role})` : 'not logged in'}
-        </p>
-        <div className="flex gap-2 mt-3">
-          <button onClick={() => setAuth(TEST_USERS.superAdmin, 'fake-dev-token')} className="px-3 py-1.5 bg-accent text-white rounded-md text-sm">
-            Set as Admin
-          </button>
-          <button onClick={() => setAuth(TEST_USERS.member, 'fake-dev-token')} className="px-3 py-1.5 bg-card border border-border-default text-text-primary rounded-md text-sm">
-            Set as Member
-          </button>
-          <button onClick={clearAuth} className="px-3 py-1.5 text-critical text-sm">
-            Clear (logout)
-          </button>
-        </div>
-      </div>
+    <div className="graticule min-h-screen bg-page py-10">
+      <div className="mx-auto w-full max-w-3xl space-y-5 px-4">
+        <PageHeader
+          eyebrow="Development"
+          title="Page index"
+          description="Route shortcuts and auth shims. This page is stripped from production builds."
+          meta={user ? `${user.name} · ${user.role}` : 'not signed in'}
+        />
 
-      <Section title="Public" pages={PUBLIC_PAGES} />
-      <Section title="User (requires login)" pages={USER_PAGES} />
-      <Section title="Admin (requires SUPER_ADMIN/DEPT_ADMIN)" pages={ADMIN_PAGES} />
+        {/* Auth shims */}
+        <Panel title="Session" meta={user ? user.email : 'none'}>
+          <div className="flex flex-wrap items-center gap-2">
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() => setAuth(TEST_USERS.superAdmin, 'fake-dev-token')}
+            >
+              Set as admin
+            </Button>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setAuth(TEST_USERS.member, 'fake-dev-token')}
+            >
+              Set as member
+            </Button>
+
+            <Button variant="ghost" size="sm" onClick={clearAuth}>
+              Clear session
+            </Button>
+          </div>
+        </Panel>
+
+        <Section title="Public" meta="no auth" pages={PUBLIC_PAGES} />
+        <Section title="User" meta="requires login" pages={USER_PAGES} />
+        <Section title="Admin" meta="SUPER_ADMIN / DEPT_ADMIN" pages={ADMIN_PAGES} />
+      </div>
     </div>
   )
 }

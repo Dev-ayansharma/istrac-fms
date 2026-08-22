@@ -6,6 +6,7 @@ export interface UploadItem {
   status: UploadStatus
   progress: number // 0-100
   error?: string
+  
 }
 
 export const CHUNK_THRESHOLD = 10 * 1024 * 1024 // 10MB — architecture doc Ch.6.1.2

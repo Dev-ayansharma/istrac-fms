@@ -5,37 +5,25 @@ interface BadgeProps {
   children: ReactNode
 }
 
+/**
+ * Annunciator flag. A solid leading bar in the status colour does the work a
+ * coloured dot usually does — it survives being scanned down a dense column,
+ * and it reads as a state rather than as a tag.
+ */
 const variantStyles = {
-  nominal: 'text-nominal bg-nominal-bg border border-nominal/15',
-  warning: 'text-warning bg-warning-bg border border-warning/15',
-  critical: 'text-critical bg-critical-bg border border-critical/15',
-  special: 'text-special bg-special-bg border border-special/15',
-  neutral: 'text-text-secondary bg-card border border-border-subtle',
+  nominal: 'border-nominal/25 border-l-nominal bg-nominal-bg text-nominal',
+  warning: 'border-warning/25 border-l-warning bg-warning-bg text-warning',
+  critical: 'border-critical/25 border-l-critical bg-critical-bg text-critical',
+  special: 'border-special/25 border-l-special bg-special-bg text-special',
+  neutral: 'border-border-default border-l-text-muted bg-card-hover text-text-secondary',
 }
 
-const dotStyles = {
-  nominal: 'bg-nominal',
-  warning: 'bg-warning',
-  critical: 'bg-critical',
-  special: 'bg-special',
-  neutral: 'bg-text-secondary',
-}
-
-export function Badge({
-  variant = 'neutral',
-  children,
-}: BadgeProps) {
+export function Badge({ variant = 'neutral', children }: BadgeProps) {
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-medium tracking-wide ${variantStyles[variant]}`}
+      className={`inline-flex max-w-full items-center rounded-sm border border-l-2 px-1.5 py-0.5 text-[10px] font-bold tracking-[0.08em] uppercase ${variantStyles[variant]}`}
     >
-      <span
-        className={`h-1.5 w-1.5 shrink-0 rounded-full ${dotStyles[variant]}`}
-      />
-
-      <span className="truncate">
-        {children}
-      </span>
+      <span className="truncate">{children}</span>
     </span>
   )
 }

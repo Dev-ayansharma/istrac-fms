@@ -1,3 +1,4 @@
+import { X } from 'lucide-react'
 import { Button } from '.'
 
 interface BulkActionBarProps {
@@ -8,6 +9,10 @@ interface BulkActionBarProps {
   isDeleting?: boolean
 }
 
+/**
+ * Floats above the work area while a selection is live, so the actions stay
+ * reachable no matter how far down the list you've scrolled.
+ */
 export function BulkActionBar({
   selectedCount,
   onDelete,
@@ -18,38 +23,41 @@ export function BulkActionBar({
   if (selectedCount === 0) return null
 
   return (
-    <div className="sticky top-0 z-10 flex items-center justify-between bg-card border border-border-default rounded-md px-4 py-2 mb-3">
-      <span className="text-sm text-text-primary">
-        {selectedCount} selected
-      </span>
+    <div
+      role="region"
+      aria-label="Bulk actions"
+      className="animate-rise pointer-events-none fixed inset-x-0 bottom-5 z-40 flex justify-center px-4"
+    >
+      <div className="pointer-events-auto flex items-center gap-4 rounded-lg border border-border-bright bg-surface px-3 py-2.5 shadow-card-lg">
+        <span className="flex items-center gap-2.5 pl-1">
+          <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-accent" />
 
-      <div className="flex gap-2">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={onTag}
-          disabled={isDeleting}
-        >
-          Tag
-        </Button>
+          <span className="num text-xs text-text-primary">
+            {selectedCount} selected
+          </span>
+        </span>
 
-        <Button
-          variant="danger"
-          size="sm"
-          onClick={onDelete}
-          disabled={isDeleting}
-        >
-          {isDeleting ? 'Deleting...' : 'Delete'}
-        </Button>
+        <span aria-hidden="true" className="h-5 w-px bg-border-default" />
 
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={onClear}
-          disabled={isDeleting}
-        >
-          Clear
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={onTag} disabled={isDeleting}>
+            Tag
+          </Button>
+
+          <Button variant="danger" size="sm" onClick={onDelete} disabled={isDeleting}>
+            {isDeleting ? 'Deleting…' : 'Delete'}
+          </Button>
+
+          <button
+            type="button"
+            onClick={onClear}
+            disabled={isDeleting}
+            aria-label="Clear selection"
+            className="rounded-md p-1.5 text-text-muted transition-colors duration-150 hover:bg-card-hover hover:text-text-primary disabled:pointer-events-none disabled:opacity-40"
+          >
+            <X size={14} strokeWidth={2} />
+          </button>
+        </div>
       </div>
     </div>
   )

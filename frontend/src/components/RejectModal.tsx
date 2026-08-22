@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Modal, Button } from '.'
+import { Modal, Button, Textarea } from '.'
 
 interface RejectModalProps {
   isOpen: boolean
@@ -31,59 +31,31 @@ export function RejectModal({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="Reject Registration"
+      title="Reject registration"
     >
-      <div className="space-y-4">
-        {/* Reason */}
-        <div className="flex flex-col gap-1.5">
-          <label
-            htmlFor="rejection-reason"
-            className="text-xs font-medium text-text-secondary"
-          >
-            Reason <span className="text-critical">*</span>
-          </label>
+      <div>
+        <p className="border-l-2 border-l-critical pl-3.5 text-[13px] leading-relaxed text-text-secondary">
+          The reason is sent to the applicant, so write it as something they can
+          act on.
+        </p>
 
-          <textarea
+        <div className="mt-5">
+          <Textarea
             id="rejection-reason"
+            label="Reason (required)"
             rows={4}
             value={reason}
             onChange={(e) => setReason(e.target.value)}
-            placeholder="Enter the reason for rejecting this registration..."
-            className={`
-              w-full
-              resize-none
-              rounded-lg
-              border
-              bg-surface
-              px-3.5
-              py-2.5
-              font-sans
-              text-sm
-              text-text-primary
-              outline-none
-              transition-all
-              duration-150
-              placeholder:text-text-muted/50
-              focus:ring-2
-              ${
-                touched && !isValid
-                  ? 'border-critical focus:border-critical focus:ring-critical/20'
-                  : 'border-border-default focus:border-accent focus:ring-accent/20'
-              }
-            `}
+            placeholder="e.g. Employee ID could not be verified against the staff directory."
+            error={touched && !isValid ? 'A reason is required' : undefined}
           />
-
-          {touched && !isValid && (
-            <span className="text-xs text-critical">
-              A reason is required
-            </span>
-          )}
         </div>
 
         {/* Actions */}
-        <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+        <div className="mt-5 flex flex-col-reverse gap-2 border-t border-border-subtle pt-4 sm:flex-row sm:justify-end">
           <Button
             variant="outline"
+            size="sm"
             onClick={onClose}
             disabled={isSubmitting}
             className="w-full sm:w-auto"
@@ -93,11 +65,12 @@ export function RejectModal({
 
           <Button
             variant="danger"
+            size="sm"
             onClick={handleConfirm}
             disabled={isSubmitting}
             className="w-full sm:w-auto"
           >
-            {isSubmitting ? 'Rejecting...' : 'Reject'}
+            {isSubmitting ? 'Rejecting…' : 'Reject'}
           </Button>
         </div>
       </div>

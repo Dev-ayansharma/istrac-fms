@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 import { useDepartments } from '../hooks/useDepartments'
 import { FileBrowser } from '../components/FileBrowser'
+import { PageHeader, Select } from '../components'
 
 export function Files() {
   const { data: departments, isLoading } = useDepartments()
@@ -14,45 +15,44 @@ export function Files() {
     activeDept ?? activeDepartments[0]?.id
 
   return (
-    <div className="space-y-4">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-semibold text-text-primary">
-          Files
-        </h1>
-
-        {activeDepartments.length > 0 && (
-          <select
-            value={deptId ?? ''}
-            onChange={(event) =>
-              setActiveDept(event.target.value)
-            }
-            className="px-3 py-2 rounded-md bg-surface border border-border-default text-text-primary text-sm outline-none focus:border-accent"
-            aria-label="Select department"
-          >
-            {activeDepartments.map((department) => (
-              <option
-                key={department.id}
-                value={department.id}
+    <div className="space-y-6">
+      <PageHeader
+        eyebrow="Workspace"
+        title="Files"
+        description="Browse the file library for a department you have access to."
+        actions={
+          activeDepartments.length > 0 ? (
+            <div className="w-full min-w-[200px] sm:w-56">
+              <Select
+                id="active-department"
+                aria-label="Select department"
+                value={deptId ?? ''}
+                onChange={(event) => setActiveDept(event.target.value)}
               >
-                {department.name}
-              </option>
-            ))}
-          </select>
-        )}
-      </div>
+                {activeDepartments.map((department) => (
+                  <option
+                    key={department.id}
+                    value={department.id}
+                  >
+                    {department.name}
+                  </option>
+                ))}
+              </Select>
+            </div>
+          ) : undefined
+        }
+      />
 
       {/* Loading */}
       {isLoading && (
-        <p className="text-sm text-text-muted">
-          Loading departments...
-        </p>
+        <p className="num text-xs text-text-dim">Loading departments…</p>
       )}
 
       {/* Empty state */}
       {!isLoading && activeDepartments.length === 0 && (
-        <div className="rounded-md border border-border-subtle bg-card p-4">
-          <p className="text-sm text-text-muted">
+        <div className="rounded-xl border border-border-subtle bg-card p-10 text-center shadow-card">
+          <p className="num text-sm text-text-dim">—</p>
+          <p className="mt-2 text-[13px] text-text-muted">
             No active departments available.
           </p>
         </div>

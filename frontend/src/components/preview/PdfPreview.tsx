@@ -38,29 +38,45 @@ export function PdfPreview({ fileUrl }: PdfPreviewProps) {
     })
   }, [pdfDoc, pageNum])
 
-  if (isLoading) return <p className="text-text-muted text-sm">Loading PDF...</p>
+  if (isLoading) return <p className="num text-xs text-text-dim">Loading PDF…</p>
 
   return (
-    <div className="flex flex-col items-center gap-3">
-      <div className="overflow-auto max-h-[60vh] border border-border-subtle rounded-md">
+    <div className="flex flex-col gap-3">
+      <div className="flex max-h-[60vh] justify-center overflow-auto rounded-lg border border-border-subtle bg-page">
         <canvas ref={canvasRef} />
       </div>
-      <div className="flex items-center gap-3">
-        <button
-          onClick={() => setPageNum((p) => Math.max(1, p - 1))}
-          disabled={pageNum <= 1}
-          className="text-text-secondary disabled:opacity-30"
-        >
-          <ChevronLeft size={18} />
-        </button>
-        <span className="text-sm text-text-secondary">Page {pageNum} of {numPages}</span>
-        <button
-          onClick={() => setPageNum((p) => Math.min(numPages, p + 1))}
-          disabled={pageNum >= numPages}
-          className="text-text-secondary disabled:opacity-30"
-        >
-          <ChevronRight size={18} />
-        </button>
+
+      {/* Page transport */}
+      <div className="flex items-center justify-center">
+        <div className="flex items-center overflow-hidden rounded-md border border-border-default">
+          <button
+            type="button"
+            onClick={() => setPageNum((p) => Math.max(1, p - 1))}
+            disabled={pageNum <= 1}
+            aria-label="Previous page"
+            className="p-1.5 text-text-muted transition-colors duration-150 hover:bg-card-hover hover:text-text-primary disabled:pointer-events-none disabled:opacity-30"
+          >
+            <ChevronLeft size={14} strokeWidth={2} />
+          </button>
+
+          <span aria-hidden="true" className="w-px self-stretch bg-border-default" />
+
+          <span className="num px-3 text-[11px] text-text-secondary">
+            {pageNum} <span className="text-text-dim">/</span> {numPages}
+          </span>
+
+          <span aria-hidden="true" className="w-px self-stretch bg-border-default" />
+
+          <button
+            type="button"
+            onClick={() => setPageNum((p) => Math.min(numPages, p + 1))}
+            disabled={pageNum >= numPages}
+            aria-label="Next page"
+            className="p-1.5 text-text-muted transition-colors duration-150 hover:bg-card-hover hover:text-text-primary disabled:pointer-events-none disabled:opacity-30"
+          >
+            <ChevronRight size={14} strokeWidth={2} />
+          </button>
+        </div>
       </div>
     </div>
   )

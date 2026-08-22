@@ -10,6 +10,10 @@ interface VersionHistoryPanelProps {
   onClose: () => void
 }
 
+/**
+ * Slide-over log of a file's revisions. Reads as a strip chart: revision number
+ * on a fixed left rail, human detail in the middle, one action on the right.
+ */
 export function VersionHistoryPanel({
   fileId,
   fileName,
@@ -56,128 +60,120 @@ export function VersionHistoryPanel({
     <>
       {/* Backdrop */}
       <div
-        className={`
-          fixed inset-0 bg-black/50 z-40
-          transition-opacity
-          ${
-            isOpen
-              ? 'opacity-100 pointer-events-auto'
-              : 'opacity-0 pointer-events-none'
-          }
-        `}
+        aria-hidden="true"
+        className={`fixed inset-0 z-40 bg-page/85 backdrop-blur-[2px] transition-opacity duration-300 ${
+          isOpen
+            ? 'pointer-events-auto opacity-100'
+            : 'pointer-events-none opacity-0'
+        }`}
         onClick={onClose}
       />
 
       {/* Panel */}
       <div
-        className={`
-          fixed top-0 right-0 h-full
-          w-full max-w-sm
-          bg-card
-          border-l border-border-default
-          z-50 shadow-2xl
-          transition-transform duration-300
-          ${
-            isOpen
-              ? 'translate-x-0'
-              : 'translate-x-full'
-          }
-        `}
+        role="dialog"
+        aria-label="Version history"
+        aria-hidden={!isOpen}
+        className={`fixed top-0 right-0 z-50 flex h-full w-full max-w-sm flex-col border-l border-border-default bg-card transition-transform duration-300 ${
+          isOpen ? 'translate-x-0' : 'translate-x-full'
+        }`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-border-subtle">
+        <header className="flex shrink-0 items-start justify-between gap-3 border-b border-border-subtle bg-surface px-4 py-3">
           <div className="min-w-0">
-            <h2 className="text-text-primary font-medium">
-              Version History
+            <h2 className="eyebrow text-text-secondary">
+              Version history
             </h2>
 
-            <p className="text-text-muted text-xs truncate">
+            <p className="num mt-1.5 truncate text-[13px] text-text-primary">
               {fileName}
             </p>
           </div>
 
           <button
+            type="button"
             onClick={onClose}
-            className="text-text-secondary hover:text-text-primary shrink-0 ml-2"
+            className="-mr-1 shrink-0 rounded-md p-1 text-text-muted transition-colors duration-150 hover:bg-card-hover hover:text-text-primary"
             aria-label="Close version history"
           >
-            <X size={20} />
+            <X size={15} strokeWidth={1.8} />
           </button>
-        </div>
+        </header>
 
         {/* Versions */}
-        <div className="p-4 space-y-3 overflow-auto h-[calc(100%-73px)]">
+        <div className="min-h-0 flex-1 overflow-auto">
           {isLoading && (
-            <p className="text-text-muted text-sm">
-              Loading...
+            <p className="num px-4 py-4 text-xs text-text-dim">
+              Loading…
             </p>
           )}
 
           {!isLoading &&
             (!versions || versions.length === 0) && (
-              <p className="text-text-muted text-sm">
-                No previous versions.
-              </p>
+              <div className="px-4 py-14 text-center">
+                <p className="num text-sm text-text-dim">—</p>
+
+                <p className="mt-2 text-[13px] text-text-muted">
+                  No previous versions.
+                </p>
+              </div>
             )}
 
-          {versions?.map((version) => {
-            const isDownloading =
-              downloadingId === version.id
+          <div className="divide-y divide-border-subtle">
+            {versions?.map((version) => {
+              const isDownloading =
+                downloadingId === version.id
 
-            return (
-              <div
-                key={version.id}
-                className="
-                  flex items-center justify-between
-                  bg-surface rounded-md
-                  px-3 py-3
-                  border border-border-subtle
-                "
-              >
-                <div className="min-w-0">
-                  <p className="text-text-primary text-sm font-medium">
-                    Version {version.versionNum}
-                  </p>
-
-                  <p className="text-text-muted text-xs mt-0.5">
-                    {new Date(
-                      version.createdAt,
-                    ).toLocaleString()}
-                  </p>
-
-                  <p className="text-text-muted text-xs truncate">
-                    {version.uploaderName ??
-                      version.uploadedBy}{' '}
-                    ·{' '}
-                    {formatFileSize(version.sizeBytes)}
-                  </p>
-                </div>
-
-                <button
-                  onClick={() =>
-                    handleDownload(version.id)
-                  }
-                  disabled={downloadingId !== null}
-                  className="
-                    text-accent-light
-                    hover:text-accent
-                    disabled:opacity-50
-                    shrink-0 ml-3
-                  "
-                  aria-label={`Download version ${version.versionNum}`}
+              return (
+                <div
+                  key={version.id}
+                  className="flex items-center gap-3 px-4 py-3 transition-colors duration-150 hover:bg-card-hover"
                 >
-                  {isDownloading ? (
-                    <Loader2
-                      size={18}
-                      className="animate-spin"
-                    />
-                  ) : (
-                    <Download size={18} />
-                  )}
-                </button>
-              </div>
-            )
-          })}
+                  {/* Revision rail */}
+                  <span className="num w-9 shrink-0 border-r border-border-subtle pr-3 text-[13px] text-accent-light">
+                    v{version.versionNum}
+                  </span>
+
+                  <div className="min-w-0 flex-1">
+                    <p className="num text-[11px] text-text-secondary">
+                      {new Date(
+                        version.createdAt,
+                      ).toLocaleString()}
+                    </p>
+
+                    <p className="mt-1 truncate text-[11px] text-text-dim">
+                      {version.uploaderName ??
+                        version.uploadedBy}
+                      <span className="num">
+                        {' · '}
+                        {formatFileSize(version.sizeBytes)}
+                      </span>
+                    </p>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      handleDownload(version.id)
+                    }
+                    disabled={downloadingId !== null}
+                    className="shrink-0 rounded-md p-1.5 text-text-muted transition-colors duration-150 hover:bg-card-hover hover:text-accent-light disabled:cursor-not-allowed disabled:opacity-40"
+                    aria-label={`Download version ${version.versionNum}`}
+                  >
+                    {isDownloading ? (
+                      <Loader2
+                        size={15}
+                        strokeWidth={1.8}
+                        className="animate-spin"
+                      />
+                    ) : (
+                      <Download size={15} strokeWidth={1.8} />
+                    )}
+                  </button>
+                </div>
+              )
+            })}
+          </div>
         </div>
       </div>
     </>

@@ -1,4 +1,4 @@
-import { Archive, Building2, Folder, Plus, RotateCcw } from 'lucide-react'
+import { Archive, Building2, Plus, RotateCcw } from 'lucide-react'
 import { useState } from 'react'
 import {
   useDepartments,
@@ -7,15 +7,15 @@ import {
   useArchiveDepartment,
 } from '../hooks/useDepartments'
 import { useToastStore } from '../store/toastStore'
-import { Card, Button, Badge } from '../components'
+import { Button, Badge, PageHeader } from '../components'
 import { CreateDeptModal } from '../components/CreateDeptModal'
 import { HDD_ROOT } from '../../schemas/departmentSchema'
-import { departmentsFixture } from '../mocks/Fixtures'
+
 type Tab = 'active' | 'archived'
 
 export function DepartmentManager() {
   const { data: departments, isLoading } = useDepartments()
- const displayDepartments = departments && departments.length > 0 ? departments : departmentsFixture
+
   const createDept = useCreateDepartment()
   const updateDept = useUpdateDepartment()
   const archiveDept = useArchiveDepartment()
@@ -31,15 +31,15 @@ export function DepartmentManager() {
   } | null>(null)
 
   const filtered =
-    displayDepartments?.filter((dept) =>
+    departments?.filter((dept) =>
       tab === 'active' ? !dept.archived : dept.archived
     ) ?? []
 
   const activeCount =
-    displayDepartments?.filter((dept) => !dept.archived).length ?? 0
+    departments?.filter((dept) => !dept.archived).length ?? 0
 
   const archivedCount =
-    displayDepartments?.filter((dept) => dept.archived).length ?? 0
+    departments?.filter((dept) => dept.archived).length ?? 0
 
   async function handleCreate(data: {
     name: string
@@ -47,7 +47,7 @@ export function DepartmentManager() {
   }) {
     await createDept.mutateAsync(data)
 
-    addToast('Department created', 'success')
+    addToast({ message: 'Department created', variant: 'success' })
     setModalOpen(false)
   }
 
@@ -62,7 +62,7 @@ export function DepartmentManager() {
       ...data,
     })
 
-    addToast('Department updated', 'success')
+    addToast({ message: 'Department updated', variant: 'success' })
     setEditingDept(null)
   }
 
@@ -79,13 +79,13 @@ export function DepartmentManager() {
       {
         onSuccess: () =>
           addToast(
-            `${name} ${
+          {message:  `${name} ${
               currentlyArchived ? 'restored' : 'archived'
             }`,
-            'info'
+            variant: 'info'}
           ),
 
-        onError: () => addToast('Action failed', 'error'),
+        onError: () => addToast({ message: 'Action failed', variant: 'error' }),
       }
     )
   }
@@ -102,227 +102,176 @@ export function DepartmentManager() {
     })
   }
 
+  const TABS: { id: Tab; label: string; count: number }[] = [
+    { id: 'active', label: 'Active', count: activeCount },
+    { id: 'archived', label: 'Archived', count: archivedCount },
+  ]
+
   return (
-    <div className="space-y-5 sm:space-y-6">
-      {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <div className="mb-1 flex items-center gap-2">
-            <Building2
-              size={15}
-              className="text-accent-light"
-            />
-
-            <span className="text-[10px] font-medium uppercase tracking-widest text-text-muted">
-              Administration
-            </span>
-          </div>
-
-          <h1 className="text-xl font-semibold tracking-tight text-text-primary sm:text-2xl">
-            Department Manager
-          </h1>
-
-          <p className="mt-1 text-xs text-text-muted sm:text-sm">
-            Manage departments and their storage locations.
-          </p>
-        </div>
-
-        <Button
-          variant="primary"
-          onClick={() => setModalOpen(true)}
-          className="w-full sm:w-auto"
-        >
-          <Plus size={15} />
-          New department
-        </Button>
-      </div>
+    <div className="space-y-6">
+      <PageHeader
+        eyebrow="Administration"
+        title="Departments"
+        description="Departments and the storage paths they write to."
+        actions={
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={() => setModalOpen(true)}
+          >
+            <Plus size={13} strokeWidth={2.2} />
+            New department
+          </Button>
+        }
+      />
 
       {/* Tabs */}
-      <div className="flex items-center gap-1 border-b border-border-subtle">
-        <button
-          onClick={() => setTab('active')}
-          className={`relative flex items-center gap-2 px-3 py-3 text-xs font-medium transition-colors ${
-            tab === 'active'
-              ? 'text-text-primary'
-              : 'text-text-muted hover:text-text-secondary'
-          }`}
-        >
-          <span>Active</span>
-
-          <span
-            className={`rounded-full px-1.5 py-0.5 text-[10px] ${
-              tab === 'active'
-                ? 'bg-accent/10 text-accent-light'
-                : 'bg-card text-text-muted'
+      <div className="-mt-2 flex items-center gap-1 border-b border-border-subtle">
+        {TABS.map((item) => (
+          <button
+            key={item.id}
+            type="button"
+            onClick={() => setTab(item.id)}
+            aria-pressed={tab === item.id}
+            className={`flex items-center gap-2 border-b-2 px-3 pb-2.5 text-[11px] font-bold tracking-[0.1em] uppercase transition-colors duration-150 ${
+              tab === item.id
+                ? 'border-b-accent text-accent-light'
+                : 'border-b-transparent text-text-muted hover:text-text-primary'
             }`}
           >
-            {activeCount}
-          </span>
+            {item.label}
 
-          {tab === 'active' && (
-            <span className="absolute bottom-0 left-0 right-0 h-0.5 rounded-t bg-accent" />
-          )}
-        </button>
-
-        <button
-          onClick={() => setTab('archived')}
-          className={`relative flex items-center gap-2 px-3 py-3 text-xs font-medium transition-colors ${
-            tab === 'archived'
-              ? 'text-text-primary'
-              : 'text-text-muted hover:text-text-secondary'
-          }`}
-        >
-          <span>Archived</span>
-
-          <span
-            className={`rounded-full px-1.5 py-0.5 text-[10px] ${
-              tab === 'archived'
-                ? 'bg-accent/10 text-accent-light'
-                : 'bg-card text-text-muted'
-            }`}
-          >
-            {archivedCount}
-          </span>
-
-          {tab === 'archived' && (
-            <span className="absolute bottom-0 left-0 right-0 h-0.5 rounded-t bg-accent" />
-          )}
-        </button>
+            <span
+              className={`num text-[10px] tracking-normal ${
+                tab === item.id ? 'text-accent-light' : 'text-text-dim'
+              }`}
+            >
+              {item.count}
+            </span>
+          </button>
+        ))}
       </div>
 
       {/* Content */}
       {isLoading ? (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           {Array.from({ length: 4 }).map((_, index) => (
             <div
               key={index}
-              className="animate-pulse rounded-xl border border-border-subtle bg-card p-5"
+              className="animate-pulse rounded-xl border border-border-subtle bg-card p-4"
             >
-              <div className="mb-4 flex items-start justify-between">
-                <div className="space-y-2">
-                  <div className="h-4 w-32 rounded bg-card-hover" />
-                  <div className="h-3 w-48 rounded bg-card-hover" />
+              <div className="flex items-start justify-between gap-4">
+                <div className="space-y-2.5">
+                  <div className="h-3.5 w-32 rounded-xs bg-card-hover" />
+                  <div className="h-2.5 w-48 rounded-xs bg-card-hover" />
                 </div>
 
-                <div className="h-6 w-16 rounded bg-card-hover" />
+                <div className="h-4 w-16 rounded-xs bg-card-hover" />
               </div>
 
-              <div className="h-3 w-24 rounded bg-card-hover" />
+              <div className="mt-6 h-2.5 w-24 rounded-xs bg-card-hover" />
             </div>
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <Card className="py-10 text-center">
-          <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-card-hover">
-            {tab === 'archived' ? (
-              <Archive
-                size={18}
-                className="text-text-muted"
-              />
-            ) : (
-              <Building2
-                size={18}
-                className="text-text-muted"
-              />
-            )}
-          </div>
+        <div className="rounded-xl border border-border-subtle bg-card px-6 py-14 text-center shadow-card">
+          {tab === 'archived' ? (
+            <Archive
+              size={20}
+              strokeWidth={1.5}
+              aria-hidden="true"
+              className="mx-auto text-text-dim"
+            />
+          ) : (
+            <Building2
+              size={20}
+              strokeWidth={1.5}
+              aria-hidden="true"
+              className="mx-auto text-text-dim"
+            />
+          )}
 
-          <p className="text-sm font-medium text-text-secondary">
+          <p className="mt-4 text-[13px] text-text-primary">
             No {tab} departments
           </p>
 
-          <p className="mt-1 text-xs text-text-muted">
+          <p className="mt-1.5 text-[13px] text-text-muted">
             {tab === 'active'
               ? 'Create a department to get started.'
               : 'Archived departments will appear here.'}
           </p>
-        </Card>
+        </div>
       ) : (
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           {filtered.map((dept) => (
-            <Card
+            <article
               key={dept.id}
-              className="group transition-all duration-200 hover:border-border-default hover:shadow-card-lg"
+              className="flex flex-col overflow-hidden rounded-xl border border-border-subtle bg-card shadow-card transition-colors duration-150 hover:border-border-default"
             >
-              <div className="flex flex-col gap-4">
-                {/* Department Header */}
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex min-w-0 items-center gap-3">
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-accent/10 text-accent-light">
-                      <Building2 size={17} />
-                    </div>
+              {/* Head: identity on the left, decisions on the right. */}
+              <div className="flex items-start justify-between gap-4 border-b border-border-subtle px-4 py-3">
+                <div className="flex min-w-0 items-center gap-2.5">
+                  <Building2
+                    size={14}
+                    strokeWidth={1.7}
+                    aria-hidden="true"
+                    className="shrink-0 text-accent-light"
+                  />
 
-                    <div className="min-w-0">
-                      <p className="truncate text-sm font-medium text-text-primary">
-                        {dept.name}
-                      </p>
+                  <p className="truncate text-[13px] text-text-primary">
+                    {dept.name}
+                  </p>
 
-                      {dept.archived && (
-                        <div className="mt-1">
-                          <Badge variant="neutral">
-                            Archived
-                          </Badge>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Actions */}
-                  <div className="flex shrink-0 items-center gap-3">
-                    {!dept.archived && (
-                      <button
-                        onClick={() => openEdit(dept)}
-                        className="text-xs font-medium text-accent-light transition-colors hover:text-blue-300 hover:underline"
-                      >
-                        Edit
-                      </button>
-                    )}
-
-                    <button
-                      onClick={() =>
-                        handleArchiveToggle(
-                          dept.id,
-                          dept.name,
-                          dept.archived
-                        )
-                      }
-                      disabled={archiveDept.isPending}
-                      className="flex items-center gap-1 text-xs font-medium text-text-muted transition-colors hover:text-text-primary disabled:cursor-not-allowed disabled:opacity-50"
-                    >
-                      {dept.archived ? (
-                        <>
-                          <RotateCcw size={12} />
-                          Restore
-                        </>
-                      ) : (
-                        <>
-                          <Archive size={12} />
-                          Archive
-                        </>
-                      )}
-                    </button>
-                  </div>
+                  {dept.archived && <Badge variant="neutral">Archived</Badge>}
                 </div>
 
-                {/* HDD Path */}
-                <div className="rounded-lg border border-border-subtle bg-surface/60 px-3 py-2.5">
-                  <div className="mb-1 flex items-center gap-1.5">
-                    <Folder
-                      size={12}
-                      className="text-text-muted"
-                    />
+                <div className="flex shrink-0 items-center gap-4">
+                  {!dept.archived && (
+                    <button
+                      type="button"
+                      onClick={() => openEdit(dept)}
+                      className="text-[11px] font-bold tracking-[0.06em] uppercase text-accent-light transition-colors duration-150 hover:text-text-primary"
+                    >
+                      Edit
+                    </button>
+                  )}
 
-                    <span className="text-[10px] font-medium uppercase tracking-wider text-text-muted">
-                      Storage Path
-                    </span>
-                  </div>
-
-                  <p className="break-all font-mono text-[11px] text-text-secondary">
-                    {dept.hddPath}
-                  </p>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      handleArchiveToggle(
+                        dept.id,
+                        dept.name,
+                        dept.archived
+                      )
+                    }
+                    disabled={archiveDept.isPending}
+                    className="flex items-center gap-1.5 text-[11px] font-bold tracking-[0.06em] uppercase text-text-muted transition-colors duration-150 hover:text-text-primary disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    {dept.archived ? (
+                      <>
+                        <RotateCcw size={11} strokeWidth={2.2} />
+                        Restore
+                      </>
+                    ) : (
+                      <>
+                        <Archive size={11} strokeWidth={2.2} />
+                        Archive
+                      </>
+                    )}
+                  </button>
                 </div>
               </div>
-            </Card>
+
+              {/* Storage path — a machine value, so mono and full width. */}
+              <div className="px-4 py-3">
+                <p className="col-label">Storage path</p>
+
+                <p className="num mt-1.5 break-all text-[11px] leading-5 text-text-secondary">
+                  {dept.hddPath}
+                </p>
+              </div>
+            </article>
           ))}
         </div>
       )}

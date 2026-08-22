@@ -1,5 +1,5 @@
 import { Bell } from 'lucide-react'
-import { Card } from '.'
+import { Panel } from '.'
 
 interface NotificationPreviewCardProps {
   message: string
@@ -7,62 +7,55 @@ interface NotificationPreviewCardProps {
   departmentNames: string[]
 }
 
+/**
+ * Shows the notice in the same frame the recipient will see it in — an accent
+ * edge, the message, then the machine detail underneath.
+ */
 export function NotificationPreviewCard({
   message,
   target,
   departmentNames,
 }: NotificationPreviewCardProps) {
   return (
-    <Card className="overflow-hidden">
-      {/* Header */}
-      <div className="mb-3 flex items-center justify-between">
-        <div>
-          <p className="text-xs font-medium uppercase tracking-wider text-text-muted">
-            Notification Preview
-          </p>
-
-          <p className="mt-0.5 text-[10px] text-text-muted">
-            Live preview
-          </p>
-        </div>
-
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-nominal-bg px-2 py-1 text-[10px] font-medium text-nominal">
-          <span className="h-1.5 w-1.5 rounded-full bg-nominal" />
-          Preview
+    <Panel
+      title="Preview"
+      meta={
+        <span className="num text-[10px] text-text-dim">
+          as recipients will see it
         </span>
-      </div>
+      }
+      flush
+    >
+      <div className="flex items-start gap-3 border-l-2 border-l-accent px-4 py-3.5">
+        <Bell
+          size={14}
+          strokeWidth={1.7}
+          aria-hidden="true"
+          className="mt-0.5 shrink-0 text-accent-light"
+        />
 
-      {/* Notification */}
-      <div className="rounded-lg border border-border-subtle bg-surface p-3 transition-colors hover:border-border-default">
-        <div className="flex items-start gap-3">
-          {/* Icon */}
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-accent/10 text-accent-light">
-            <Bell size={16} />
-          </div>
+        <div className="min-w-0 flex-1">
+          <p
+            className={`break-words text-[13px] leading-6 ${
+              message ? 'text-text-primary' : 'text-text-dim'
+            }`}
+          >
+            {message || 'Your message will appear here…'}
+          </p>
 
-          {/* Content */}
-          <div className="min-w-0 flex-1">
-            <p className="break-words text-sm leading-relaxed text-text-primary">
-              {message || 'Your message will appear here...'}
+          <div className="mt-3 border-t border-border-subtle pt-3">
+            <p className="col-label">Recipients</p>
+
+            <p className="mt-1 text-[11px] leading-5 text-text-secondary">
+              {target === 'all'
+                ? 'All users'
+                : departmentNames.length > 0
+                  ? departmentNames.join(', ')
+                  : 'No departments selected'}
             </p>
-
-            {/* Target */}
-            <div className="mt-2 flex flex-wrap items-center gap-1.5">
-              <span className="text-[10px] uppercase tracking-wide text-text-muted">
-                Recipient:
-              </span>
-
-              <span className="text-xs text-text-secondary">
-                {target === 'all'
-                  ? 'All users'
-                  : departmentNames.length > 0
-                    ? departmentNames.join(', ')
-                    : 'No departments selected'}
-              </span>
-            </div>
           </div>
         </div>
       </div>
-    </Card>
+    </Panel>
   )
 }

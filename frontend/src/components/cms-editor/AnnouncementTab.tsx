@@ -3,12 +3,19 @@ import { useCms } from '../../context/cmsContext'
 import { usePreviewRefresh } from '../../context/PreviewRefreshContext'
 import { useUpdateCmsBlock } from '../../hooks/useUpdateCmsBlock'
 import { useToastStore } from '../../store/toastStore'
-import { Card, Input } from '..'
+import { Input, Panel } from '..'
 import { SaveBar } from './SaveBar'
 
 const COLOR_OPTIONS = ['orange', 'red', 'navy'] as const
 
 type ColorOption = (typeof COLOR_OPTIONS)[number]
+
+/** Mirrors the tones AnnouncementBar actually renders, so the picker previews. */
+const SWATCH: Record<ColorOption, string> = {
+  orange: 'bg-warning',
+  red: 'bg-critical',
+  navy: 'bg-text-muted',
+}
 
 interface AnnouncementContent {
   visible?: boolean
@@ -54,33 +61,47 @@ export function AnnouncementTab() {
       },
       {
         onSuccess: () => {
-          addToast('Announcement updated', 'success')
+          addToast({ message: 'Announcement updated', variant: 'success' })
           triggerRefresh()
         },
         onError: () => {
-          addToast('Failed to save', 'error')
+          addToast({ message: 'Failed to save', variant: 'error' })
         },
       },
     )
   }
 
   return (
-    <Card>
+    <Panel title="Announcement" meta="block:announcements">
       <div className="space-y-5">
         {/* Announcement visibility */}
-        <label className="flex cursor-pointer items-center gap-2 text-sm text-text-primary">
-          <input
-            type="checkbox"
-            checked={visible}
-            onChange={(e) => setVisible(e.target.checked)}
-            className="h-4 w-4 accent-accent"
-          />
+        <div
+          className={`border-l-2 pl-3.5 transition-colors duration-150 ${
+            visible ? 'border-l-nominal' : 'border-l-border-subtle'
+          }`}
+        >
+          <label htmlFor="announcement-visible" className="col-label">
+            Visibility
+          </label>
 
-          <span>Show announcement bar</span>
-        </label>
+          <div className="mt-2 flex items-center gap-2.5">
+            <input
+              id="announcement-visible"
+              type="checkbox"
+              checked={visible}
+              onChange={(e) => setVisible(e.target.checked)}
+              className="h-3.5 w-3.5 shrink-0 cursor-pointer accent-accent"
+            />
+
+            <span className="text-[13px] text-text-secondary">
+              Show the announcement bar on the landing page
+            </span>
+          </div>
+        </div>
 
         {/* Announcement text */}
         <Input
+          id="announcement-text"
           label="Announcement text"
           value={text}
           onChange={(e) => setText(e.target.value)}
@@ -88,12 +109,10 @@ export function AnnouncementTab() {
         />
 
         {/* Background color */}
-        <div className="flex flex-col gap-2">
-          <label className="text-sm font-medium text-text-secondary">
-            Background color
-          </label>
+        <fieldset>
+          <legend className="col-label">Tone</legend>
 
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="mt-2 flex flex-wrap items-center gap-2">
             {COLOR_OPTIONS.map((color) => {
               const isSelected = backgroundColor === color
 
@@ -102,27 +121,30 @@ export function AnnouncementTab() {
                   key={color}
                   type="button"
                   onClick={() => setBackgroundColor(color)}
-                  className={`rounded-md border px-3 py-1.5 text-xs font-medium capitalize transition-colors ${
+                  aria-pressed={isSelected}
+                  className={`num flex items-center gap-2 rounded-md border px-2.5 py-1.5 text-[11px] transition-colors duration-150 ${
                     isSelected
                       ? 'border-accent bg-accent/10 text-accent-light'
-                      : 'border-border-default bg-surface text-text-secondary hover:bg-card hover:text-text-primary'
+                      : 'border-border-subtle bg-surface text-text-muted hover:border-border-default hover:text-text-primary'
                   }`}
                 >
+                  <span
+                    aria-hidden="true"
+                    className={`h-2 w-2 rounded-full ${SWATCH[color]}`}
+                  />
                   {color}
                 </button>
               )
             })}
           </div>
-        </div>
+        </fieldset>
 
         {/* Save */}
-        <div className="flex justify-end border-t border-border-subtle pt-4">
-          <SaveBar
-            onSave={handleSave}
-            isPending={updateBlock.isPending}
-          />
-        </div>
+        <SaveBar
+          onSave={handleSave}
+          isPending={updateBlock.isPending}
+        />
       </div>
-    </Card>
+    </Panel>
   )
 }
