@@ -42,11 +42,11 @@ export function HeroTab() {
       },
       {
         onSuccess: () => {
-          addToast('Hero section updated', 'success')
+          addToast({ message: 'Hero updated', variant: 'success' })
           triggerRefresh()
         },
         onError: () => {
-          addToast('Failed to save', 'error')
+          addToast({ message: 'Failed to save', variant: 'error' })
         },
       },
     )

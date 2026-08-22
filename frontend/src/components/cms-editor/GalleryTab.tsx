@@ -62,11 +62,11 @@ export function GalleryTab() {
       },
       {
         onSuccess: () => {
-          addToast('Gallery updated', 'success')
+          addToast({ message: 'Gallery updated', variant: 'success' })
           triggerRefresh()
         },
         onError: () => {
-          addToast('Failed to save', 'error')
+          addToast({ message: 'Failed to save', variant: 'error' })
         },
       },
     )

@@ -4,7 +4,7 @@ import { useUsers, useSuspendUser, useForceLogout, } from '../hooks/useUsers'
 import { useToastStore } from '../store/toastStore'
 import { Table, Badge, Button, Input } from '../components'
 import { ConfirmDialog } from '../components/ConfirmDialog'
-import { usersFixture } from '../mocks/Fixtures'
+
 const statusVariant: Record<
   string,
   'nominal' | 'warning' | 'critical' | 'neutral'
@@ -31,7 +31,7 @@ export function UserManagement() {
     status,
     role,
   })
-const displayData = data && data.data.length > 0 ? data : usersFixture
+
 
   const suspendUser = useSuspendUser()
   const forceLogout = useForceLogout()
@@ -42,22 +42,22 @@ const displayData = data && data.data.length > 0 ? data : usersFixture
 
     suspendUser.mutate(suspendTarget.id, {
       onSuccess: () => {
-        addToast(`${suspendTarget.name} suspended`, 'info')
+        addToast({ message: `${suspendTarget.name} suspended`, variant: 'success' })
         setSuspendTarget(null)
       },
-      onError: () => addToast('Failed to suspend user', 'error'),
+      onError: () => addToast({ message: 'Failed to suspend user', variant: 'error'}),
     })
   }
 
   function handleForceLogout(userId: string, name: string) {
     forceLogout.mutate(userId, {
-      onSuccess: () => addToast(`${name}'s session invalidated`, 'success'),
-      onError: () => addToast('Failed to force logout', 'error'),
+      onSuccess: () => addToast({ message: `${name}'s session invalidated`, variant: 'success' }),
+      onError: () => addToast({ message: 'Failed to force logout', variant: 'error' }),
     })
   }
 
-  const totalPages = displayData?.pagination.totalPages ?? 1
-  const totalUsers = displayData?.pagination.total ?? 0
+  const totalPages = data?.pagination.totalPages ?? 1
+  const totalUsers = data?.pagination.total ?? 0
 
   return (
     <div className="space-y-5 sm:space-y-6">
@@ -219,7 +219,7 @@ const displayData = data && data.data.length > 0 ? data : usersFixture
                 ),
               },
             ]}
-            data={displayData?.data ?? []}
+            data={data?.data ?? []}
             emptyMessage="No users found."
           />
         </div>

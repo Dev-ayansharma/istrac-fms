@@ -2,22 +2,21 @@ openapi: 3.0.3
 info:
   title: ISTRAC-FMS API
   version: 1.0.0
-  description: >
-    Phase 1 API contract. Covers every endpoint referenced by FE-001 through
-    FE-037 in the Phase 1 task tracker. This spec is the source of truth for
-    both frontend (build against it via a mock server) and backend
-    (implement to match it) until routes are live.
-servers:
-  - url: http://localhost:3000/api/v1
-    description: Local dev
+  description: 'Phase 1 API contract. Covers every endpoint referenced by FE-001 through
+    FE-037 in the Phase 1 task tracker. This spec is the source of truth for both
+    frontend (build against it via a mock server) and backend (implement to match
+    it) until routes are live.
 
+    '
+servers:
+- url: http://localhost:3000/api/v1
+  description: Local dev
 components:
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
-
   schemas:
     Error:
       type: object
@@ -25,88 +24,157 @@ components:
         error:
           type: object
           properties:
-            code: { type: string, example: VALIDATION_ERROR }
-            message: { type: string }
+            code:
+              type: string
+              example: VALIDATION_ERROR
+            message:
+              type: string
             details:
               type: array
               items:
                 type: object
                 properties:
-                  field: { type: string }
-                  message: { type: string }
-        requestId: { type: string, format: uuid }
-
+                  field:
+                    type: string
+                  message:
+                    type: string
+        requestId:
+          type: string
+          format: uuid
     Pagination:
       type: object
       properties:
-        total: { type: integer }
-        page: { type: integer }
-        pageSize: { type: integer }
-        totalPages: { type: integer }
-        hasNext: { type: boolean }
-        hasPrev: { type: boolean }
-
+        total:
+          type: integer
+        page:
+          type: integer
+        pageSize:
+          type: integer
+        totalPages:
+          type: integer
+        hasNext:
+          type: boolean
+        hasPrev:
+          type: boolean
     User:
       type: object
       properties:
-        id: { type: string, format: uuid }
-        name: { type: string }
-        email: { type: string, format: email }
-        employeeId: { type: string }
-        role: { type: string, enum: [SUPER_ADMIN, DEPT_ADMIN, MEMBER, GUEST] }
-        status: { type: string, enum: [PENDING, ACTIVE, SUSPENDED, REJECTED] }
-        tempPass: { type: boolean }
-        createdAt: { type: string, format: date-time }
-
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        employeeId:
+          type: string
+        role:
+          type: string
+          enum:
+          - SUPER_ADMIN
+          - DEPT_ADMIN
+          - MEMBER
+          - GUEST
+        status:
+          type: string
+          enum:
+          - PENDING
+          - ACTIVE
+          - SUSPENDED
+          - REJECTED
+        tempPass:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
     Department:
       type: object
       properties:
-        id: { type: string, format: uuid }
-        name: { type: string }
-        hddPath: { type: string }
-        archived: { type: boolean }
-
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        hddPath:
+          type: string
+        archived:
+          type: boolean
     FileNode:
       type: object
       properties:
-        id: { type: string, format: uuid }
-        name: { type: string }
-        nodeType: { type: string, enum: [FOLDER, FILE] }
-        departmentId: { type: string, format: uuid }
-        parentId: { type: string, format: uuid, nullable: true }
-        sizeBytes: { type: integer, nullable: true }
-        mimeType: { type: string, nullable: true }
-        status: { type: string, enum: [ACTIVE, ORPHANED, DELETED, UNREGISTERED] }
-        createdAt: { type: string, format: date-time }
-
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        nodeType:
+          type: string
+          enum:
+          - FOLDER
+          - FILE
+        departmentId:
+          type: string
+          format: uuid
+        parentId:
+          type: string
+          format: uuid
+          nullable: true
+        sizeBytes:
+          type: integer
+          nullable: true
+        mimeType:
+          type: string
+          nullable: true
+        status:
+          type: string
+          enum:
+          - ACTIVE
+          - ORPHANED
+          - DELETED
+          - UNREGISTERED
+        createdAt:
+          type: string
+          format: date-time
     Notification:
       type: object
       properties:
-        id: { type: integer }
-        type: { type: string }
-        message: { type: string }
-        category: { type: string, enum: [Files, Approvals, System] }
-        readAt: { type: string, format: date-time, nullable: true }
-        createdAt: { type: string, format: date-time }
-
+        id:
+          type: integer
+        type:
+          type: string
+        message:
+          type: string
+        category:
+          type: string
+          enum:
+          - Files
+          - Approvals
+          - System
+        readAt:
+          type: string
+          format: date-time
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
     CmsBlock:
       type: object
       properties:
-        blockKey: { type: string }
-        content: { type: object }
-
+        blockKey:
+          type: string
+        content:
+          type: object
   responses:
     ErrorResponse:
       description: Standard error envelope
       content:
         application/json:
-          schema: { $ref: '#/components/schemas/Error' }
-
+          schema:
+            $ref: '#/components/schemas/Error'
 security:
-  - bearerAuth: []
-
+- bearerAuth: []
 paths:
-  # ---------- AUTH (FE-012, FE-013, FE-014, FE-015) ----------
   /auth/register:
     post:
       summary: Submit registration request
@@ -116,17 +184,29 @@ paths:
           application/json:
             schema:
               type: object
-              required: [name, email, employeeId, departmentPreference, reasonForAccess]
+              required:
+              - name
+              - email
+              - employeeId
+              - departmentPreference
+              - reasonForAccess
               properties:
-                name: { type: string }
-                email: { type: string, format: email }
-                employeeId: { type: string }
-                departmentPreference: { type: string }
-                reasonForAccess: { type: string }
+                name:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                employeeId:
+                  type: string
+                departmentPreference:
+                  type: string
+                reasonForAccess:
+                  type: string
       responses:
-        '201': { description: "Registration submitted, status PENDING" }
-        '400': { $ref: '#/components/responses/ErrorResponse' }
-
+        '201':
+          description: Registration submitted, status PENDING
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
   /auth/login:
     post:
       summary: Login, receive tokens
@@ -136,10 +216,14 @@ paths:
           application/json:
             schema:
               type: object
-              required: [email, password]
+              required:
+              - email
+              - password
               properties:
-                email: { type: string }
-                password: { type: string }
+                email:
+                  type: string
+                password:
+                  type: string
       responses:
         '200':
           description: Success
@@ -148,10 +232,12 @@ paths:
               schema:
                 type: object
                 properties:
-                  accessToken: { type: string }
-                  user: { $ref: '#/components/schemas/User' }
-        '401': { $ref: '#/components/responses/ErrorResponse' }
-
+                  accessToken:
+                    type: string
+                  user:
+                    $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
   /auth/refresh:
     post:
       summary: Rotate refresh token (httpOnly cookie based)
@@ -164,14 +250,14 @@ paths:
               schema:
                 type: object
                 properties:
-                  accessToken: { type: string }
-
+                  accessToken:
+                    type: string
   /auth/logout:
     post:
       summary: Invalidate refresh token
       responses:
-        '204': { description: Logged out }
-
+        '204':
+          description: Logged out
   /auth/forgot-password:
     post:
       summary: Initiate password reset
@@ -182,10 +268,11 @@ paths:
             schema:
               type: object
               properties:
-                email: { type: string }
+                email:
+                  type: string
       responses:
-        '200': { description: "If this email exists, a reset link was sent" }
-
+        '200':
+          description: If this email exists, a reset link was sent
   /auth/reset-password:
     post:
       summary: Complete password reset with token
@@ -196,12 +283,15 @@ paths:
             schema:
               type: object
               properties:
-                token: { type: string }
-                newPassword: { type: string }
+                token:
+                  type: string
+                newPassword:
+                  type: string
       responses:
-        '200': { description: Password updated }
-        '400': { $ref: '#/components/responses/ErrorResponse' }
-
+        '200':
+          description: Password updated
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
   /auth/change-password:
     post:
       summary: Forced or voluntary password change
@@ -211,20 +301,35 @@ paths:
             schema:
               type: object
               properties:
-                currentPassword: { type: string }
-                newPassword: { type: string }
+                currentPassword:
+                  type: string
+                newPassword:
+                  type: string
       responses:
-        '200': { description: Password changed }
-
-  # ---------- USERS / ADMIN (FE-017, FE-018, FE-019, FE-020) ----------
+        '200':
+          description: Password changed
   /users:
     get:
       summary: List all users (paginated)
       parameters:
-        - { name: page, in: query, schema: { type: integer, default: 1 } }
-        - { name: pageSize, in: query, schema: { type: integer, default: 50 } }
-        - { name: status, in: query, schema: { type: string } }
-        - { name: role, in: query, schema: { type: string } }
+      - name: page
+        in: query
+        schema:
+          type: integer
+          default: 1
+      - name: pageSize
+        in: query
+        schema:
+          type: integer
+          default: 50
+      - name: status
+        in: query
+        schema:
+          type: string
+      - name: role
+        in: query
+        schema:
+          type: string
       responses:
         '200':
           description: Paginated user list
@@ -235,17 +340,115 @@ paths:
                 properties:
                   data:
                     type: array
-                    items: { $ref: '#/components/schemas/User' }
-                  pagination: { $ref: '#/components/schemas/Pagination' }
+                    items:
+                      $ref: '#/components/schemas/User'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
               example:
                 data:
-                  - { id: "u1", name: "Ayan Sharma", email: "ayan.sharma@istrac.local", employeeId: "EMP-0001", role: "SUPER_ADMIN", status: "ACTIVE", tempPass: false, createdAt: "2026-01-10T08:00:00Z" }
-                  - { id: "u2", name: "Priya Nair", email: "priya.nair@istrac.local", employeeId: "EMP-0014", role: "DEPT_ADMIN", status: "ACTIVE", tempPass: false, createdAt: "2026-02-03T08:00:00Z" }
-                  - { id: "u3", name: "Rohan Verma", email: "rohan.verma@istrac.local", employeeId: "EMP-0022", role: "MEMBER", status: "ACTIVE", tempPass: false, createdAt: "2026-03-11T08:00:00Z" }
-                  - { id: "u4", name: "Sneha Iyer", email: "sneha.iyer@istrac.local", employeeId: "EMP-0031", role: "MEMBER", status: "SUSPENDED", tempPass: false, createdAt: "2026-04-05T08:00:00Z" }
-                  - { id: "u5", name: "Karan Mehta", email: "karan.mehta@istrac.local", employeeId: "EMP-0040", role: "GUEST", status: "ACTIVE", tempPass: true, createdAt: "2026-06-20T08:00:00Z" }
-                pagination: { total: 47, page: 1, pageSize: 20, totalPages: 3, hasNext: true, hasPrev: false }
-
+                - id: u1
+                  name: Ayan Sharma
+                  email: ayan.sharma@istrac.local
+                  employeeId: EMP-0001
+                  role: SUPER_ADMIN
+                  status: ACTIVE
+                  tempPass: false
+                  createdAt: '2026-01-10T08:00:00Z'
+                - id: u2
+                  name: Priya Nair
+                  email: priya.nair@istrac.local
+                  employeeId: EMP-0014
+                  role: DEPT_ADMIN
+                  status: ACTIVE
+                  tempPass: false
+                  createdAt: '2026-02-03T08:00:00Z'
+                - id: u3
+                  name: Rohan Verma
+                  email: rohan.verma@istrac.local
+                  employeeId: EMP-0022
+                  role: MEMBER
+                  status: ACTIVE
+                  tempPass: false
+                  createdAt: '2026-03-11T08:00:00Z'
+                - id: u4
+                  name: Sneha Iyer
+                  email: sneha.iyer@istrac.local
+                  employeeId: EMP-0031
+                  role: MEMBER
+                  status: SUSPENDED
+                  tempPass: false
+                  createdAt: '2026-04-05T08:00:00Z'
+                - id: u5
+                  name: Karan Mehta
+                  email: karan.mehta@istrac.local
+                  employeeId: EMP-0040
+                  role: GUEST
+                  status: ACTIVE
+                  tempPass: true
+                  createdAt: '2026-06-20T08:00:00Z'
+                - id: u6
+                  name: Meera Krishnan
+                  email: meera.krishnan@istrac.local
+                  employeeId: EMP-0047
+                  role: MEMBER
+                  status: ACTIVE
+                  tempPass: false
+                  createdAt: '2026-06-25T08:00:00Z'
+                - id: u7
+                  name: Arjun Rao
+                  email: arjun.rao@istrac.local
+                  employeeId: EMP-0050
+                  role: DEPT_ADMIN
+                  status: ACTIVE
+                  tempPass: false
+                  createdAt: '2026-07-01T08:00:00Z'
+                - id: u8
+                  name: Divya Menon
+                  email: divya.menon@istrac.local
+                  employeeId: EMP-0052
+                  role: MEMBER
+                  status: ACTIVE
+                  tempPass: false
+                  createdAt: '2026-07-08T08:00:00Z'
+                - id: u9
+                  name: Vikram Rao
+                  email: vikram.rao@istrac.local
+                  employeeId: EMP-0055
+                  role: MEMBER
+                  status: PENDING
+                  tempPass: true
+                  createdAt: '2026-08-15T14:22:00Z'
+                - id: u10
+                  name: Anjali Desai
+                  email: anjali.desai@istrac.local
+                  employeeId: EMP-0056
+                  role: MEMBER
+                  status: PENDING
+                  tempPass: true
+                  createdAt: '2026-08-16T09:05:00Z'
+                - id: u11
+                  name: Suresh Babu
+                  email: suresh.babu@istrac.local
+                  employeeId: EMP-0058
+                  role: MEMBER
+                  status: ACTIVE
+                  tempPass: false
+                  createdAt: '2026-08-17T07:30:00Z'
+                - id: u12
+                  name: Neha Kapoor
+                  email: neha.kapoor@istrac.local
+                  employeeId: EMP-0060
+                  role: MEMBER
+                  status: ACTIVE
+                  tempPass: false
+                  createdAt: '2026-08-18T10:10:00Z'
+                pagination:
+                  total: 47
+                  page: 1
+                  pageSize: 20
+                  totalPages: 3
+                  hasNext: true
+                  hasPrev: false
   /users/pending:
     get:
       summary: List pending registrations (Approval Queue — FE-019)
@@ -256,60 +459,107 @@ paths:
             application/json:
               schema:
                 type: array
-                items: { $ref: '#/components/schemas/User' }
+                items:
+                  $ref: '#/components/schemas/User'
               example:
-                - id: "p1"
-                  name: "Vikram Rao"
-                  email: "vikram.rao@istrac.local"
-                  employeeId: "EMP-0055"
-                  role: "MEMBER"
-                  status: "PENDING"
-                  tempPass: true
-                  createdAt: "2026-08-15T14:22:00Z"
-                  departmentPreference: "Engineering"
-                  reasonForAccess: "Joining the flight dynamics team, need access to orbit maintenance reports."
-                - id: "p2"
-                  name: "Anjali Desai"
-                  email: "anjali.desai@istrac.local"
-                  employeeId: "EMP-0056"
-                  role: "MEMBER"
-                  status: "PENDING"
-                  tempPass: true
-                  createdAt: "2026-08-16T09:05:00Z"
-                  departmentPreference: "HR"
-                  reasonForAccess: "New HR coordinator, need access to onboarding documents."
-
+              - id: p1
+                name: Vikram Rao
+                email: vikram.rao@istrac.local
+                employeeId: EMP-0055
+                role: MEMBER
+                status: PENDING
+                tempPass: true
+                createdAt: '2026-08-15T14:22:00Z'
+                departmentPreference: Engineering
+                reasonForAccess: Joining the flight dynamics team, need access to
+                  orbit maintenance reports.
+              - id: p2
+                name: Anjali Desai
+                email: anjali.desai@istrac.local
+                employeeId: EMP-0056
+                role: MEMBER
+                status: PENDING
+                tempPass: true
+                createdAt: '2026-08-16T09:05:00Z'
+                departmentPreference: HR
+                reasonForAccess: New HR coordinator, need access to onboarding documents.
+              - id: p3
+                name: Rahul Joshi
+                email: rahul.joshi@istrac.local
+                employeeId: EMP-0061
+                role: MEMBER
+                status: PENDING
+                tempPass: true
+                createdAt: '2026-08-18T11:20:00Z'
+                departmentPreference: Operations
+                reasonForAccess: Assigned to ground station operations and daily telemetry
+                  reporting.
+              - id: p4
+                name: Kavya Singh
+                email: kavya.singh@istrac.local
+                employeeId: EMP-0062
+                role: MEMBER
+                status: PENDING
+                tempPass: true
+                createdAt: '2026-08-19T15:45:00Z'
+                departmentPreference: Finance
+                reasonForAccess: Joining the finance planning team and requires budget
+                  documents.
+              - id: p5
+                name: Manoj Kumar
+                email: manoj.kumar@istrac.local
+                employeeId: EMP-0063
+                role: MEMBER
+                status: PENDING
+                tempPass: true
+                createdAt: '2026-08-20T08:15:00Z'
+                departmentPreference: Engineering
+                reasonForAccess: Requires access to engineering drawings and mission
+                  design reports.
   /users/{id}/approve:
     post:
       summary: Approve registration
       parameters:
-        - { name: id, in: path, required: true, schema: { type: string } }
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
       responses:
-        '200': { description: "Approved, temp password emailed" }
-
+        '200':
+          description: Approved, temp password emailed
   /users/{id}/reject:
     post:
       summary: Reject registration with reason
       parameters:
-        - { name: id, in: path, required: true, schema: { type: string } }
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
             schema:
               type: object
               properties:
-                reason: { type: string }
+                reason:
+                  type: string
       responses:
-        '200': { description: Rejected }
-
+        '200':
+          description: Rejected
   /users/{id}/force-logout:
     post:
       summary: Invalidate a user's session instantly
       parameters:
-        - { name: id, in: path, required: true, schema: { type: string } }
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
       responses:
-        '200': { description: Session invalidated }
-
+        '200':
+          description: Session invalidated
   /admin/stats:
     get:
       summary: Admin home stats (FE-018)
@@ -321,17 +571,19 @@ paths:
               schema:
                 type: object
                 properties:
-                  users: { type: integer }
-                  files: { type: integer }
-                  departments: { type: integer }
-                  storageUsedBytes: { type: integer }
+                  users:
+                    type: integer
+                  files:
+                    type: integer
+                  departments:
+                    type: integer
+                  storageUsedBytes:
+                    type: integer
               example:
                 users: 47
                 files: 1284
-                departments: 4
+                departments: 6
                 storageUsedBytes: 18253611008
-
-  # ---------- DEPARTMENTS (FE-021) ----------
   /departments:
     get:
       summary: List departments (scoped to user access)
@@ -342,12 +594,45 @@ paths:
             application/json:
               schema:
                 type: array
-                items: { $ref: '#/components/schemas/Department' }
+                items:
+                  $ref: '#/components/schemas/Department'
               example:
-                - { id: "d1a1a1a1-0000-0000-0000-000000000001", name: "Engineering", hddPath: "/mnt/istrac-data/engineering", archived: false, fileCount: 128, lastUpdated: "2026-08-14T09:12:00Z" }
-                - { id: "d1a1a1a1-0000-0000-0000-000000000002", name: "HR", hddPath: "/mnt/istrac-data/hr", archived: false, fileCount: 42, lastUpdated: "2026-08-15T11:30:00Z" }
-                - { id: "d1a1a1a1-0000-0000-0000-000000000003", name: "Finance", hddPath: "/mnt/istrac-data/finance", archived: false, fileCount: 76, lastUpdated: "2026-08-13T16:45:00Z" }
-                - { id: "d1a1a1a1-0000-0000-0000-000000000004", name: "Legacy Ops", hddPath: "/mnt/istrac-data/legacy-ops", archived: true, fileCount: 9, lastUpdated: "2025-11-02T10:00:00Z" }
+              - id: d1a1a1a1-0000-0000-0000-000000000001
+                name: Engineering
+                hddPath: /mnt/istrac-data/engineering
+                archived: false
+                fileCount: 128
+                lastUpdated: '2026-08-14T09:12:00Z'
+              - id: d1a1a1a1-0000-0000-0000-000000000002
+                name: HR
+                hddPath: /mnt/istrac-data/hr
+                archived: false
+                fileCount: 42
+                lastUpdated: '2026-08-15T11:30:00Z'
+              - id: d1a1a1a1-0000-0000-0000-000000000003
+                name: Finance
+                hddPath: /mnt/istrac-data/finance
+                archived: false
+                fileCount: 76
+                lastUpdated: '2026-08-13T16:45:00Z'
+              - id: d1a1a1a1-0000-0000-0000-000000000004
+                name: Legacy Ops
+                hddPath: /mnt/istrac-data/legacy-ops
+                archived: true
+                fileCount: 9
+                lastUpdated: '2025-11-02T10:00:00Z'
+              - id: d1a1a1a1-0000-0000-0000-000000000005
+                name: Operations
+                hddPath: /mnt/istrac-data/operations
+                archived: false
+                fileCount: 214
+                lastUpdated: '2026-08-20T17:20:00Z'
+              - id: d1a1a1a1-0000-0000-0000-000000000006
+                name: Administration
+                hddPath: /mnt/istrac-data/administration
+                archived: false
+                fileCount: 31
+                lastUpdated: '2026-08-19T12:10:00Z'
     post:
       summary: Create department
       requestBody:
@@ -356,38 +641,56 @@ paths:
             schema:
               type: object
               properties:
-                name: { type: string }
-                hddPath: { type: string }
+                name:
+                  type: string
+                hddPath:
+                  type: string
       responses:
         '201':
           description: Created
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/Department' }
-
+              schema:
+                $ref: '#/components/schemas/Department'
   /departments/{id}/members:
     post:
       summary: Add user to department
       parameters:
-        - { name: id, in: path, required: true, schema: { type: string } }
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
             schema:
               type: object
               properties:
-                userId: { type: string }
-                accessLevel: { type: string, enum: [READ_ONLY, READ_WRITE, READ_WRITE_DELETE] }
+                userId:
+                  type: string
+                accessLevel:
+                  type: string
+                  enum:
+                  - READ_ONLY
+                  - READ_WRITE
+                  - READ_WRITE_DELETE
       responses:
-        '200': { description: Member added }
-
-  # ---------- FILES (FE-021 through FE-025, FE-031 through FE-034) ----------
+        '200':
+          description: Member added
   /browse/{deptId}:
     get:
       summary: Navigate folder tree (FE-032)
       parameters:
-        - { name: deptId, in: path, required: true, schema: { type: string } }
-        - { name: parentId, in: query, schema: { type: string } }
+      - name: deptId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: parentId
+        in: query
+        schema:
+          type: string
       responses:
         '200':
           description: Files/folders at this level
@@ -395,30 +698,122 @@ paths:
             application/json:
               schema:
                 type: array
-                items: { $ref: '#/components/schemas/FileNode' }
+                items:
+                  $ref: '#/components/schemas/FileNode'
               example:
-                - { id: "f1", name: "Mission Reports", nodeType: "FOLDER", departmentId: "d1a1a1a1-0000-0000-0000-000000000001", parentId: null, sizeBytes: null, mimeType: null, status: "ACTIVE", createdAt: "2026-05-01T10:00:00Z" }
-                - { id: "f2", name: "Anomaly Logs", nodeType: "FOLDER", departmentId: "d1a1a1a1-0000-0000-0000-000000000001", parentId: null, sizeBytes: null, mimeType: null, status: "ACTIVE", createdAt: "2026-05-02T10:00:00Z" }
-                - { id: "f3", name: "design-doc.pdf", nodeType: "FILE", departmentId: "d1a1a1a1-0000-0000-0000-000000000001", parentId: null, sizeBytes: 2456000, mimeType: "application/pdf", status: "ACTIVE", createdAt: "2026-08-10T13:20:00Z" }
-                - { id: "f4", name: "orbit-summary-q3.xlsx", nodeType: "FILE", departmentId: "d1a1a1a1-0000-0000-0000-000000000001", parentId: null, sizeBytes: 845000, mimeType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", status: "ACTIVE", createdAt: "2026-08-12T09:40:00Z" }
-                - { id: "f5", name: "payload-photo.jpg", nodeType: "FILE", departmentId: "d1a1a1a1-0000-0000-0000-000000000001", parentId: null, sizeBytes: 3120000, mimeType: "image/jpeg", status: "ACTIVE", createdAt: "2026-08-14T15:00:00Z" }
-
+              - id: f1
+                name: Mission Reports
+                nodeType: FOLDER
+                departmentId: d1a1a1a1-0000-0000-0000-000000000001
+                parentId: null
+                sizeBytes: null
+                mimeType: null
+                status: ACTIVE
+                createdAt: '2026-05-01T10:00:00Z'
+              - id: f2
+                name: Anomaly Logs
+                nodeType: FOLDER
+                departmentId: d1a1a1a1-0000-0000-0000-000000000001
+                parentId: null
+                sizeBytes: null
+                mimeType: null
+                status: ACTIVE
+                createdAt: '2026-05-02T10:00:00Z'
+              - id: f3
+                name: design-doc.pdf
+                nodeType: FILE
+                departmentId: d1a1a1a1-0000-0000-0000-000000000001
+                parentId: null
+                sizeBytes: 2456000
+                mimeType: application/pdf
+                status: ACTIVE
+                createdAt: '2026-08-10T13:20:00Z'
+              - id: f4
+                name: orbit-summary-q3.xlsx
+                nodeType: FILE
+                departmentId: d1a1a1a1-0000-0000-0000-000000000001
+                parentId: null
+                sizeBytes: 845000
+                mimeType: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+                status: ACTIVE
+                createdAt: '2026-08-12T09:40:00Z'
+              - id: f5
+                name: payload-photo.jpg
+                nodeType: FILE
+                departmentId: d1a1a1a1-0000-0000-0000-000000000001
+                parentId: null
+                sizeBytes: 3120000
+                mimeType: image/jpeg
+                status: ACTIVE
+                createdAt: '2026-08-14T15:00:00Z'
+              - id: f8
+                name: operations-summary.pdf
+                nodeType: FILE
+                departmentId: d1a1a1a1-0000-0000-0000-000000000005
+                parentId: null
+                sizeBytes: 4218000
+                mimeType: application/pdf
+                status: ACTIVE
+                createdAt: '2026-08-18T12:00:00Z'
+              - id: f9
+                name: telemetry-august.csv
+                nodeType: FILE
+                departmentId: d1a1a1a1-0000-0000-0000-000000000005
+                parentId: null
+                sizeBytes: 12845000
+                mimeType: text/csv
+                status: ACTIVE
+                createdAt: '2026-08-19T07:45:00Z'
+              - id: f10
+                name: station-config.xlsx
+                nodeType: FILE
+                departmentId: d1a1a1a1-0000-0000-0000-000000000005
+                parentId: null
+                sizeBytes: 921634
+                mimeType: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+                status: ACTIVE
+                createdAt: '2026-08-20T09:25:00Z'
+              - id: f11
+                name: Onboarding
+                nodeType: FOLDER
+                departmentId: d1a1a1a1-0000-0000-0000-000000000002
+                parentId: null
+                sizeBytes: null
+                mimeType: null
+                status: ACTIVE
+                createdAt: '2026-04-10T10:00:00Z'
+              - id: f12
+                name: Policies
+                nodeType: FOLDER
+                departmentId: d1a1a1a1-0000-0000-0000-000000000006
+                parentId: null
+                sizeBytes: null
+                mimeType: null
+                status: ACTIVE
+                createdAt: '2026-04-12T10:00:00Z'
   /browse/{deptId}/folder:
     post:
       summary: Create subfolder
       parameters:
-        - { name: deptId, in: path, required: true, schema: { type: string } }
+      - name: deptId
+        in: path
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
             schema:
               type: object
               properties:
-                name: { type: string }
-                parentId: { type: string, nullable: true }
+                name:
+                  type: string
+                parentId:
+                  type: string
+                  nullable: true
       responses:
-        '201': { description: Folder created }
-
+        '201':
+          description: Folder created
   /files/upload:
     post:
       summary: Upload file (single-shot, <10MB — FE-023)
@@ -428,21 +823,40 @@ paths:
             schema:
               type: object
               properties:
-                file: { type: string, format: binary }
-                departmentId: { type: string }
-                parentId: { type: string, nullable: true }
+                file:
+                  type: string
+                  format: binary
+                departmentId:
+                  type: string
+                parentId:
+                  type: string
+                  nullable: true
       responses:
         '201':
           description: Uploaded
           content:
             application/json:
-              schema: { $ref: '#/components/schemas/FileNode' }
-
+              schema:
+                $ref: '#/components/schemas/FileNode'
+              example:
+                id: f15
+                name: mission-update.pdf
+                nodeType: FILE
+                departmentId: d1a1a1a1-0000-0000-0000-000000000001
+                parentId: null
+                sizeBytes: 1835000
+                mimeType: application/pdf
+                status: ACTIVE
+                createdAt: '2026-08-21T10:30:00Z'
   /files/recent:
     get:
       summary: Recently uploaded files across the user's assigned departments (FE-031)
       parameters:
-        - { name: limit, in: query, schema: { type: integer, default: 5 } }
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          default: 5
       responses:
         '200':
           description: Recent files
@@ -453,68 +867,177 @@ paths:
                 items:
                   type: object
                   properties:
-                    id: { type: string }
-                    name: { type: string }
-                    departmentName: { type: string }
-                    uploadedAt: { type: string, format: date-time }
-                    mimeType: { type: string, nullable: true }
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    departmentName:
+                      type: string
+                    uploadedAt:
+                      type: string
+                      format: date-time
+                    mimeType:
+                      type: string
+                      nullable: true
               example:
-                - { id: "f5", name: "payload-photo.jpg", departmentName: "Engineering", uploadedAt: "2026-08-14T15:00:00Z", mimeType: "image/jpeg" }
-                - { id: "f4", name: "orbit-summary-q3.xlsx", departmentName: "Engineering", uploadedAt: "2026-08-12T09:40:00Z", mimeType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }
-                - { id: "f3", name: "design-doc.pdf", departmentName: "Engineering", uploadedAt: "2026-08-10T13:20:00Z", mimeType: "application/pdf" }
-                - { id: "f6", name: "onboarding-checklist.docx", departmentName: "HR", uploadedAt: "2026-08-09T11:00:00Z", mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" }
-                - { id: "f7", name: "q3-budget.xlsx", departmentName: "Finance", uploadedAt: "2026-08-08T08:30:00Z", mimeType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }
-
+              - id: f5
+                name: payload-photo.jpg
+                departmentName: Engineering
+                uploadedAt: '2026-08-14T15:00:00Z'
+                mimeType: image/jpeg
+              - id: f4
+                name: orbit-summary-q3.xlsx
+                departmentName: Engineering
+                uploadedAt: '2026-08-12T09:40:00Z'
+                mimeType: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+              - id: f3
+                name: design-doc.pdf
+                departmentName: Engineering
+                uploadedAt: '2026-08-10T13:20:00Z'
+                mimeType: application/pdf
+              - id: f6
+                name: onboarding-checklist.docx
+                departmentName: HR
+                uploadedAt: '2026-08-09T11:00:00Z'
+                mimeType: application/vnd.openxmlformats-officedocument.wordprocessingml.document
+              - id: f7
+                name: q3-budget.xlsx
+                departmentName: Finance
+                uploadedAt: '2026-08-08T08:30:00Z'
+                mimeType: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+              - id: f8
+                name: operations-summary.pdf
+                departmentName: Operations
+                uploadedAt: '2026-08-18T12:00:00Z'
+                mimeType: application/pdf
+              - id: f9
+                name: telemetry-august.csv
+                departmentName: Operations
+                uploadedAt: '2026-08-19T07:45:00Z'
+                mimeType: text/csv
+              - id: f10
+                name: station-config.xlsx
+                departmentName: Operations
+                uploadedAt: '2026-08-20T09:25:00Z'
+                mimeType: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+              - id: f13
+                name: employee-handbook.pdf
+                departmentName: HR
+                uploadedAt: '2026-08-17T10:35:00Z'
+                mimeType: application/pdf
+              - id: f14
+                name: monthly-budget.xlsx
+                departmentName: Finance
+                uploadedAt: '2026-08-16T13:15:00Z'
+                mimeType: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
   /files/{id}/download:
     get:
       summary: Stream file bytes (FE-033)
       parameters:
-        - { name: id, in: path, required: true, schema: { type: string } }
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
       responses:
         '200':
           description: File stream
           content:
             application/octet-stream: {}
-
   /files/{id}:
     delete:
       summary: Soft delete file
       parameters:
-        - { name: id, in: path, required: true, schema: { type: string } }
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
       responses:
-        '204': { description: Deleted }
+        '204':
+          description: Deleted
   /files/{id}/log-access:
     post:
       summary: Log a file access event (preview, metadata view) to the audit log
       parameters:
-        - { name: id, in: path, required: true, schema: { type: string } }
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
             schema:
               type: object
               properties:
-                action: { type: string, enum: [PREVIEW, DOWNLOAD] }
+                action:
+                  type: string
+                  enum:
+                  - PREVIEW
+                  - DOWNLOAD
       responses:
-        '204': { description: Logged }
+        '204':
+          description: Logged
   /files/{id}/versions:
     get:
       summary: List version history (FE-024)
       parameters:
-        - { name: id, in: path, required: true, schema: { type: string } }
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
       responses:
         '200':
           description: Version list
           content:
             application/json:
-              schema: { type: array, items: { type: object } }
-
+              schema:
+                type: array
+                items:
+                  type: object
+              example:
+              - id: v4
+                version: 4
+                fileId: f3
+                uploadedBy: u3
+                uploaderName: Rohan Verma
+                sizeBytes: 2456000
+                createdAt: '2026-08-20T14:10:00Z'
+              - id: v3
+                version: 3
+                fileId: f3
+                uploadedBy: u2
+                uploaderName: Priya Nair
+                sizeBytes: 2384000
+                createdAt: '2026-08-17T11:25:00Z'
+              - id: v2
+                version: 2
+                fileId: f3
+                uploadedBy: u1
+                uploaderName: Ayan Sharma
+                sizeBytes: 2219000
+                createdAt: '2026-08-12T09:30:00Z'
+              - id: v1
+                version: 1
+                fileId: f3
+                uploadedBy: u3
+                uploaderName: Rohan Verma
+                sizeBytes: 2105000
+                createdAt: '2026-08-10T13:20:00Z'
   /admin/audit-logs:
     get:
       summary: View audit log (FE-025, paginated)
       parameters:
-        - { name: page, in: query, schema: { type: integer } }
-        - { name: pageSize, in: query, schema: { type: integer } }
+      - name: page
+        in: query
+        schema:
+          type: integer
+      - name: pageSize
+        in: query
+        schema:
+          type: integer
       responses:
         '200':
           description: Audit log entries
@@ -523,23 +1046,141 @@ paths:
               schema:
                 type: object
                 properties:
-                  data: { type: array, items: { type: object } }
-                  pagination: { $ref: '#/components/schemas/Pagination' }
+                  data:
+                    type: array
+                    items:
+                      type: object
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
               example:
                 data:
-                  - { id: 1001, userId: "u1", userName: "Ayan Sharma", action: "FILE_UPLOAD", resourceType: "file", resourceId: "f3", oldValue: null, newValue: { name: "design-doc.pdf" }, createdAt: "2026-08-16T10:15:00Z" }
-                  - { id: 1000, userId: "u2", userName: "Priya Nair", action: "USER_APPROVED", resourceType: "user", resourceId: "u9", oldValue: { status: "PENDING" }, newValue: { status: "ACTIVE" }, createdAt: "2026-08-16T09:50:00Z" }
-                  - { id: 999, userId: "u1", userName: "Ayan Sharma", action: "FILE_DOWNLOAD", resourceType: "file", resourceId: "f4", oldValue: null, newValue: null, createdAt: "2026-08-15T17:22:00Z" }
-                pagination: { total: 312, page: 1, pageSize: 30, totalPages: 11, hasNext: true, hasPrev: false }
-
-  # ---------- SEARCH (FE-034) ----------
+                - id: 1001
+                  userId: u1
+                  userName: Ayan Sharma
+                  action: FILE_UPLOAD
+                  resourceType: file
+                  resourceId: f3
+                  oldValue: null
+                  newValue:
+                    name: design-doc.pdf
+                  createdAt: '2026-08-16T10:15:00Z'
+                - id: 1000
+                  userId: u2
+                  userName: Priya Nair
+                  action: USER_APPROVED
+                  resourceType: user
+                  resourceId: u9
+                  oldValue:
+                    status: PENDING
+                  newValue:
+                    status: ACTIVE
+                  createdAt: '2026-08-16T09:50:00Z'
+                - id: 999
+                  userId: u1
+                  userName: Ayan Sharma
+                  action: FILE_DOWNLOAD
+                  resourceType: file
+                  resourceId: f4
+                  oldValue: null
+                  newValue: null
+                  createdAt: '2026-08-15T17:22:00Z'
+                - id: 998
+                  userId: u3
+                  userName: Rohan Verma
+                  action: FILE_PREVIEW
+                  resourceType: file
+                  resourceId: f3
+                  oldValue: null
+                  newValue: null
+                  createdAt: '2026-08-15T16:40:00Z'
+                - id: 997
+                  userId: u7
+                  userName: Arjun Rao
+                  action: DEPARTMENT_MEMBER_ADDED
+                  resourceType: department
+                  resourceId: d1a1a1a1-0000-0000-0000-000000000005
+                  oldValue: null
+                  newValue:
+                    userId: u8
+                    accessLevel: READ_WRITE
+                  createdAt: '2026-08-15T14:10:00Z'
+                - id: 996
+                  userId: u1
+                  userName: Ayan Sharma
+                  action: CMS_UPDATE
+                  resourceType: cms
+                  resourceId: hero
+                  oldValue:
+                    ctaText: Request Access
+                  newValue:
+                    ctaText: Request Access
+                  createdAt: '2026-08-15T12:30:00Z'
+                - id: 995
+                  userId: u2
+                  userName: Priya Nair
+                  action: FILE_VERSION
+                  resourceType: file
+                  resourceId: f3
+                  oldValue:
+                    version: 3
+                  newValue:
+                    version: 4
+                  createdAt: '2026-08-14T15:05:00Z'
+                - id: 994
+                  userId: u1
+                  userName: Ayan Sharma
+                  action: USER_SUSPENDED
+                  resourceType: user
+                  resourceId: u4
+                  oldValue:
+                    status: ACTIVE
+                  newValue:
+                    status: SUSPENDED
+                  createdAt: '2026-08-14T10:25:00Z'
+                - id: 993
+                  userId: u7
+                  userName: Arjun Rao
+                  action: FILE_DELETE
+                  resourceType: file
+                  resourceId: f20
+                  oldValue:
+                    status: ACTIVE
+                  newValue:
+                    status: DELETED
+                  createdAt: '2026-08-13T18:10:00Z'
+                - id: 992
+                  userId: u3
+                  userName: Rohan Verma
+                  action: FILE_DOWNLOAD
+                  resourceType: file
+                  resourceId: f5
+                  oldValue: null
+                  newValue: null
+                  createdAt: '2026-08-13T13:45:00Z'
+                pagination:
+                  total: 312
+                  page: 1
+                  pageSize: 30
+                  totalPages: 11
+                  hasNext: true
+                  hasPrev: false
   /search:
     get:
       summary: Full-text search (paginated, scoped to accessible departments)
       parameters:
-        - { name: q, in: query, required: true, schema: { type: string } }
-        - { name: dept, in: query, schema: { type: string } }
-        - { name: type, in: query, schema: { type: string } }
+      - name: q
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: dept
+        in: query
+        schema:
+          type: string
+      - name: type
+        in: query
+        schema:
+          type: string
       responses:
         '200':
           description: Search results
@@ -548,10 +1189,93 @@ paths:
               schema:
                 type: object
                 properties:
-                  data: { type: array, items: { $ref: '#/components/schemas/FileNode' } }
-                  pagination: { $ref: '#/components/schemas/Pagination' }
-
-  # ---------- CMS (FE-007 through FE-011, FE-027, FE-028) ----------
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/FileNode'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+              example:
+                data:
+                - id: f3
+                  name: design-doc.pdf
+                  nodeType: FILE
+                  departmentId: d1a1a1a1-0000-0000-0000-000000000001
+                  parentId: null
+                  sizeBytes: 2456000
+                  mimeType: application/pdf
+                  status: ACTIVE
+                  createdAt: '2026-08-10T13:20:00Z'
+                - id: f4
+                  name: orbit-summary-q3.xlsx
+                  nodeType: FILE
+                  departmentId: d1a1a1a1-0000-0000-0000-000000000001
+                  parentId: null
+                  sizeBytes: 845000
+                  mimeType: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+                  status: ACTIVE
+                  createdAt: '2026-08-12T09:40:00Z'
+                - id: f5
+                  name: payload-photo.jpg
+                  nodeType: FILE
+                  departmentId: d1a1a1a1-0000-0000-0000-000000000001
+                  parentId: null
+                  sizeBytes: 3120000
+                  mimeType: image/jpeg
+                  status: ACTIVE
+                  createdAt: '2026-08-14T15:00:00Z'
+                - id: f8
+                  name: operations-summary.pdf
+                  nodeType: FILE
+                  departmentId: d1a1a1a1-0000-0000-0000-000000000005
+                  parentId: null
+                  sizeBytes: 4218000
+                  mimeType: application/pdf
+                  status: ACTIVE
+                  createdAt: '2026-08-18T12:00:00Z'
+                - id: f9
+                  name: telemetry-august.csv
+                  nodeType: FILE
+                  departmentId: d1a1a1a1-0000-0000-0000-000000000005
+                  parentId: null
+                  sizeBytes: 12845000
+                  mimeType: text/csv
+                  status: ACTIVE
+                  createdAt: '2026-08-19T07:45:00Z'
+                - id: f13
+                  name: employee-handbook.pdf
+                  nodeType: FILE
+                  departmentId: d1a1a1a1-0000-0000-0000-000000000002
+                  parentId: null
+                  sizeBytes: 1985000
+                  mimeType: application/pdf
+                  status: ACTIVE
+                  createdAt: '2026-08-17T10:35:00Z'
+                - id: f14
+                  name: monthly-budget.xlsx
+                  nodeType: FILE
+                  departmentId: d1a1a1a1-0000-0000-0000-000000000003
+                  parentId: null
+                  sizeBytes: 1256000
+                  mimeType: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+                  status: ACTIVE
+                  createdAt: '2026-08-16T13:15:00Z'
+                - id: f10
+                  name: station-config.xlsx
+                  nodeType: FILE
+                  departmentId: d1a1a1a1-0000-0000-0000-000000000005
+                  parentId: null
+                  sizeBytes: 921634
+                  mimeType: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+                  status: ACTIVE
+                  createdAt: '2026-08-20T09:25:00Z'
+                pagination:
+                  total: 8
+                  page: 1
+                  pageSize: 20
+                  totalPages: 1
+                  hasNext: false
+                  hasPrev: false
   /cms:
     get:
       summary: Get all CMS content blocks (public)
@@ -563,43 +1287,97 @@ paths:
             application/json:
               schema:
                 type: array
-                items: { $ref: '#/components/schemas/CmsBlock' }
+                items:
+                  $ref: '#/components/schemas/CmsBlock'
               example:
-                - blockKey: "hero"
-                  content: { title: "ISTRAC-FMS", subtitle: "Centralized, permission-controlled file management for ISTRAC departments.", ctaText: "Request Access" }
-                - blockKey: "announcements"
-                  content: { visible: true, text: "Scheduled maintenance tonight from 11 PM to 1 AM IST.", backgroundColor: "orange" }
-                - blockKey: "banner"
-                  content: { visible: false, title: "", subtitle: "", ctaText: "" }
-                - blockKey: "gallery"
-                  content: { items: [] }
-                - blockKey: "contact_info"
-                  content: { email: "support@istrac.local", phone: "+91-80-2508-0000" }
-                - blockKey: "org_overview"
-                  content: { text: "ISTRAC (ISRO Telemetry, Tracking and Command Network) manages satellite operations and mission support." }
-
+              - blockKey: hero
+                content:
+                  title: ISTRAC-FMS
+                  subtitle: Centralized, permission-controlled file management for
+                    ISTRAC departments.
+                  ctaText: Request Access
+              - blockKey: announcements
+                content:
+                  visible: true
+                  text: Scheduled maintenance tonight from 11 PM to 1 AM IST.
+                  backgroundColor: orange
+              - blockKey: banner
+                content:
+                  visible: false
+                  title: ''
+                  subtitle: ''
+                  ctaText: ''
+              - blockKey: feature_strip
+                content:
+                  items:
+                  - icon: Shield
+                    title: Secure & Reliable
+                    description: Enterprise-grade access control and audit trails.
+                    visible: true
+                  - icon: Search
+                    title: Fast Search
+                    description: Full-text search scoped to your assigned departments.
+                    visible: true
+                  - icon: Clock
+                    title: Version History
+                    description: Every change tracked, nothing ever silently overwritten.
+                    visible: true
+              - blockKey: gallery
+                content:
+                  items:
+                  - url: /images/operations-dashboard.png
+                    label: Operations Dashboard
+                    caption: Monitor spacecraft operations and mission resources.
+                  - url: /images/file-management.png
+                    label: File Management
+                    caption: Securely manage department files and resources.
+                  - url: /images/audit-log.png
+                    label: Audit & Security
+                    caption: Maintain complete visibility of file activity and changes.
+              - blockKey: contact_info
+                content:
+                  email: support@istrac.local
+                  phone: +91-80-2508-0000
+              - blockKey: org_overview
+                content:
+                  text: ISTRAC (ISRO Telemetry, Tracking and Command Network) manages
+                    satellite operations and mission support.
   /cms/{blockKey}:
     put:
       summary: Update a CMS block (FE-027)
       parameters:
-        - { name: blockKey, in: path, required: true, schema: { type: string } }
+      - name: blockKey
+        in: path
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
             schema:
               type: object
               properties:
-                content: { type: object }
+                content:
+                  type: object
       responses:
-        '200': { description: "Updated, pushed via WebSocket to landing page" }
-
-  # ---------- NOTIFICATIONS (FE-035, FE-036) ----------
+        '200':
+          description: Updated, pushed via WebSocket to landing page
   /notifications:
     get:
       summary: Paginated notification inbox
       parameters:
-        - { name: category, in: query, schema: { type: string, enum: [Files, Approvals, System] } }
-        - { name: unread, in: query, schema: { type: boolean } }
+      - name: category
+        in: query
+        schema:
+          type: string
+          enum:
+          - Files
+          - Approvals
+          - System
+      - name: unread
+        in: query
+        schema:
+          type: boolean
       responses:
         '200':
           description: Notification list
@@ -608,13 +1386,84 @@ paths:
               schema:
                 type: object
                 properties:
-                  data: { type: array, items: { $ref: '#/components/schemas/Notification' } }
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Notification'
               example:
                 data:
-                  - { id: 501, type: "FILE_UPLOAD", message: "New file uploaded to Engineering: design-doc.pdf", category: "Files", readAt: null, createdAt: "2026-08-16T10:15:00Z" }
-                  - { id: 500, type: "APPROVAL_PENDING", message: "Vikram Rao is requesting access to Engineering", category: "Approvals", readAt: null, createdAt: "2026-08-15T14:22:00Z" }
-                  - { id: 499, type: "HDD_SYNC_COMPLETE", message: "HDD sync completed — 3 new files registered", category: "System", readAt: "2026-08-15T09:00:00Z", createdAt: "2026-08-15T08:45:00Z" }
-
+                - id: 501
+                  type: FILE_UPLOAD
+                  message: 'New file uploaded to Engineering: design-doc.pdf'
+                  category: Files
+                  readAt: null
+                  createdAt: '2026-08-21T10:15:00Z'
+                - id: 500
+                  type: FILE_UPLOAD
+                  message: Mission telemetry report uploaded to Operations.
+                  category: Files
+                  readAt: null
+                  createdAt: '2026-08-21T09:42:00Z'
+                - id: 499
+                  type: APPROVAL_PENDING
+                  message: Vikram Rao is requesting access to Engineering.
+                  category: Approvals
+                  readAt: null
+                  createdAt: '2026-08-20T14:22:00Z'
+                - id: 498
+                  type: APPROVAL_APPROVED
+                  message: Access request for Priya Menon was approved.
+                  category: Approvals
+                  readAt: '2026-08-20T12:10:00Z'
+                  createdAt: '2026-08-20T11:50:00Z'
+                - id: 497
+                  type: HDD_SYNC_COMPLETE
+                  message: HDD sync completed — 12 new files registered.
+                  category: System
+                  readAt: '2026-08-20T09:00:00Z'
+                  createdAt: '2026-08-20T08:45:00Z'
+                - id: 496
+                  type: FILE_VERSION
+                  message: A new version of mission-plan.pdf was created.
+                  category: Files
+                  readAt: null
+                  createdAt: '2026-08-19T16:30:00Z'
+                - id: 495
+                  type: SYSTEM_MAINTENANCE
+                  message: Scheduled maintenance is planned for 23:00 IST.
+                  category: System
+                  readAt: '2026-08-19T11:20:00Z'
+                  createdAt: '2026-08-19T10:00:00Z'
+                - id: 494
+                  type: APPROVAL_PENDING
+                  message: Anjali Desai is requesting access to HR.
+                  category: Approvals
+                  readAt: null
+                  createdAt: '2026-08-18T15:05:00Z'
+                - id: 493
+                  type: FILE_UPLOAD
+                  message: Quarterly tracking report.xlsx was uploaded.
+                  category: Files
+                  readAt: '2026-08-18T13:45:00Z'
+                  createdAt: '2026-08-18T13:40:00Z'
+                - id: 492
+                  type: HDD_SYNC_COMPLETE
+                  message: HDD sync completed successfully.
+                  category: System
+                  readAt: '2026-08-18T08:15:00Z'
+                  createdAt: '2026-08-18T08:00:00Z'
+                - id: 491
+                  type: FILE_UPLOAD
+                  message: operations-summary.pdf was uploaded to Operations.
+                  category: Files
+                  readAt: null
+                  createdAt: '2026-08-17T12:00:00Z'
+                - id: 490
+                  type: APPROVAL_REJECTED
+                  message: A previous access request was rejected by an administrator.
+                  category: Approvals
+                  readAt: '2026-08-17T09:30:00Z'
+                  createdAt: '2026-08-17T09:20:00Z'
   /notifications/count:
     get:
       summary: Unread count (bell badge)
@@ -626,23 +1475,28 @@ paths:
               schema:
                 type: object
                 properties:
-                  count: { type: integer }
-
+                  count:
+                    type: integer
+              example:
+                count: 6
   /notifications/mark-all-read:
     post:
       summary: Mark all as read
       responses:
-        '200': { description: Marked read }
-
+        '200':
+          description: Marked read
   /notifications/{id}/read:
     patch:
       summary: Mark single notification read
       parameters:
-        - { name: id, in: path, required: true, schema: { type: string } }
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
       responses:
-        '200': { description: Marked read }
-
-  # ---------- SYSTEM / ADMIN CONFIG (FE-029, FE-030) ----------
+        '200':
+          description: Marked read
   /admin/settings:
     get:
       summary: Get runtime config values
@@ -651,54 +1505,99 @@ paths:
           description: Config key-value pairs
           content:
             application/json:
-              schema: { type: object }
+              schema:
+                type: object
               example:
                 maxUploadSizeBytes: 524288000
-                allowedExtensions: ["pdf", "docx", "xlsx", "jpg", "png", "csv"]
+                allowedExtensions:
+                - pdf
+                - docx
+                - xlsx
+                - jpg
+                - png
+                - csv
                 virusScanEnabled: true
                 guestAccessExpiryDays: 30
                 hddSyncIntervalMinutes: 15
                 downloadRateLimitPerHour: 100
-
   /admin/settings/{key}:
     put:
       summary: Update a runtime config value
       parameters:
-        - { name: key, in: path, required: true, schema: { type: string } }
+      - name: key
+        in: path
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
             schema:
               type: object
               properties:
-                value: { type: string }
+                value:
+                  type: string
       responses:
-        '200': { description: Updated }
-
+        '200':
+          description: Updated
   /roles:
     get:
       summary: List custom roles for a department (FE-030)
       parameters:
-        - { name: deptId, in: query, required: true, schema: { type: string } }
+      - name: deptId
+        in: query
+        required: true
+        schema:
+          type: string
       responses:
         '200':
           description: Custom roles
           content:
             application/json:
-              schema: { type: array, items: { type: object } }
+              schema:
+                type: array
+                items:
+                  type: object
               example:
-                - id: "r1"
-                  departmentId: "d1a1a1a1-0000-0000-0000-000000000001"
-                  name: "Senior Archivist"
-                  description: "Can tag, version, and share files but not delete"
-                  permissions: ["FILE_VIEW", "FILE_DOWNLOAD", "FILE_UPLOAD", "FILE_VERSION", "FILE_TAG", "FILE_SHARE"]
-                  memberCount: 3
-                - id: "r2"
-                  departmentId: "d1a1a1a1-0000-0000-0000-000000000001"
-                  name: "Auditor"
-                  description: "Read-only access plus audit log export"
-                  permissions: ["FILE_VIEW", "AUDIT_VIEW", "AUDIT_EXPORT"]
-                  memberCount: 1
+              - id: r1
+                departmentId: d1a1a1a1-0000-0000-0000-000000000001
+                name: Senior Archivist
+                description: Can tag, version, and share files but not delete
+                permissions:
+                - FILE_VIEW
+                - FILE_DOWNLOAD
+                - FILE_UPLOAD
+                - FILE_VERSION
+                - FILE_TAG
+                - FILE_SHARE
+                memberCount: 3
+              - id: r2
+                departmentId: d1a1a1a1-0000-0000-0000-000000000001
+                name: Auditor
+                description: Read-only access plus audit log export
+                permissions:
+                - FILE_VIEW
+                - AUDIT_VIEW
+                - AUDIT_EXPORT
+                memberCount: 1
+              - id: r3
+                departmentId: d1a1a1a1-0000-0000-0000-000000000005
+                name: Operations Coordinator
+                description: Can view, upload and manage operational reports.
+                permissions:
+                - FILE_VIEW
+                - FILE_DOWNLOAD
+                - FILE_UPLOAD
+                - FILE_VERSION
+                memberCount: 5
+              - id: r4
+                departmentId: d1a1a1a1-0000-0000-0000-000000000002
+                name: HR Viewer
+                description: Read-only access to HR documents.
+                permissions:
+                - FILE_VIEW
+                - FILE_DOWNLOAD
+                memberCount: 4
     post:
       summary: Create a custom role
       requestBody:
@@ -707,13 +1606,17 @@ paths:
             schema:
               type: object
               properties:
-                deptId: { type: string }
-                name: { type: string }
-                permissions: { type: array, items: { type: string } }
+                deptId:
+                  type: string
+                name:
+                  type: string
+                permissions:
+                  type: array
+                  items:
+                    type: string
       responses:
-        '201': { description: Created }
-
-  # ---------- HEALTH ----------
+        '201':
+          description: Created
   /health:
     get:
       summary: Application health check
@@ -726,4 +1629,6 @@ paths:
               schema:
                 type: object
                 properties:
-                  status: { type: string, example: ok }
+                  status:
+                    type: string
+                    example: ok

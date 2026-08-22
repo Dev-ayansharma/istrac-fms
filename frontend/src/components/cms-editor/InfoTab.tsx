@@ -54,10 +54,10 @@ export function InfoTab() {
         }),
       ])
 
-      addToast('Info updated', 'success')
+      addToast({ message: 'Info updated', variant: 'success' })
       triggerRefresh()
     } catch {
-      addToast('Failed to save', 'error')
+      addToast({ message: 'Failed to save', variant: 'error' })
     }
   }
 

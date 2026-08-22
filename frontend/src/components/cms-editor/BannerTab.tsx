@@ -46,11 +46,11 @@ export function BannerTab() {
       },
       {
         onSuccess: () => {
-          addToast('Banner updated', 'success')
+          addToast({ message: 'Banner updated', variant: 'success' })
           triggerRefresh()
         },
         onError: () => {
-          addToast('Failed to save', 'error')
+          addToast({ message: 'Failed to save', variant: 'error' })
         },
       },
     )

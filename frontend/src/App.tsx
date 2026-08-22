@@ -25,7 +25,8 @@ import { UserHome } from './pages/UserHome'
 import { DeptFileBrowser } from './pages/DeptFileBrowser'
 import { DevIndex } from './pages/DevIndex'
 import { SearchPage } from './pages/SearchPage'
-function Landing() { return <div>Landing (public)</div> }
+import { Landing } from './pages/Landing'
+import { NotificationsPage } from './pages/NotificationsPage'
 
 
 
@@ -57,6 +58,7 @@ export default function App() {
           <Route path="/force-password-change" element={<ForcePasswordChange />} />
   <Route element={<ForcePasswordGuard />}></Route>
           <Route element={<AppShell />}>
+          <Route path="/notifications" element={<NotificationsPage />} />
             <Route path="/dashboard" element={<UserHome />} />
             <Route path="/dashboard/files" element={<Files />} />
             <Route path="/dashboard/files/:deptId" element={<DeptFileBrowser />} />
@@ -72,6 +74,7 @@ export default function App() {
               <Route path="/admin/broadcast" element={<BroadcastNotification />} />
               <Route path="/admin/cms" element={<CmsEditor />} />
               <Route path="/admin/settings" element={<SystemConfigPanel />} />
+              
             </Route>
           </Route>
         </Route>

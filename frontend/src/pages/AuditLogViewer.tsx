@@ -10,7 +10,7 @@ import { exportToCsv } from '../lib/exportCsv'
 import { Button, Card, Input } from '../components'
 import { FilterChip } from '../components/FilterChip'
 import { AuditDiffView } from '../components/AuditDiffView'
-import { auditLogFixture } from '../mocks/Fixtures'
+
 const ACTION_OPTIONS = [
   'FILE_UPLOAD',
   'FILE_DOWNLOAD',
@@ -42,7 +42,7 @@ export function AuditLogViewer() {
   } = useAuditLog(filters)
 
   const entries = data?.pages.flatMap((p) => p.data) ?? []
-const displayEntries = entries.length > 0 ? entries : auditLogFixture.data
+
   async function handleExport() {
     setIsExporting(true)
 
@@ -133,7 +133,7 @@ const displayEntries = entries.length > 0 ? entries : auditLogFixture.data
               id="audit-action"
               value={action}
               onChange={(e) => setAction(e.target.value)}
-              className="input"
+              className="w-full rounded-lg border border-border-default bg-surface px-3.5 py-2.5 text-sm text-text-primary outline-none transition-all duration-150 placeholder:text-text-muted/50 focus:border-accent focus:ring-2 focus:ring-accent/20 disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-card"
             >
               <option value="">All actions</option>
 
@@ -193,7 +193,7 @@ const displayEntries = entries.length > 0 ? entries : auditLogFixture.data
       )}
 
       {/* Empty state */}
-      {!isLoading && displayEntries.length === 0 && (
+      {!isLoading && entries.length === 0 && (
         <Card>
           <div className="py-6 text-center">
             <p className="text-sm font-medium text-text-secondary">
@@ -208,9 +208,9 @@ const displayEntries = entries.length > 0 ? entries : auditLogFixture.data
       )}
 
       {/* Audit entries */}
-      {!isLoading && displayEntries.length > 0 && (
+      {!isLoading && entries.length > 0 && (
         <div className="space-y-2">
-          {displayEntries.map((entry) => {
+          {entries.map((entry) => {
             const expanded = expandedId === entry.id
 
             return (

@@ -10,12 +10,12 @@ import { useToastStore } from '../store/toastStore'
 import { Card, Button, Badge } from '../components'
 import { CreateDeptModal } from '../components/CreateDeptModal'
 import { HDD_ROOT } from '../../schemas/departmentSchema'
-import { departmentsFixture } from '../mocks/Fixtures'
+
 type Tab = 'active' | 'archived'
 
 export function DepartmentManager() {
   const { data: departments, isLoading } = useDepartments()
- const displayDepartments = departments && departments.length > 0 ? departments : departmentsFixture
+ 
   const createDept = useCreateDepartment()
   const updateDept = useUpdateDepartment()
   const archiveDept = useArchiveDepartment()
@@ -31,15 +31,15 @@ export function DepartmentManager() {
   } | null>(null)
 
   const filtered =
-    displayDepartments?.filter((dept) =>
+    departments?.filter((dept) =>
       tab === 'active' ? !dept.archived : dept.archived
     ) ?? []
 
   const activeCount =
-    displayDepartments?.filter((dept) => !dept.archived).length ?? 0
+    departments?.filter((dept) => !dept.archived).length ?? 0
 
   const archivedCount =
-    displayDepartments?.filter((dept) => dept.archived).length ?? 0
+    departments?.filter((dept) => dept.archived).length ?? 0
 
   async function handleCreate(data: {
     name: string
@@ -47,7 +47,7 @@ export function DepartmentManager() {
   }) {
     await createDept.mutateAsync(data)
 
-    addToast('Department created', 'success')
+    addToast({ message: 'Department created', variant: 'success' })
     setModalOpen(false)
   }
 
@@ -62,7 +62,7 @@ export function DepartmentManager() {
       ...data,
     })
 
-    addToast('Department updated', 'success')
+    addToast({ message: 'Department updated', variant: 'success' })
     setEditingDept(null)
   }
 
@@ -79,13 +79,13 @@ export function DepartmentManager() {
       {
         onSuccess: () =>
           addToast(
-            `${name} ${
+          {message:  `${name} ${
               currentlyArchived ? 'restored' : 'archived'
             }`,
-            'info'
+            variant: 'info'}
           ),
 
-        onError: () => addToast('Action failed', 'error'),
+        onError: () => addToast({ message: 'Action failed', variant: 'error' }),
       }
     )
   }

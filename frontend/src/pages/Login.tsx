@@ -125,7 +125,7 @@ export function Login() {
         />
       </div>
 
-      <nav className="nav-glass relative z-10">
+      <nav className="relative z-10 border-b border-border-default/40 bg-page/95 backdrop-blur-xl">
         <div
           className="
             max-w-7xl
@@ -164,7 +164,7 @@ export function Login() {
             <button
               type="button"
               onClick={() => navigate("/")}
-              className="btn-outline py-1.5 text-xs"
+              className="inline-flex items-center justify-center gap-2 rounded-lg border border-border-default bg-transparent px-3 py-1.5 text-xs font-bold text-text-secondary transition-colors hover:border-accent-light/50 hover:bg-card-hover/40 hover:text-text-primary"
             >
               Home
             </button>
@@ -172,7 +172,7 @@ export function Login() {
             <button
               type="button"
               onClick={() => navigate("/register")}
-              className="btn-primary py-1.5 text-xs"
+              className="inline-flex items-center justify-center gap-2 rounded-lg border border-transparent bg-accent px-3 py-1.5 text-xs font-bold text-white shadow-sm transition-all hover:bg-accent-hover active:scale-[0.98]"
             >
               Sign Up
             </button>
@@ -429,3 +429,4 @@ export function Login() {
     </div>
   );
 }
+

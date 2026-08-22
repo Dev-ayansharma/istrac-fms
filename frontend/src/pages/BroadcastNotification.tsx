@@ -37,12 +37,12 @@ export function BroadcastNotification() {
       },
       {
         onSuccess: () => {
-          addToast('Notification sent', 'success')
+          addToast({ message: 'Notification sent', variant: 'success' })
           setMessage('')
           setSelectedDeptIds([])
         },
         onError: () =>
-          addToast('Failed to send notification', 'error'),
+          addToast({ message: 'Failed to send notification', variant: 'error' })
       },
     )
   }

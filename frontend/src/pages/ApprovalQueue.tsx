@@ -8,10 +8,10 @@ import {
 import { useToastStore } from '../store/toastStore'
 import { Card, Button } from '../components'
 import { RejectModal } from '../components/RejectModal'
-import { pendingUsersFixture } from '../mocks/Fixtures'
+
 export function ApprovalQueue() {
   const { data: pendingUsers, isLoading } = usePendingUsers()
-  const displayUsers = pendingUsers && pendingUsers.length > 0 ? pendingUsers : pendingUsersFixture
+
   const approveUser = useApproveUser()
   const rejectUser = useRejectUser()
   const addToast = useToastStore((s) => s.addToast)
@@ -20,8 +20,8 @@ export function ApprovalQueue() {
 
   function handleApprove(userId: string, name: string) {
     approveUser.mutate(userId, {
-      onSuccess: () => addToast(`${name} approved`, 'success'),
-      onError: () => addToast('Failed to approve — try again', 'error'),
+      onSuccess: () => addToast({ message: `${name} approved`, variant: 'success' }),
+      onError: () => addToast({ message: 'Failed to approve — try again', variant: 'error' }),
     })
   }
 
@@ -34,10 +34,10 @@ export function ApprovalQueue() {
       { userId: rejectingUserId, reason },
       {
         onSuccess: () => {
-          addToast(`${user?.name ?? 'User'} rejected`, 'info')
+          addToast({ message: `${user?.name ?? 'User'} rejected`, variant: 'info' })
           setRejectingUserId(null)
         },
-        onError: () => addToast('Failed to reject — try again', 'error'),
+        onError: () => addToast({ message: 'Failed to reject — try again', variant: 'error' }),
       },
     )
   }
@@ -77,16 +77,16 @@ export function ApprovalQueue() {
           </p>
         </div>
 
-        {displayUsers && displayUsers.length > 0 && (
+        {pendingUsers && pendingUsers.length > 0 && (
           <div className="inline-flex w-fit items-center gap-1.5 rounded-full border border-warning/20 bg-warning-bg px-2.5 py-1 text-xs font-medium text-warning">
             <Clock3 size={13} />
-            {displayUsers.length} pending
+            {pendingUsers.length} pending
           </div>
         )}
       </div>
 
       {/* Empty State */}
-      {(!displayUsers || displayUsers.length === 0) && (
+      {(!pendingUsers || pendingUsers.length === 0) && (
         <Card className="py-10">
           <div className="flex flex-col items-center justify-center text-center">
             <div className="flex items-center justify-center w-10 h-10 mb-3 rounded-full bg-nominal-bg text-nominal">
@@ -105,7 +105,7 @@ export function ApprovalQueue() {
       )}
 
       {/* Pending Users */}
-      {displayUsers?.map((user) => (
+      {pendingUsers?.map((user) => (
         <Card key={user.id} variant="interactive">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             {/* User Information */}

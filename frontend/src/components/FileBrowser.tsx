@@ -4,7 +4,7 @@ import { useDeptFiles, useBulkDeleteFiles, useBulkTagFiles } from '../hooks/useD
 import { useUIStore } from '../store/uiStore'
 import { useToastStore } from '../store/toastStore'
 import { formatFileSize } from '../lib/formatFileSize'
-import { filesFixture } from '../mocks/Fixtures'
+
 import { FileIcon } from './FileIcon'
 import { BulkActionBar } from './BulkActionBar'
 import { TagModal } from './TagModal'
@@ -30,7 +30,7 @@ export function FileBrowser({ deptId, parentId = null }: FileBrowserProps) {
   const [previewFile, setPreviewFile] = useState<FileNode | null>(null)
 
   const { data: filesData, isLoading } = useDeptFiles({ deptId, parentId, sortField, sortDirection })
-  const files = filesData && filesData.length > 0 ? filesData : filesFixture
+
 
   const bulkDelete = useBulkDeleteFiles()
   const bulkTag = useBulkTagFiles()
@@ -56,10 +56,10 @@ export function FileBrowser({ deptId, parentId = null }: FileBrowserProps) {
   function handleBulkDelete() {
     bulkDelete.mutate(Array.from(selectedIds), {
       onSuccess: () => {
-        addToast(`${selectedIds.size} file(s) deleted`, 'success')
+        addToast({ message: `${selectedIds.size} file(s) deleted`, variant: 'success' })
         setSelectedIds(new Set())
       },
-      onError: () => addToast('Bulk delete failed', 'error'),
+      onError: () => addToast({ message: 'Bulk delete failed', variant: 'error' }),
     })
   }
 
@@ -68,11 +68,11 @@ export function FileBrowser({ deptId, parentId = null }: FileBrowserProps) {
       { fileIds: Array.from(selectedIds), tags },
       {
         onSuccess: () => {
-          addToast('Tags applied', 'success')
+          addToast({ message: 'Tags applied', variant: 'success' })
           setSelectedIds(new Set())
           setTagModalOpen(false)
         },
-        onError: () => addToast('Bulk tag failed', 'error'),
+        onError: () => addToast({ message: 'Bulk tag failed', variant: 'error' }),
       }
     )
   }
@@ -135,13 +135,13 @@ export function FileBrowser({ deptId, parentId = null }: FileBrowserProps) {
         onClear={() => setSelectedIds(new Set())}
       />
 
-      {files.length === 0 && (
+      {filesData?.length === 0 && (
         <Card><p className="text-text-muted text-sm">This folder is empty.</p></Card>
       )}
 
       {fileViewMode === 'grid' ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-          {files.map((file) => (
+          {filesData?.map((file) => (
             <Card
               key={file.id}
               variant="interactive"
@@ -178,7 +178,7 @@ export function FileBrowser({ deptId, parentId = null }: FileBrowserProps) {
         </div>
       ) : (
         <div className="space-y-1">
-          {files.map((file) => (
+          {filesData?.map((file) => (
             <div
               key={file.id}
               className={`flex items-center gap-3 px-3 py-2 rounded-md border ${

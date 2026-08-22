@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { api } from '../lib/axios'
 import { useAuthStore } from '../store/authStore'
 import { Button, Input } from '../components'
-import { PasswordStrengthMeter, isPasswordValid } from '../components/PasswordStrengthmeter'
+import { PasswordStrengthMeter, isPasswordValid } from '../components/PasswordStrengthMeter'
 import { newPasswordSchema } from '../../schemas/authSchemas'
 
 export function ForcePasswordChange() {

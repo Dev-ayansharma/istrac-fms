@@ -5,7 +5,7 @@ import { useNavigate} from 'react-router-dom'
 import { AxiosError } from 'axios'
 import { api } from '../lib/axios'
 import { Button, Input } from '../components'
-import { PasswordStrengthMeter, isPasswordValid } from '../components/PasswordStrengthmeter'
+import { PasswordStrengthMeter, isPasswordValid } from '../components/PasswordStrengthMeter'
 import { forgotPasswordSchema, otpSchema, newPasswordSchema } from '../../schemas/authSchemas'
 
 type Step = 'email' | 'otp' | 'newPassword' | 'done'

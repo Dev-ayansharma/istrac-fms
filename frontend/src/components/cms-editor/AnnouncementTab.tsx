@@ -54,11 +54,11 @@ export function AnnouncementTab() {
       },
       {
         onSuccess: () => {
-          addToast('Announcement updated', 'success')
+          addToast({ message: 'Announcement updated', variant: 'success' })
           triggerRefresh()
         },
         onError: () => {
-          addToast('Failed to save', 'error')
+          addToast({ message: 'Failed to save', variant: 'error' })
         },
       },
     )

@@ -7,7 +7,7 @@ import {
 } from 'lucide-react'
 import { useAdminStats } from '../hooks/useAdminStats'
 import { StatCard, AuditFeed } from '../components'
-import {adminStatsFixture} from '../mocks/Fixtures'
+
 function formatBytes(bytes: number) {
   if (bytes < 1024 ** 3) {
     return `${(bytes / 1024 ** 2).toFixed(1)} MB`
@@ -18,7 +18,7 @@ function formatBytes(bytes: number) {
 
 export function AdminHome() {
   const { data: stats, isLoading } = useAdminStats()
-  const statsData = stats || adminStatsFixture
+  
 
   return (
     <div className="space-y-5 sm:space-y-6">
@@ -47,21 +47,21 @@ export function AdminHome() {
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           label="Users"
-          value={isLoading ? '—' : statsData.users}
+          value={isLoading ? '—' : stats!.users}
           icon={Users}
           trend={!isLoading ? 'Total registered users' : undefined}
         />
 
         <StatCard
           label="Files"
-          value={isLoading ? '—' : statsData.files}
+          value={isLoading ? '—' : stats!.files}
           icon={FileText}
           trend={!isLoading ? 'Files stored in system' : undefined}
         />
 
         <StatCard
           label="Departments"
-          value={isLoading ? '—' : statsData.departments}
+          value={isLoading ? '—' : stats!.departments}
           icon={Building2}
           trend={!isLoading ? 'Active departments' : undefined}
         />
@@ -71,7 +71,7 @@ export function AdminHome() {
           value={
             isLoading
               ? '—'
-              : formatBytes(statsData.storageUsedBytes)
+              : formatBytes(stats!.storageUsedBytes)
           }
           icon={HardDrive}
           trend={!isLoading ? 'Current storage usage' : undefined}

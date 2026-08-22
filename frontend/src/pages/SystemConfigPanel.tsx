@@ -3,10 +3,10 @@ import { useSystemConfig } from '../hooks/useSystemConfig'
 import { Card } from '../components'
 import { ConfigField } from '../components/ConfigField'
 import { ConfigToggle } from '../components/ConfigToggle'
-import { systemConfigFixture } from '../mocks/Fixtures'
+
 export function SystemConfigPanel() {
   const { data: config, isLoading } = useSystemConfig()
-const displayConfig = config ?? systemConfigFixture
+
   if (isLoading || !config) {
     return (
       <p className="text-sm text-text-muted">
@@ -44,14 +44,14 @@ const displayConfig = config ?? systemConfigFixture
             settingKey="maxUploadSizeBytes"
             label="Max upload size (bytes)"
             type="number"
-            value={String(displayConfig.maxUploadSizeBytes)}
+            value={String(config.maxUploadSizeBytes)}
             helpText="Default: 524288000 (500 MB)"
           />
 
           <ConfigField
             settingKey="allowedExtensions"
             label="Allowed extensions (comma-separated)"
-            value={displayConfig.allowedExtensions.join(',')}
+            value={config.allowedExtensions.join(',')}
           />
         </div>
       </Card>
@@ -72,7 +72,7 @@ const displayConfig = config ?? systemConfigFixture
           <ConfigToggle
             settingKey="virusScanEnabled"
             label="Enable virus scan on upload"
-            checked={displayConfig.virusScanEnabled}
+            checked={config.virusScanEnabled}
             helpText="Requires a configured ClamAV or equivalent scan hook."
           />
 
@@ -80,7 +80,7 @@ const displayConfig = config ?? systemConfigFixture
             settingKey="downloadRateLimitPerHour"
             label="Download rate limit (per user, per hour)"
             type="number"
-            value={String(displayConfig.downloadRateLimitPerHour)}
+            value={String(config.downloadRateLimitPerHour)}
           />
         </div>
       </Card>
@@ -102,7 +102,7 @@ const displayConfig = config ?? systemConfigFixture
             settingKey="guestAccessExpiryDays"
             label="Default guest access expiry (days)"
             type="number"
-            value={String(displayConfig.guestAccessExpiryDays)}
+            value={String(config.guestAccessExpiryDays)}
           />
         </div>
       </Card>
@@ -124,7 +124,7 @@ const displayConfig = config ?? systemConfigFixture
             settingKey="hddSyncIntervalMinutes"
             label="Sync interval (minutes)"
             type="number"
-            value={String(displayConfig.hddSyncIntervalMinutes)}
+            value={String(config.hddSyncIntervalMinutes)}
             helpText="Default: 15 minutes."
           />
         </div>

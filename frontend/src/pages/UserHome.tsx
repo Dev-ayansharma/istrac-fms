@@ -10,7 +10,7 @@ import { QuickSearchBar } from '../components/QuickSearchBar'
 import { UserDeptCard } from '../components/UserDeptCard'
 
 import { formatFileSize } from '../lib/formatFileSize'
-import { recentFilesFixture } from '../mocks/Fixtures'
+
 export function UserHome() {
   const user = useAuthStore((state) => state.user)
 
@@ -23,7 +23,7 @@ export function UserHome() {
     data: recentFiles,
     isLoading: filesLoading,
   } = useRecentFiles()
-const displayFiles = recentFiles && recentFiles.length > 0 ? recentFiles : recentFilesFixture
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -83,9 +83,9 @@ const displayFiles = recentFiles && recentFiles.length > 0 ? recentFiles : recen
             Recent Files
           </h2>
 
-          {displayFiles && displayFiles.length > 0 && (
+          {recentFiles && recentFiles.length > 0 && (
             <span className="text-xs text-text-muted">
-              {displayFiles.length} recent
+              {recentFiles.length} recent
             </span>
           )}
         </div>
@@ -97,9 +97,9 @@ const displayFiles = recentFiles && recentFiles.length > 0 ? recentFiles : recen
                 Loading files...
               </p>
             </div>
-          ) : displayFiles && displayFiles.length > 0 ? (
+          ) : recentFiles && recentFiles.length > 0 ? (
             <ul className="divide-y divide-border-subtle">
-              {displayFiles.map((file) => (
+              {recentFiles.map((file) => (
                 <li
                   key={file.id}
                   className="

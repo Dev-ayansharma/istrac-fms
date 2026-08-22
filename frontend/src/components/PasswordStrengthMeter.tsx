@@ -17,7 +17,7 @@ interface PasswordStrengthMeterProps {
 
 export function PasswordStrengthMeter({ password }: PasswordStrengthMeterProps) {
   const passedCount = requirements.filter((r) => r.test(password)).length
-  const allPassed = passedCount === requirements.length
+  // const allPassed = passedCount === requirements.length
 
   const barColor =
     passedCount <= 2 ? 'bg-critical' : passedCount <= 4 ? 'bg-warning' : 'bg-nominal'

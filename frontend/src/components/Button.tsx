@@ -1,71 +1,22 @@
-import type {
-  ButtonHTMLAttributes,
-  ReactNode,
-} from 'react'
+import type { ButtonHTMLAttributes, ReactNode } from 'react'
 
-interface ButtonProps
-  extends ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'outline' | 'danger'
   size?: 'sm' | 'md' | 'lg'
   children: ReactNode
 }
 
 const variantStyles = {
-  primary: `
-    bg-accent
-    text-white
-    hover:bg-accent-hover
-    active:scale-[0.98]
-    shadow-sm
-  `,
-
-  secondary: `
-    bg-card
-    text-text-primary
-    border
-    border-border-default
-    hover:bg-card-hover
-  `,
-
-  outline: `
-    bg-transparent
-    border
-    border-border-default
-    text-text-secondary
-    hover:border-accent-light/50
-    hover:text-text-primary
-    hover:bg-card-hover/40
-  `,
-
-  danger: `
-    bg-critical
-    text-white
-    hover:opacity-90
-    active:scale-[0.98]
-  `,
+  primary: 'border border-accent/40 bg-accent text-white shadow-button hover:-translate-y-px hover:bg-accent-light hover:shadow-[0_10px_30px_rgba(22,131,255,0.30)] active:translate-y-0 active:bg-accent-dark',
+  secondary: 'border border-border-default bg-card text-text-primary hover:border-border-bright hover:bg-card-hover',
+  outline: 'border border-border-default bg-surface/60 text-text-primary hover:border-accent/50 hover:bg-accent/10 hover:text-accent-light',
+  danger: 'border border-critical/30 bg-critical text-white hover:bg-critical/90 active:scale-[0.98]',
 }
 
 const sizeStyles = {
-  sm: `
-    px-3
-    py-1.5
-    text-xs
-    rounded-lg
-  `,
-
-  md: `
-    px-4
-    py-2
-    text-sm
-    rounded-lg
-  `,
-
-  lg: `
-    px-6
-    py-3
-    text-base
-    rounded-lg
-  `,
+  sm: 'min-h-8 rounded-[8px] px-3 py-1.5 text-xs',
+  md: 'min-h-10 rounded-[9px] px-4 py-2 text-sm',
+  lg: 'min-h-11 rounded-[9px] px-5 py-2.5 text-sm',
 }
 
 export function Button({
@@ -79,32 +30,7 @@ export function Button({
   return (
     <button
       type={type}
-      className={`
-        inline-flex
-        items-center
-        justify-center
-        gap-2
-
-        font-sans
-        font-medium
-
-        transition-all
-        duration-150
-
-        outline-none
-
-        focus-visible:ring-2
-        focus-visible:ring-accent/30
-        focus-visible:ring-offset-0
-
-        disabled:opacity-50
-        disabled:cursor-not-allowed
-        disabled:pointer-events-none
-
-        ${variantStyles[variant]}
-        ${sizeStyles[size]}
-        ${className}
-      `}
+      className={`inline-flex items-center justify-center gap-2 font-sans font-semibold tracking-[0.01em] transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:ring-offset-2 focus-visible:ring-offset-page disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 ${variantStyles[variant]} ${sizeStyles[size]} ${className}`}
       {...props}
     >
       {children}
