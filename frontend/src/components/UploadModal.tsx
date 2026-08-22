@@ -21,38 +21,52 @@ interface UploadModalProps {
 const statusIcon: Record<UploadStatus, JSX.Element> = {
   queued: (
     <Loader2
-      size={16}
-      className="text-text-muted animate-spin"
+      size={14}
+      strokeWidth={1.8}
+      className="animate-spin text-text-dim"
     />
   ),
 
   hashing: (
     <Loader2
-      size={16}
-      className="text-accent-light animate-spin"
+      size={14}
+      strokeWidth={1.8}
+      className="animate-spin text-accent-light"
     />
   ),
 
   uploading: (
     <Loader2
-      size={16}
-      className="text-accent-light animate-spin"
+      size={14}
+      strokeWidth={1.8}
+      className="animate-spin text-accent-light"
     />
   ),
 
   complete: (
     <CheckCircle2
-      size={16}
+      size={14}
+      strokeWidth={1.8}
       className="text-nominal"
     />
   ),
 
   error: (
     <XCircle
-      size={16}
+      size={14}
+      strokeWidth={1.8}
       className="text-critical"
     />
   ),
+}
+
+/** Machine-readable status, shown next to the icon so state is never colour-only. */
+const statusLabel: Record<UploadStatus, string> = {
+  queued: 'QUEUED',
+  hashing: 'HASHING',
+  uploading: 'UPLOADING',
+  complete: 'DONE',
+  error: 'FAILED',
 }
 
 export function UploadModal({
@@ -100,8 +114,9 @@ export function UploadModal({
       title="Upload files"
       size="lg"
     >
-      {/* Drop zone */}
-      <div
+      {/* Drop zone — a real button, so it's reachable without a mouse. */}
+      <button
+        type="button"
         onDragOver={(e) => {
           e.preventDefault()
           setIsDragging(true)
@@ -109,77 +124,100 @@ export function UploadModal({
         onDragLeave={() => setIsDragging(false)}
         onDrop={handleDrop}
         onClick={() => inputRef.current?.click()}
-        className={`
-          border-2 border-dashed rounded-lg
-          p-8 text-center cursor-pointer
-          transition-colors
-          ${
-            isDragging
-              ? 'border-accent bg-accent/5'
-              : 'border-border-default hover:border-border-default/70'
-          }
-        `}
+        className={`relative block w-full overflow-hidden rounded-lg border border-dashed px-6 py-10 text-center transition-colors duration-150 ${
+          isDragging
+            ? 'border-accent bg-accent/[0.06]'
+            : 'border-border-default bg-surface hover:border-border-bright hover:bg-card-hover'
+        }`}
       >
-        <Upload
-          size={28}
-          className="mx-auto text-text-muted mb-2"
+        <span
+          aria-hidden="true"
+          className="graticule-fine absolute inset-0 opacity-50"
         />
 
-        <p className="text-text-secondary text-sm">
-          Drag files here, or click to browse
-        </p>
+        <span className="relative block">
+          <Upload
+            size={20}
+            strokeWidth={1.6}
+            aria-hidden="true"
+            className={`mx-auto transition-colors duration-150 ${
+              isDragging ? 'text-accent-light' : 'text-text-muted'
+            }`}
+          />
 
-        <p className="text-text-muted text-xs mt-1">
-          Files over 10MB upload in chunks automatically
-        </p>
+          <span className="mt-3 block text-[13px] text-text-secondary">
+            Drag files here, or click to browse
+          </span>
 
-        <input
-          ref={inputRef}
-          type="file"
-          multiple
-          className="hidden"
-          onClick={(e) => e.stopPropagation()}
-          onChange={(e) => {
-            if (e.target.files) {
-              addFiles(e.target.files)
-              e.target.value = ''
-            }
-          }}
-        />
-      </div>
+          <span className="num mt-1.5 block text-[10px] tracking-wide text-text-dim">
+            &gt; 10 MB uploads in chunks automatically
+          </span>
+        </span>
+      </button>
 
-      {/* Upload items */}
+      <input
+        ref={inputRef}
+        type="file"
+        multiple
+        className="hidden"
+        onClick={(e) => e.stopPropagation()}
+        onChange={(e) => {
+          if (e.target.files) {
+            addFiles(e.target.files)
+            e.target.value = ''
+          }
+        }}
+      />
+
+      {/* Queue */}
       {items.length > 0 && (
-        <div className="mt-4 space-y-2 max-h-64 overflow-auto">
-          {items.map((item) => (
-            <div
-              key={item.id}
-              className="flex items-center gap-3 bg-surface rounded-md px-3 py-2"
-            >
-              {statusIcon[item.status]}
+        <div className="mt-5 overflow-hidden rounded-lg border border-border-subtle">
+          <div className="flex items-center justify-between gap-4 border-b border-border-subtle bg-surface px-3 py-2">
+            <span className="col-label">Queue</span>
+            <span className="num text-[10px] text-text-dim">
+              {items.length} {items.length === 1 ? 'file' : 'files'}
+            </span>
+          </div>
 
-              <div className="flex-1 min-w-0">
-                <div className="flex justify-between text-xs mb-1">
-                  <span className="text-text-primary truncate">
+          <div className="max-h-64 divide-y divide-border-subtle overflow-auto">
+            {items.map((item) => (
+              <div key={item.id} className="px-3 py-2.5">
+                <div className="flex items-center gap-2.5">
+                  <span className="shrink-0">
+                    {statusIcon[item.status]}
+                  </span>
+
+                  <span className="min-w-0 flex-1 truncate text-[13px] text-text-primary">
                     {item.file.name}
                   </span>
 
-                  <span className="text-text-muted shrink-0 ml-2">
+                  <span className="num shrink-0 text-[10px] text-text-dim">
                     {formatFileSize(item.file.size)}
+                  </span>
+
+                  <span
+                    className={`num w-[72px] shrink-0 text-right text-[10px] tracking-wide ${
+                      item.status === 'error'
+                        ? 'text-critical'
+                        : item.status === 'complete'
+                          ? 'text-nominal'
+                          : 'text-text-muted'
+                    }`}
+                  >
+                    {statusLabel[item.status]}
                   </span>
                 </div>
 
-                {/* Progress bar */}
-                <div className="h-1 bg-border-subtle rounded-full overflow-hidden">
+                {/* Progress — a hairline, not a pill. */}
+                <div className="mt-2 h-px w-full bg-border-subtle">
                   <div
-                    className={`
-                      h-full transition-all
-                      ${
-                        item.status === 'error'
-                          ? 'bg-critical'
+                    className={`h-px transition-all duration-300 ${
+                      item.status === 'error'
+                        ? 'bg-critical'
+                        : item.status === 'complete'
+                          ? 'bg-nominal'
                           : 'bg-accent'
-                      }
-                    `}
+                    }`}
                     style={{
                       width: `${item.progress}%`,
                     }}
@@ -187,20 +225,21 @@ export function UploadModal({
                 </div>
 
                 {item.status === 'error' && (
-                  <span className="text-critical text-xs">
+                  <p className="mt-1.5 text-[11px] text-critical">
                     {item.error}
-                  </span>
+                  </p>
                 )}
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       )}
 
       {/* Footer */}
-      <div className="flex justify-end mt-4">
+      <div className="mt-5 flex justify-end border-t border-border-subtle pt-4">
         <Button
           variant={allComplete ? 'primary' : 'outline'}
+          size="sm"
           onClick={handleClose}
         >
           {allComplete ? 'Done' : 'Close'}

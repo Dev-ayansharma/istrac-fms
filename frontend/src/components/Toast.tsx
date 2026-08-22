@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { CheckCircle2, Info, AlertTriangle, XCircle, X } from 'lucide-react'
-import { useToastStore, type  ToastVariant } from '../store/toastStore'
+import { useToastStore, type ToastVariant } from '../store/toastStore'
 
 interface ToastProps {
   id: string
@@ -11,11 +11,14 @@ interface ToastProps {
   isPaused: boolean
 }
 
-const variantConfig: Record<ToastVariant, { icon: typeof CheckCircle2; color: string; bg: string }> = {
-  success: { icon: CheckCircle2, color: 'text-nominal', bg: 'border-nominal/30' },
-  info: { icon: Info, color: 'text-accent-light', bg: 'border-border-default' },
-  warning: { icon: AlertTriangle, color: 'text-warning', bg: 'border-warning/30' },
-  error: { icon: XCircle, color: 'text-critical', bg: 'border-critical/30' },
+const variantConfig: Record<
+  ToastVariant,
+  { icon: typeof CheckCircle2; color: string; edge: string; bar: string }
+> = {
+  success: { icon: CheckCircle2, color: 'text-nominal', edge: 'border-l-nominal', bar: 'bg-nominal' },
+  info: { icon: Info, color: 'text-accent-light', edge: 'border-l-accent', bar: 'bg-accent' },
+  warning: { icon: AlertTriangle, color: 'text-warning', edge: 'border-l-warning', bar: 'bg-warning' },
+  error: { icon: XCircle, color: 'text-critical', edge: 'border-l-critical', bar: 'bg-critical' },
 }
 
 export function Toast({ id, message, title, variant, duration, isPaused }: ToastProps) {
@@ -26,7 +29,7 @@ export function Toast({ id, message, title, variant, duration, isPaused }: Toast
   const startRef = useRef(Date.now())
   const rafRef = useRef<number>(0)
 
-  const { icon: Icon, color, bg } = variantConfig[variant]
+  const { icon: Icon, color, edge, bar } = variantConfig[variant]
 
   useEffect(() => {
     if (isPaused) {
@@ -54,22 +57,32 @@ export function Toast({ id, message, title, variant, duration, isPaused }: Toast
 
   return (
     <div
+      role="status"
       onMouseEnter={() => pauseToast(id)}
       onMouseLeave={() => resumeToast(id)}
-      className={`relative w-80 bg-card border ${bg} rounded-md shadow-xl overflow-hidden`}
+      className={`animate-rise pointer-events-auto relative w-80 overflow-hidden rounded-lg border border-l-2 border-border-default bg-card shadow-card-lg ${edge}`}
     >
-      <div className="flex items-start gap-3 p-3">
-        <Icon size={18} className={`${color} shrink-0 mt-0.5`} />
-        <div className="flex-1 min-w-0">
-          {title && <p className="text-text-primary text-sm font-medium">{title}</p>}
-          <p className="text-text-secondary text-sm">{message}</p>
+      <div className="flex items-start gap-2.5 p-3">
+        <Icon size={16} strokeWidth={1.8} className={`${color} mt-px shrink-0`} />
+
+        <div className="min-w-0 flex-1">
+          {title && <p className="text-[13px] font-bold text-text-primary">{title}</p>}
+          <p className="text-[13px] leading-5 text-text-secondary">{message}</p>
         </div>
-        <button onClick={() => removeToast(id)} className="text-text-muted hover:text-text-primary shrink-0">
-          <X size={14} />
+
+        <button
+          type="button"
+          onClick={() => removeToast(id)}
+          aria-label="Dismiss"
+          className="-m-1 shrink-0 rounded-md p-1 text-text-dim transition-colors duration-150 hover:bg-card-hover hover:text-text-primary"
+        >
+          <X size={13} />
         </button>
       </div>
-      <div className="h-0.5 bg-border-subtle">
-        <div className={`h-full ${color.replace('text-', 'bg-')} transition-none`} style={{ width: `${progress}%` }} />
+
+      {/* Time remaining, as a hairline rather than a progress bar. */}
+      <div className="h-px bg-border-subtle">
+        <div className={`h-full ${bar}`} style={{ width: `${progress}%` }} />
       </div>
     </div>
   )

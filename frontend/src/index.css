@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+/* ============================================================================
+   TYPEFACES — do not change. Lato ships in three weights only (300/400/700)
+   and DejaVu Sans Mono is the data face. The weight map in @theme below makes
+   sure no utility ever asks the browser to synthesize a weight we don't have.
+   ========================================================================== */
+
 @font-face {
   font-family: 'Lato';
   src: url('/fonts/Lato-Light.woff2') format('woff2');
@@ -27,99 +33,111 @@
   font-display: optional;
 }
 
-:root {
-  --bg-page: #030914;
-  --bg-surface: #06111f;
-  --bg-card: #081625;
-  --bg-card-hover: #0b1b2d;
-
-  --border-subtle: #10263b;
-  --border-default: #17304a;
-  --border-bright: #1d4568;
-
-  --text-primary: #f4f8fc;
-  --text-secondary: #b7c5d3;
-  --text-muted: #718397;
-  --text-dim: #526477;
-
-  --accent: #1683ff;
-  --accent-hover: #0f73e5;
-  --accent-light: #4ca3ff;
-  --accent-dark: #075dcc;
-
-  --status-nominal: #22c55e;
-  --status-nominal-bg: #0d2a1c;
-  --status-warning: #f59e0b;
-  --status-warning-bg: #2a1d09;
-  --status-critical: #ef4444;
-  --status-critical-bg: #2a1114;
-  --status-special: #8b5cf6;
-  --status-special-bg: #1d1534;
-
-  --color-page: var(--bg-page);
-  --color-surface: var(--bg-surface);
-  --color-page-soft: var(--bg-surface);
-  --color-card: var(--bg-card);
-  --color-card-hover: var(--bg-card-hover);
-  --color-border-subtle: var(--border-subtle);
-  --color-border-default: var(--border-default);
-  --color-border-bright: var(--border-bright);
-  --color-text-primary: var(--text-primary);
-  --color-text-secondary: var(--text-secondary);
-  --color-text-muted: var(--text-muted);
-  --color-text-dim: var(--text-dim);
-  --color-accent: var(--accent);
-  --color-accent-hover: var(--accent-hover);
-  --color-accent-light: var(--accent-light);
-  --color-accent-dark: var(--accent-dark);
-  --color-nominal: var(--status-nominal);
-  --color-nominal-bg: var(--status-nominal-bg);
-  --color-warning: var(--status-warning);
-  --color-warning-bg: var(--status-warning-bg);
-  --color-critical: var(--status-critical);
-  --color-critical-bg: var(--status-critical-bg);
-  --color-special: var(--status-special);
-  --color-special-bg: var(--status-special-bg);
-
-  --font-sans: "Lato", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "DejaVu Sans Mono", ui-monospace, monospace;
-}
+/* ============================================================================
+   THEME
+   ---------------------------------------------------------------------------
+   Direction: a ground-station console. Near-black planes separated by
+   hairlines rather than floating cards with drop shadows. One chromatic
+   voice (the ISTRAC blue) plus four status colours. Depth comes from surface
+   value and border brightness, never from blur.
+   ========================================================================== */
 
 @theme {
+  /* -- Type ---------------------------------------------------------------- */
   --font-sans: "Lato", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "DejaVu Sans Mono", ui-monospace, monospace;
 
-  --color-page: #030914;
-  --color-surface: #06111f;
-  --color-page-soft: #06111f;
-  --color-card: #081625;
-  --color-card-hover: #0b1b2d;
-  --color-border-subtle: #10263b;
-  --color-border-default: #17304a;
-  --color-border-bright: #1d4568;
-  --color-text-primary: #f4f8fc;
-  --color-text-secondary: #b7c5d3;
-  --color-text-muted: #718397;
-  --color-text-dim: #526477;
-  --color-accent: #1683ff;
-  --color-accent-hover: #0f73e5;
-  --color-accent-light: #4ca3ff;
-  --color-accent-dark: #075dcc;
-  --color-nominal: #22c55e;
-  --color-nominal-bg: #0d2a1c;
-  --color-warning: #f59e0b;
-  --color-warning-bg: #2a1d09;
-  --color-critical: #ef4444;
-  --color-critical-bg: #2a1114;
-  --color-special: #8b5cf6;
-  --color-special-bg: #1d1534;
+  /* Only 300/400/700 exist as files. Anything that asks for 500 resolves
+     down to 400 and anything that asks for 600+ resolves up to a real 700,
+     so no glyph is ever faux-bolded by the browser. */
+  --font-weight-thin: 300;
+  --font-weight-extralight: 300;
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 400;
+  --font-weight-semibold: 700;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 700;
+  --font-weight-black: 700;
 
-  --shadow-card: 0 10px 35px rgba(0, 0, 0, 0.28);
-  --shadow-card-hover: 0 18px 45px rgba(0, 0, 0, 0.38);
-  --shadow-glow: 0 0 35px rgba(22, 131, 255, 0.12);
-  --shadow-button: 0 8px 25px rgba(22, 131, 255, 0.22);
+  /* -- Planes -------------------------------------------------------------- */
+  --color-page: #04070c;
+  --color-page-soft: #070b12;
+  --color-surface: #090e16;
+  --color-card: #0b111a;
+  --color-card-hover: #111a26;
+
+  /* -- Hairlines ----------------------------------------------------------- */
+  --color-border-subtle: #172030;
+  --color-border-default: #212d3e;
+  --color-border-bright: #33455c;
+  /* `border-border` is referenced by existing markup — keep it resolvable. */
+  --color-border: #212d3e;
+
+  /* -- Ink ----------------------------------------------------------------- */
+  --color-text-primary: #eaf0f7;
+  --color-text-secondary: #a6b4c6;
+  --color-text-muted: #6c7c91;
+  --color-text-dim: #4a5768;
+
+  /* -- Accent -------------------------------------------------------------- */
+  --color-accent: #1683ff;
+  --color-accent-hover: #3d9aff;
+  --color-accent-light: #6bb2ff;
+  --color-accent-dark: #0a5fc0;
+
+  /* -- Status -------------------------------------------------------------- */
+  --color-nominal: #35c77f;
+  --color-nominal-bg: #0a2418;
+  --color-warning: #e5a33c;
+  --color-warning-bg: #241906;
+  --color-critical: #f2606a;
+  --color-critical-bg: #260e12;
+  --color-special: #9c82f7;
+  --color-special-bg: #17123a;
+
+  /* -- Radii --------------------------------------------------------------- */
+  /* Mechanical, not consumer-app. Tightening the scale here re-cuts every
+     rounded-* already in the codebase without touching the markup. */
+  --radius-xs: 2px;
+  --radius-sm: 3px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+  --radius-xl: 8px;
+  --radius-2xl: 10px;
+  --radius-3xl: 14px;
+
+  /* -- Elevation ----------------------------------------------------------- */
+  /* Kept deliberately near-invisible: a hairline reads as an edge, a blur
+     reads as a marketing card. The inset top highlight is what makes a panel
+     feel like a machined plate. */
+  --shadow-card:
+    inset 0 1px 0 rgba(255, 255, 255, 0.025),
+    0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-card-hover:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 2px 8px -2px rgba(0, 0, 0, 0.6);
+  --shadow-card-lg:
+    inset 0 1px 0 rgba(255, 255, 255, 0.035),
+    0 24px 60px -28px rgba(0, 0, 0, 0.9);
+  --shadow-button: 0 1px 2px rgba(0, 0, 0, 0.45);
+  --shadow-glow: 0 0 0 1px rgba(22, 131, 255, 0.22);
+
+  /* Tailwind's own soft shadows are too diffuse for this language —
+     overlays get a defined edge and a deep, tight drop instead. */
+  --shadow-xl:
+    inset 0 1px 0 rgba(255, 255, 255, 0.035),
+    0 18px 44px -20px rgba(0, 0, 0, 0.9);
+  --shadow-2xl:
+    inset 0 1px 0 rgba(255, 255, 255, 0.035),
+    0 32px 70px -30px rgba(0, 0, 0, 0.95);
+
+  /* -- Motion -------------------------------------------------------------- */
   --animate-pulse-slow: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  --animate-float: float 6s ease-in-out infinite;
+  --animate-rise: rise 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-tick: tick 2.4s steps(1, end) infinite;
+
+  /* -- Breakpoints --------------------------------------------------------- */
   --breakpoint-xs: 480px;
 }
 
@@ -128,37 +146,184 @@
   50% { opacity: 0.5; }
 }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+@keyframes rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
 }
+
+@keyframes tick {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0.25; }
+}
+
+/* ============================================================================
+   BASE
+   ========================================================================== */
 
 @layer base {
   *, *::before, *::after { box-sizing: border-box; }
 
   html {
-    background: var(--bg-page);
+    background: var(--color-page);
     scroll-behavior: smooth;
+    /* Keeps anchored landing sections clear of the sticky navbar. */
+    scroll-padding-top: 5rem;
   }
 
   body {
     margin: 0;
     min-height: 100vh;
-    background: var(--bg-page);
-    color: var(--text-primary);
-    font-family: "Lato", ui-sans-serif, system-ui, sans-serif;
+    background: var(--color-page);
+    color: var(--color-text-primary);
+    font-family: var(--font-sans);
+    font-weight: 400;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
 
-  h1, h2, h3, h4 { font-weight: 700; letter-spacing: -0.025em; }
-  button, input, textarea, select { font: inherit; }
+  /* Headings carry their weight per-use, not globally: display sizes are set
+     in Lato 300 and small functional labels in 700. A blanket bold here would
+     fight that, so base only handles optical tracking. */
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  p { text-wrap: pretty; }
+
+  button, input, textarea, select { font: inherit; color: inherit; }
+  button { background: none; border: 0; }
   img, svg { max-width: 100%; }
 
-  ::selection { background: rgba(22, 131, 255, 0.3); color: white; }
+  /* Machine-readable values are always tabular so columns of figures line up
+     digit-for-digit down a table. */
+  code, kbd, samp, pre {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
 
-  ::-webkit-scrollbar { width: 8px; height: 8px; }
-  ::-webkit-scrollbar-track { background: #030914; }
-  ::-webkit-scrollbar-thumb { background: #17304a; border-radius: 999px; }
-  ::-webkit-scrollbar-thumb:hover { background: #245577; }
+  /* Native controls sit on the same dark planes as everything else. */
+  select option {
+    background: var(--color-surface);
+    color: var(--color-text-primary);
+  }
+
+  ::placeholder { color: var(--color-text-dim); }
+
+  ::selection {
+    background: rgba(22, 131, 255, 0.28);
+    color: #fff;
+  }
+
+  /* One consistent, always-visible keyboard affordance. */
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+    border-radius: var(--radius-md);
+  }
+
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: var(--color-page); }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-border-default);
+    border: 2px solid var(--color-page);
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover { background: var(--color-border-bright); }
+  ::-webkit-scrollbar-corner { background: var(--color-page); }
+
+  * { scrollbar-color: var(--color-border-default) var(--color-page); }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* ============================================================================
+   UTILITIES
+   ---------------------------------------------------------------------------
+   A small vocabulary for the console language, so the same measurements and
+   the same hairlines get reused instead of re-typed per page.
+   ========================================================================== */
+
+/* Page measure. Matches the width the landing sections already used. */
+@utility shell {
+  width: min(1280px, calc(100% - 2rem));
+  margin-inline: auto;
+}
+
+@utility shell-wide {
+  width: min(1600px, calc(100% - 2rem));
+  margin-inline: auto;
+}
+
+/* Section marker: small, wide-tracked, always uppercase. */
+@utility eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* Display type is set light and tight — the inverse of the usual
+   big-and-bold, and much closer to how instrument panels are labelled. */
+@utility display {
+  font-weight: 300;
+  letter-spacing: -0.035em;
+  line-height: 1.04;
+}
+
+/* THE RULE OF THE SYSTEM: anything the machine produced — identifiers,
+   timestamps, byte counts, versions, addresses, tallies — is set in mono.
+   Anything a person wrote stays in Lato. */
+@utility num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+}
+
+/* Station graticule. Replaces the gradient blobs: a latitude/longitude mesh
+   is the real furniture of a tracking station, and it costs no images. */
+@utility graticule {
+  background-image:
+    linear-gradient(to right, rgba(140, 170, 210, 0.055) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(140, 170, 210, 0.055) 1px, transparent 1px);
+  background-size: 72px 72px;
+}
+
+@utility graticule-fine {
+  background-image:
+    linear-gradient(to right, rgba(140, 170, 210, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(140, 170, 210, 0.04) 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+
+/* Readout field: one cell of the console strip. */
+@utility readout {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+/* Column header treatment shared by every table in the app. */
+@utility col-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--color-text-muted);
 }

@@ -9,34 +9,43 @@ import {
 interface FileIconProps {
   nodeType: 'FOLDER' | 'FILE'
   mimeType: string | null
+  /** Grid views want a larger glyph than list rows. */
+  size?: number
 }
 
-const iconClassName = 'shrink-0 text-text-secondary'
+/**
+ * Folders are accented because they can be entered; files are quiet because
+ * the name beside them is what matters. Type is a shape difference only.
+ */
+const iconClassName = 'shrink-0 text-text-muted'
 
 export function FileIcon({
   nodeType,
   mimeType,
+  size = 16,
 }: FileIconProps) {
   if (nodeType === 'FOLDER') {
     return (
       <Folder
-        size={20}
+        size={size}
+        strokeWidth={1.7}
+        aria-hidden="true"
         className="shrink-0 text-accent-light"
       />
     )
   }
 
   if (mimeType?.startsWith('image/')) {
-    return <Image size={20} className={iconClassName} />
+    return <Image size={size} strokeWidth={1.7} aria-hidden="true" className={iconClassName} />
   }
 
   if (mimeType?.startsWith('video/')) {
-    return <Video size={20} className={iconClassName} />
+    return <Video size={size} strokeWidth={1.7} aria-hidden="true" className={iconClassName} />
   }
 
   if (mimeType === 'application/pdf') {
-    return <FileText size={20} className={iconClassName} />
+    return <FileText size={size} strokeWidth={1.7} aria-hidden="true" className={iconClassName} />
   }
 
-  return <File size={20} className={iconClassName} />
+  return <File size={size} strokeWidth={1.7} aria-hidden="true" className={iconClassName} />
 }

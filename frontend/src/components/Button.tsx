@@ -1,22 +1,32 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react'
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outline' | 'danger'
+  variant?: 'primary' | 'secondary' | 'outline' | 'danger' | 'ghost'
   size?: 'sm' | 'md' | 'lg'
   children: ReactNode
 }
 
+/**
+ * Console pushbutton. Flat planes with a hairline edge — the press is
+ * communicated by the surface going darker, not by the button moving.
+ */
 const variantStyles = {
-  primary: 'border border-accent/40 bg-accent text-white shadow-button hover:-translate-y-px hover:bg-accent-light hover:shadow-[0_10px_30px_rgba(22,131,255,0.30)] active:translate-y-0 active:bg-accent-dark',
-  secondary: 'border border-border-default bg-card text-text-primary hover:border-border-bright hover:bg-card-hover',
-  outline: 'border border-border-default bg-surface/60 text-text-primary hover:border-accent/50 hover:bg-accent/10 hover:text-accent-light',
-  danger: 'border border-critical/30 bg-critical text-white hover:bg-critical/90 active:scale-[0.98]',
+  primary:
+    'border-accent bg-accent text-white shadow-button hover:border-accent-hover hover:bg-accent-hover active:bg-accent-dark',
+  secondary:
+    'border-border-default bg-card-hover text-text-primary hover:border-border-bright hover:bg-[#16202e] active:bg-card',
+  outline:
+    'border-border-default bg-transparent text-text-secondary hover:border-border-bright hover:bg-card-hover hover:text-text-primary active:bg-card',
+  ghost:
+    'border-transparent bg-transparent text-text-secondary hover:bg-card-hover hover:text-text-primary active:bg-card',
+  danger:
+    'border-critical bg-critical text-white hover:border-critical hover:bg-[#f4737c] active:bg-[#d94a54]',
 }
 
 const sizeStyles = {
-  sm: 'min-h-8 rounded-[8px] px-3 py-1.5 text-xs',
-  md: 'min-h-10 rounded-[9px] px-4 py-2 text-sm',
-  lg: 'min-h-11 rounded-[9px] px-5 py-2.5 text-sm',
+  sm: 'min-h-7 gap-1.5 rounded-md px-2.5 text-[11px] tracking-[0.06em]',
+  md: 'min-h-9 gap-2 rounded-md px-3.5 text-xs tracking-[0.05em]',
+  lg: 'min-h-11 gap-2 rounded-md px-5 text-[13px] tracking-[0.04em]',
 }
 
 export function Button({
@@ -30,7 +40,7 @@ export function Button({
   return (
     <button
       type={type}
-      className={`inline-flex items-center justify-center gap-2 font-sans font-semibold tracking-[0.01em] transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:ring-offset-2 focus-visible:ring-offset-page disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 ${variantStyles[variant]} ${sizeStyles[size]} ${className}`}
+      className={`inline-flex shrink-0 items-center justify-center border font-bold uppercase whitespace-nowrap transition-colors duration-150 outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:pointer-events-none disabled:opacity-40 ${variantStyles[variant]} ${sizeStyles[size]} ${className}`}
       {...props}
     >
       {children}

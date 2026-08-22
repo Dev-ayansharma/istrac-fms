@@ -1,4 +1,4 @@
-import { ArrowRight, LockKeyhole, ShieldCheck } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useCms } from '../context/cmsContext'
 import { type HeroContent } from '../types/cms'
@@ -10,34 +10,119 @@ export function Hero() {
   const hero = cmsBlocks['hero'] as unknown as HeroContent | undefined
 
   if (isLoading) {
-    return <section className="mx-auto min-h-[620px] w-[min(1280px,calc(100%-32px))] animate-pulse bg-card/60" aria-label="Loading hero" />
+    return (
+      <section
+        aria-label="Loading"
+        className="border-b border-border-subtle bg-page"
+      >
+        <div className="shell grid min-h-[600px] items-center gap-12 py-20 lg:grid-cols-[minmax(0,1fr)_380px]">
+          <div className="space-y-5">
+            <div className="h-2.5 w-40 rounded-xs bg-card-hover" />
+            <div className="h-14 w-full max-w-2xl rounded-sm bg-card-hover" />
+            <div className="h-14 w-3/4 max-w-xl rounded-sm bg-card-hover" />
+            <div className="h-4 w-full max-w-lg rounded-xs bg-card" />
+          </div>
+          <div className="h-80 rounded-xl border border-border-subtle bg-card" />
+        </div>
+      </section>
+    )
   }
 
   return (
-    <section id="hero" className="relative isolate overflow-hidden border-b border-border-subtle bg-page" aria-labelledby="hero-title">
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_78%_35%,rgba(22,131,255,0.15),transparent_32rem)]" />
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_15%_20%,rgba(14,165,233,0.06),transparent_26rem)]" />
-      <div className="pointer-events-none absolute inset-0 -z-10 opacity-[0.035] [background-image:linear-gradient(rgba(255,255,255,.6)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.6)_1px,transparent_1px)] [background-size:50px_50px]" />
+    <section
+      id="hero"
+      className="relative isolate overflow-hidden border-b border-border-subtle bg-page"
+      aria-labelledby="hero-title"
+    >
+      {/* Atmosphere: a station graticule and the curve of the horizon, drawn
+          in hairlines. No imagery, nothing to load, nothing to glow. */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
+        <div className="graticule absolute inset-0 [mask-image:radial-gradient(ellipse_at_65%_40%,black,transparent_75%)]" />
 
-      <div className="mx-auto grid min-h-[650px] w-[min(1280px,calc(100%-32px))] items-center gap-12 py-16 lg:grid-cols-[minmax(0,1fr)_390px] lg:gap-20 lg:py-24">
-        <div className="relative z-10">
-          <p className="mb-5 inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-accent-light"><span className="h-1.5 w-1.5 rounded-full bg-accent-light shadow-[0_0_12px_rgba(76,163,255,0.8)]" />WELCOME TO ISTRAC-FMS</p>
-          <h1 id="hero-title" className="max-w-3xl text-5xl font-semibold leading-[1.02] tracking-[-0.04em] text-text-primary sm:text-6xl lg:text-[4.75rem]">{hero?.title ?? 'Spacecraft Operations Area'}</h1>
-          <p className="mt-6 max-w-2xl text-base leading-7 text-text-secondary sm:text-lg sm:leading-8">{hero?.subtitle ?? 'Centralized, permission-controlled file management for ISTRAC departments.'}</p>
+        {/* Limb of the Earth, cropped by the section. */}
+        <div className="absolute -right-[38%] -bottom-[62%] aspect-square w-[115%] rounded-full border border-accent/[0.18] sm:-right-[28%] sm:w-[92%]" />
+        <div className="absolute -right-[36%] -bottom-[60%] aspect-square w-[115%] rounded-full border border-border-subtle sm:-right-[26%] sm:w-[92%]" />
 
-          <div className="mt-8 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center">
-            <Link to="/register"><Button variant="primary" size="lg">{hero?.ctaText ?? 'Request Access'}<ArrowRight size={17} /></Button></Link>
-            <a href="#features" className="inline-flex items-center justify-center gap-2 px-3 py-2 text-sm font-semibold text-text-secondary transition hover:text-text-primary">Explore platform <ArrowRight size={15} /></a>
+        {/* Orbit crossing the limb at a shallow angle. */}
+        <div className="absolute -right-[42%] -bottom-[70%] aspect-square w-[130%] -rotate-12 rounded-full border border-dashed border-accent/[0.10] sm:-right-[32%] sm:w-[104%]" />
+      </div>
+
+      <div className="shell grid min-h-[600px] items-center gap-14 py-20 lg:grid-cols-[minmax(0,1fr)_380px] lg:gap-20 lg:py-28">
+        <div className="relative">
+          <p className="eyebrow animate-rise flex items-center gap-2.5 text-accent-light">
+            <span aria-hidden="true" className="h-2.5 w-px bg-accent-light" />
+            Welcome to ISTRAC-FMS
+          </p>
+
+          <h1
+            id="hero-title"
+            className="display animate-rise mt-6 max-w-3xl text-[2.6rem] text-text-primary sm:text-6xl lg:text-[4.5rem]"
+            style={{ animationDelay: '60ms' }}
+          >
+            {hero?.title ?? 'Spacecraft Operations Area'}
+          </h1>
+
+          <p
+            className="animate-rise mt-7 max-w-xl text-base leading-7 text-text-secondary sm:text-[17px] sm:leading-8"
+            style={{ animationDelay: '120ms' }}
+          >
+            {hero?.subtitle ??
+              'Centralized, permission-controlled file management for ISTRAC departments.'}
+          </p>
+
+          <div
+            className="animate-rise mt-9 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center"
+            style={{ animationDelay: '180ms' }}
+          >
+            <Link to="/register">
+              <Button variant="primary" size="lg" className="w-full sm:w-auto">
+                {hero?.ctaText ?? 'Request access'}
+                <ArrowRight size={15} strokeWidth={2} />
+              </Button>
+            </Link>
+
+            <a
+              href="#features"
+              className="group inline-flex items-center justify-center gap-2 px-1 py-2 text-[13px] text-text-secondary transition-colors duration-150 hover:text-text-primary"
+            >
+              See what it does
+              <ArrowRight
+                size={14}
+                className="transition-transform duration-200 group-hover:translate-x-0.5"
+              />
+            </a>
           </div>
 
-          <div className="mt-9 flex flex-wrap gap-x-7 gap-y-3 text-xs text-text-muted">
-            <span className="inline-flex items-center gap-2"><ShieldCheck size={15} className="text-accent-light" />Permission-aware</span>
-            <span className="inline-flex items-center gap-2"><LockKeyhole size={15} className="text-accent-light" />Controlled access</span>
-          </div>
+          {/* Station identity, in the form it appears in every log. */}
+          <dl
+            className="animate-rise mt-12 flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-border-subtle pt-6"
+            style={{ animationDelay: '240ms' }}
+          >
+            <div>
+              <dt className="eyebrow text-text-dim">Station</dt>
+              <dd className="num mt-1.5 text-xs text-text-secondary">BENGALURU · BLR</dd>
+            </div>
+
+            <span aria-hidden="true" className="h-8 w-px bg-border-subtle" />
+
+            <div>
+              <dt className="eyebrow text-text-dim">Coordinates</dt>
+              <dd className="num mt-1.5 text-xs text-text-secondary">13.03°N 77.51°E</dd>
+            </div>
+
+            <span aria-hidden="true" className="hidden h-8 w-px bg-border-subtle sm:block" />
+
+            <div>
+              <dt className="eyebrow text-text-dim">Reference</dt>
+              <dd className="num mt-1.5 text-xs text-text-secondary">UTC</dd>
+            </div>
+          </dl>
         </div>
 
-        <div className="relative z-10 mx-auto w-full max-w-[390px]">
-          <div className="absolute -inset-20 -z-10 rounded-full bg-accent/10 blur-3xl" />
+        <div
+          className="animate-rise relative mx-auto w-full max-w-[380px]"
+          style={{ animationDelay: '140ms' }}
+        >
           <GuestAccessPanel />
         </div>
       </div>

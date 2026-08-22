@@ -1,4 +1,5 @@
-import type  { ReactNode } from 'react'
+import type { ReactNode } from 'react'
+import { X } from 'lucide-react'
 
 interface ModalProps {
   isOpen: boolean
@@ -13,17 +14,41 @@ const sizeStyles = {
   lg: 'max-w-2xl',
 }
 
+/**
+ * Overlay panel. Same machined-plate treatment as the rest of the app, lifted
+ * off the page by a dimmed, slightly blurred backdrop instead of a soft shadow.
+ */
 export function Modal({ isOpen, onClose, title, size = 'sm', children }: ModalProps) {
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70" onClick={onClose}>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-page/85 p-4 backdrop-blur-[2px]"
+      onClick={onClose}
+    >
       <div
-        className={`w-full ${sizeStyles[size]} bg-card border border-border-default rounded-lg shadow-xl p-6`}
+        role="dialog"
+        aria-modal="true"
+        aria-label={title}
+        className={`w-full ${sizeStyles[size]} overflow-hidden rounded-xl border border-border-default bg-card shadow-2xl`}
         onClick={(e) => e.stopPropagation()}
       >
-        {title && <h2 className="text-lg font-semibold text-text-primary mb-4">{title}</h2>}
-        {children}
+        {title && (
+          <header className="flex items-center justify-between gap-4 border-b border-border-subtle bg-surface px-4 py-3">
+            <h2 className="eyebrow text-text-secondary">{title}</h2>
+
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label="Close"
+              className="-mr-1 shrink-0 rounded-md p-1 text-text-muted transition-colors duration-150 hover:bg-card-hover hover:text-text-primary"
+            >
+              <X size={15} strokeWidth={1.8} />
+            </button>
+          </header>
+        )}
+
+        <div className="p-4 sm:p-5">{children}</div>
       </div>
     </div>
   )

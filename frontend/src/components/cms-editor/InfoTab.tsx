@@ -3,7 +3,7 @@ import { useCms } from '../../context/cmsContext'
 import { useUpdateCmsBlock } from '../../hooks/useUpdateCmsBlock'
 import { useToastStore } from '../../store/toastStore'
 import { usePreviewRefresh } from '../../context/PreviewRefreshContext'
-import { Card, Input } from '..'
+import { Input, Panel, Textarea } from '..'
 import { SaveBar } from './SaveBar'
 
 export function InfoTab() {
@@ -62,59 +62,48 @@ export function InfoTab() {
   }
 
   return (
-    <Card>
-      <div className="space-y-4">
-        <Input
-          label="Contact email"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+    <Panel title="Info" meta="block:contact_info, block:org_overview">
+      <div className="space-y-5">
+        {/* Contact */}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <Input
+            id="contact-email"
+            label="Contact email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="num"
+          />
 
-        <Input
-          label="Contact phone"
-          type="tel"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-        />
-
-        <div className="flex flex-col gap-1">
-          <label
-            htmlFor="organization-overview"
-            className="text-sm font-medium text-text-secondary"
-          >
-            Organization overview
-          </label>
-
-          <textarea
-            id="organization-overview"
-            rows={4}
-            value={overviewText}
-            onChange={(e) => setOverviewText(e.target.value)}
-            className="
-              w-full
-              rounded-md
-              border border-border-default
-              bg-surface
-              px-3 py-2
-              text-sm
-              font-sans
-              text-text-primary
-              outline-none
-              transition-colors
-              placeholder:text-text-muted
-              focus:border-accent
-              resize-none
-            "
-            placeholder="Enter organization overview..."
+          <Input
+            id="contact-phone"
+            label="Contact phone"
+            type="tel"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            className="num"
           />
         </div>
 
+        {/* Overview */}
+        <div className="border-t border-border-subtle pt-4">
+          <Textarea
+            id="organization-overview"
+            label="Organization overview"
+            rows={4}
+            value={overviewText}
+            onChange={(e) => setOverviewText(e.target.value)}
+            placeholder="Enter organization overview..."
+            hint="Shown on the public landing page."
+          />
+        </div>
+
+        {/* Save */}
         <SaveBar
           onSave={handleSave}
           isPending={updateBlock.isPending}
         />
       </div>
-    </Card>
+    </Panel>
   )
 }

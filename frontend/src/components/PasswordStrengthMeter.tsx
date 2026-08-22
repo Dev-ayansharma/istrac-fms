@@ -1,3 +1,5 @@
+import { Check, Minus } from 'lucide-react'
+
 interface Requirement {
   label: string
   test: (pw: string) => boolean
@@ -22,25 +24,47 @@ export function PasswordStrengthMeter({ password }: PasswordStrengthMeterProps) 
   const barColor =
     passedCount <= 2 ? 'bg-critical' : passedCount <= 4 ? 'bg-warning' : 'bg-nominal'
 
+  const labelColor =
+    passedCount <= 2 ? 'text-critical' : passedCount <= 4 ? 'text-warning' : 'text-nominal'
+
   return (
-    <div className="space-y-2">
-      <div className="flex gap-1">
+    /* A checklist, not a score: each line says exactly what is still missing. */
+    <div className="rounded-md border border-border-subtle bg-page-soft p-3.5">
+      <div className="flex items-center justify-between">
+        <span className="col-label">Password requirements</span>
+
+        <span className={`num text-[10px] ${labelColor}`}>
+          {passedCount} / {requirements.length}
+        </span>
+      </div>
+
+      <div className="mt-2.5 flex gap-1" aria-hidden="true">
         {requirements.map((_, i) => (
           <div
             key={i}
-            className={`h-1 flex-1 rounded-full ${i < passedCount ? barColor : 'bg-border-subtle'}`}
+            className={`h-0.5 flex-1 rounded-full transition-colors duration-200 ${
+              i < passedCount ? barColor : 'bg-border-subtle'
+            }`}
           />
         ))}
       </div>
-      <ul className="space-y-1">
+
+      <ul className="mt-3.5 space-y-1.5">
         {requirements.map((req) => {
           const passed = req.test(password)
+
           return (
             <li
               key={req.label}
-              className={`text-xs flex items-center gap-1.5 ${passed ? 'text-nominal' : 'text-text-muted'}`}
+              className={`flex items-start gap-2 text-[11px] leading-4 transition-colors duration-150 ${
+                passed ? 'text-nominal' : 'text-text-muted'
+              }`}
             >
-              <span>{passed ? '✓' : '○'}</span>
+              {passed ? (
+                <Check size={12} strokeWidth={2.5} className="mt-px shrink-0" aria-hidden="true" />
+              ) : (
+                <Minus size={12} strokeWidth={2.5} className="mt-px shrink-0 text-text-dim" aria-hidden="true" />
+              )}
               {req.label}
             </li>
           )

@@ -75,9 +75,10 @@ export function DeptFileBrowser() {
 
   if (!deptId) {
     return (
-      <p className="text-text-muted">
-        No department selected.
-      </p>
+      <div className="rounded-xl border border-border-subtle bg-card p-10 text-center shadow-card">
+        <p className="num text-sm text-text-dim">—</p>
+        <p className="mt-2 text-[13px] text-text-muted">No department selected.</p>
+      </div>
     )
   }
 
@@ -86,28 +87,28 @@ export function DeptFileBrowser() {
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-6">
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-[240px_1fr]">
       {/* Folder navigation */}
-      <aside className="space-y-2">
-        <h3 className="px-2 text-xs font-medium text-text-secondary uppercase tracking-wide">
-          Folders
-        </h3>
+      <aside className="overflow-hidden rounded-xl border border-border-subtle bg-card shadow-card lg:sticky lg:top-0 lg:self-start">
+        <header className="border-b border-border-subtle px-3 py-2.5">
+          <h3 className="eyebrow text-text-secondary">Folders</h3>
+        </header>
 
-        {isLoading ? (
-          <p className="px-2 text-sm text-text-muted">
-            Loading...
-          </p>
-        ) : (
-          <FolderTree
-            nodes={tree ?? []}
-            activeFolderId={currentFolderId}
-            onSelect={handleFolderNavigate}
-          />
-        )}
+        <div className="py-2 pr-2">
+          {isLoading ? (
+            <p className="num px-3 py-1 text-xs text-text-dim">Loading…</p>
+          ) : (
+            <FolderTree
+              nodes={tree ?? []}
+              activeFolderId={currentFolderId}
+              onSelect={handleFolderNavigate}
+            />
+          )}
+        </div>
       </aside>
 
       {/* File browser */}
-      <main className="space-y-3">
+      <main className="min-w-0 space-y-4">
         <DeptBreadcrumb
           deptName={department?.name ?? 'Department'}
           path={breadcrumbPath}

@@ -36,7 +36,18 @@ export default function App() {
    const { isChecking } = useInitAuth()
 
   if (isChecking) {
-    return <div className="flex items-center justify-center min-h-screen">Loading...</div>
+    return (
+      <div
+        role="status"
+        className="graticule flex min-h-screen flex-col items-center justify-center gap-3 bg-page"
+      >
+        <span aria-hidden="true" className="h-6 w-px bg-accent-light" />
+
+        <p className="num animate-pulse-slow text-[11px] tracking-[0.14em] text-text-muted uppercase">
+          Establishing session
+        </p>
+      </div>
+    )
   }
   return (
     <CmsProvider>

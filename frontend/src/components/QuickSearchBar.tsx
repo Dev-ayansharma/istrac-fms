@@ -21,46 +21,21 @@ export function QuickSearchBar() {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="relative w-full"
-    >
+    <form onSubmit={handleSubmit} className="group relative w-full">
       <Search
-        size={16}
-        className="
-          pointer-events-none
-          absolute
-          left-3
-          top-1/2
-          -translate-y-1/2
-          text-text-muted
-        "
+        size={15}
+        strokeWidth={1.8}
+        aria-hidden="true"
+        className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-text-dim transition-colors duration-150 group-focus-within:text-accent-light"
       />
 
       <input
         type="search"
         value={query}
         onChange={(event) => setQuery(event.target.value)}
-        placeholder="Search files, departments, tags..."
+        placeholder="Search files, departments, tags…"
         aria-label="Search files, departments, and tags"
-        className="
-          w-full
-          rounded-md
-          border
-          border-border-default
-          bg-surface
-          py-2.5
-          pl-9
-          pr-3
-          text-sm
-          text-text-primary
-          outline-none
-          placeholder:text-text-muted
-          transition-colors
-          focus:border-accent
-          focus:ring-1
-          focus:ring-accent/30
-        "
+        className="w-full rounded-md border border-border-default bg-surface py-2.5 pr-3 pl-9 text-sm text-text-primary outline-none transition-colors duration-150 placeholder:text-text-dim hover:border-border-bright focus:border-accent focus:bg-card-hover"
       />
     </form>
   )

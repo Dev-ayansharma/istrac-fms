@@ -3,7 +3,7 @@ import { useCms } from '../../context/cmsContext'
 import { usePreviewRefresh } from '../../context/PreviewRefreshContext'
 import { useUpdateCmsBlock } from '../../hooks/useUpdateCmsBlock'
 import { useToastStore } from '../../store/toastStore'
-import { Card, Input } from '..'
+import { Input, Panel } from '..'
 import { SaveBar } from './SaveBar'
 
 interface BannerContent {
@@ -57,22 +57,36 @@ export function BannerTab() {
   }
 
   return (
-    <Card>
+    <Panel title="Banner" meta="block:banner">
       <div className="space-y-5">
         {/* Banner visibility */}
-        <label className="flex cursor-pointer items-center gap-2 text-sm text-text-primary">
-          <input
-            type="checkbox"
-            checked={visible}
-            onChange={(e) => setVisible(e.target.checked)}
-            className="h-4 w-4 accent-accent"
-          />
+        <div
+          className={`border-l-2 pl-3.5 transition-colors duration-150 ${
+            visible ? 'border-l-nominal' : 'border-l-border-subtle'
+          }`}
+        >
+          <label htmlFor="banner-visible" className="col-label">
+            Visibility
+          </label>
 
-          <span>Show banner</span>
-        </label>
+          <div className="mt-2 flex items-center gap-2.5">
+            <input
+              id="banner-visible"
+              type="checkbox"
+              checked={visible}
+              onChange={(e) => setVisible(e.target.checked)}
+              className="h-3.5 w-3.5 shrink-0 cursor-pointer accent-accent"
+            />
+
+            <span className="text-[13px] text-text-secondary">
+              Show the banner on the landing page
+            </span>
+          </div>
+        </div>
 
         {/* Banner title */}
         <Input
+          id="banner-title"
           label="Title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
@@ -81,6 +95,7 @@ export function BannerTab() {
 
         {/* Banner subtitle */}
         <Input
+          id="banner-subtitle"
           label="Subtitle"
           value={subtitle}
           onChange={(e) => setSubtitle(e.target.value)}
@@ -89,24 +104,20 @@ export function BannerTab() {
 
         {/* CTA */}
         <Input
+          id="banner-cta"
           label="CTA text"
           value={ctaText}
           onChange={(e) => setCtaText(e.target.value)}
           placeholder="e.g. Learn more"
+          hint="Leave blank to hide the CTA button."
         />
 
-        <p className="-mt-3 text-xs text-text-muted">
-          Leave blank to hide the CTA button.
-        </p>
-
         {/* Save */}
-        <div className="flex justify-end border-t border-border-subtle pt-4">
-          <SaveBar
-            onSave={handleSave}
-            isPending={updateBlock.isPending}
-          />
-        </div>
+        <SaveBar
+          onSave={handleSave}
+          isPending={updateBlock.isPending}
+        />
       </div>
-    </Card>
+    </Panel>
   )
 }

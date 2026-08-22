@@ -1,18 +1,68 @@
-import { LockKeyhole, ShieldCheck } from 'lucide-react'
+import { LockKeyhole } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { Button } from '.'
 
+/**
+ * The access gate. This is the one thing a signed-out visitor can act on, so
+ * it states plainly what's behind the door and what to do about it.
+ */
 export function GuestAccessPanel() {
   return (
-    <aside className="relative rounded-xl border border-border bg-surface/75 p-6 shadow-card backdrop-blur-xl sm:p-7" aria-labelledby="guest-access-title">
-      <div className="absolute inset-0 rounded-xl border border-white/[0.025] pointer-events-none" />
-      <div className="mx-auto mb-5 grid h-12 w-12 place-items-center rounded-full border border-accent/20 bg-accent/10 text-accent-light"><LockKeyhole size={21} /></div>
-      <p className="text-center text-[10px] font-bold uppercase tracking-[0.18em] text-accent-light">SECURE WORKSPACE</p>
-      <h2 id="guest-access-title" className="mt-2 text-center text-xl font-semibold tracking-tight text-text-primary">Reports are not available</h2>
-      <p className="mt-3 text-center text-sm leading-6 text-text-muted">Please login to view satellite operations reports, controlled resources and more.</p>
-      <div className="mt-5 flex items-center gap-2 rounded-lg border border-nominal/15 bg-nominal/[0.04] px-3 py-2 text-xs text-text-muted"><ShieldCheck size={15} className="shrink-0 text-nominal" />Controlled workspace access</div>
-      <Link to="/login" className="mt-4 block"><Button variant="primary" size="lg" className="w-full">Login</Button></Link>
-      <p className="mt-4 text-center text-xs text-text-muted">Don't have an account? <Link to="/register" className="font-medium text-accent-light transition hover:text-white">Sign Up</Link></p>
+    <aside
+      className="overflow-hidden rounded-xl border border-border-default bg-surface shadow-card-lg"
+      aria-labelledby="guest-access-title"
+    >
+      {/* Status header: this panel is a locked state, and it says so. */}
+      <div className="flex items-center gap-2 border-b border-border-subtle bg-card px-4 py-2.5">
+        <LockKeyhole size={13} className="shrink-0 text-warning" strokeWidth={2} />
+        <span className="eyebrow text-warning">Restricted</span>
+        <span className="num ml-auto text-[10px] text-text-dim">SIGNED OUT</span>
+      </div>
+
+      <div className="p-5 sm:p-6">
+        <h2
+          id="guest-access-title"
+          className="text-lg leading-snug text-text-primary"
+        >
+          Reports are not available
+        </h2>
+
+        <p className="mt-2.5 text-[13px] leading-6 text-text-muted">
+          Log in to view satellite operations reports, mission files and the
+          resources for your department.
+        </p>
+
+        {/* What's behind the gate, so the ask is concrete. */}
+        <ul className="mt-5 space-y-2.5 border-t border-border-subtle pt-5">
+          {['Department file libraries', 'Operations and anomaly reports', 'Traceable file activity'].map(
+            (item) => (
+              <li key={item} className="flex items-start gap-2.5 text-[13px] text-text-secondary">
+                <span
+                  aria-hidden="true"
+                  className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-accent-light"
+                />
+                {item}
+              </li>
+            ),
+          )}
+        </ul>
+
+        <Link to="/login" className="mt-6 block">
+          <Button variant="primary" size="lg" className="w-full">
+            Log in
+          </Button>
+        </Link>
+
+        <p className="mt-4 text-center text-xs text-text-muted">
+          No account yet?{' '}
+          <Link
+            to="/register"
+            className="text-accent-light underline decoration-accent/30 underline-offset-2 transition-colors duration-150 hover:text-text-primary hover:decoration-accent"
+          >
+            Request access
+          </Link>
+        </p>
+      </div>
     </aside>
   )
 }

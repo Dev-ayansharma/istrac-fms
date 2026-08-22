@@ -4,7 +4,7 @@ import {
 } from '../hooks/useUserHome'
 import { useAuthStore } from '../store/authStore'
 
-import { Card } from '../components'
+import { PageHeader, Panel } from '../components'
 import { FileIcon } from '../components/FileIcon'
 import { QuickSearchBar } from '../components/QuickSearchBar'
 import { UserDeptCard } from '../components/UserDeptCard'
@@ -25,41 +25,31 @@ export function UserHome() {
   } = useRecentFiles()
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <section>
-        <h1 className="text-xl font-semibold text-text-primary">
-          Welcome back, {user?.name}
-        </h1>
+    <div className="space-y-6">
+      <PageHeader
+        eyebrow="Workspace"
+        title={user?.name ? `Welcome back, ${user.name}` : 'Welcome back'}
+        description="Your departments and the files that changed most recently."
+      />
 
-        <div className="mt-3 w-full max-w-xl">
-          <QuickSearchBar />
-        </div>
-      </section>
+      <div className="max-w-xl">
+        <QuickSearchBar />
+      </div>
 
       {/* Departments */}
-      <section>
-        <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-sm font-medium text-text-secondary">
-            Your Departments
-          </h2>
-
-          {departments && departments.length > 0 && (
-            <span className="text-xs text-text-muted">
-              {departments.length}{' '}
-              {departments.length === 1 ? 'department' : 'departments'}
-            </span>
-          )}
-        </div>
-
+      <Panel
+        title="Your departments"
+        meta={
+          departments && departments.length > 0
+            ? `${departments.length} assigned`
+            : undefined
+        }
+        flush
+      >
         {deptsLoading ? (
-          <Card>
-            <p className="text-sm text-text-muted">
-              Loading departments...
-            </p>
-          </Card>
+          <p className="num p-4 text-xs text-text-dim">Loading departments…</p>
         ) : departments && departments.length > 0 ? (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 p-4 sm:grid-cols-2 lg:grid-cols-3">
             {departments.map((department) => (
               <UserDeptCard
                 key={department.id}
@@ -68,95 +58,71 @@ export function UserHome() {
             ))}
           </div>
         ) : (
-          <Card>
-            <p className="text-sm text-text-muted">
+          <div className="p-8 text-center">
+            <p className="num text-sm text-text-dim">—</p>
+            <p className="mt-2 text-[13px] text-text-muted">
               No departments assigned yet.
             </p>
-          </Card>
+          </div>
         )}
-      </section>
+      </Panel>
 
       {/* Recent Files */}
-      <section>
-        <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-sm font-medium text-text-secondary">
-            Recent Files
-          </h2>
+      <Panel
+        title="Recent files"
+        meta={
+          recentFiles && recentFiles.length > 0
+            ? `${recentFiles.length} entries`
+            : undefined
+        }
+        flush
+      >
+        {filesLoading ? (
+          <p className="num p-4 text-xs text-text-dim">Loading files…</p>
+        ) : recentFiles && recentFiles.length > 0 ? (
+          <ul className="divide-y divide-border-subtle">
+            {recentFiles.map((file) => (
+              <li
+                key={file.id}
+                className="flex items-center gap-3 px-4 py-3 transition-colors duration-150 hover:bg-card-hover"
+              >
+                <div className="flex shrink-0 items-center justify-center">
+                  <FileIcon
+                    nodeType="FILE"
+                    mimeType={file.mimeType}
+                  />
+                </div>
 
-          {recentFiles && recentFiles.length > 0 && (
-            <span className="text-xs text-text-muted">
-              {recentFiles.length} recent
-            </span>
-          )}
-        </div>
+                {/* Name is human language; department is a label. */}
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-[13px] text-text-primary">
+                    {file.name}
+                  </p>
 
-        <Card className="!p-0 overflow-hidden">
-          {filesLoading ? (
-            <div className="p-4">
-              <p className="text-sm text-text-muted">
-                Loading files...
-              </p>
-            </div>
-          ) : recentFiles && recentFiles.length > 0 ? (
-            <ul className="divide-y divide-border-subtle">
-              {recentFiles.map((file) => (
-                <li
-                  key={file.id}
-                  className="
-                    flex
-                    items-center
-                    gap-3
-                    px-4
-                    py-3
-                    transition-colors
-                    hover:bg-card-hover
-                  "
-                >
-                  {/* File icon */}
-                  <div className="flex shrink-0 items-center justify-center">
-                    <FileIcon
-                      nodeType="FILE"
-                      mimeType={file.mimeType}
-                    />
-                  </div>
+                  <p className="mt-1 truncate text-[11px] text-text-muted">
+                    {file.departmentName}
+                  </p>
+                </div>
 
-                  {/* File information */}
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium text-text-primary">
-                      {file.name}
-                    </p>
+                {/* Size and date are machine values, so they're set in mono
+                    and right-aligned to form a readable column. */}
+                <span className="num hidden w-20 shrink-0 text-right text-[11px] text-text-dim sm:block">
+                  {formatFileSize(file.size)}
+                </span>
 
-                    <div className="mt-0.5 flex items-center gap-2">
-                      <span className="truncate text-xs text-text-muted">
-                        {file.departmentName}
-                      </span>
-
-                      <span className="text-text-muted">
-                        •
-                      </span>
-
-                      <span className="shrink-0 text-xs text-text-muted">
-                        {formatFileSize(file.size)}
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Upload date */}
-                  <span className="shrink-0 text-xs text-text-muted">
-                    {new Date(file.uploadedAt).toLocaleDateString()}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <div className="p-4">
-              <p className="text-sm text-text-muted">
-                No recent uploads.
-              </p>
-            </div>
-          )}
-        </Card>
-      </section>
+                <span className="num w-24 shrink-0 text-right text-[11px] text-text-dim">
+                  {new Date(file.uploadedAt).toLocaleDateString()}
+                </span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div className="p-8 text-center">
+            <p className="num text-sm text-text-dim">—</p>
+            <p className="mt-2 text-[13px] text-text-muted">No recent uploads.</p>
+          </div>
+        )}
+      </Panel>
     </div>
   )
 }

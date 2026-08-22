@@ -3,7 +3,7 @@ import { useCms } from '../../context/cmsContext'
 import { usePreviewRefresh } from '../../context/PreviewRefreshContext'
 import { useUpdateCmsBlock } from '../../hooks/useUpdateCmsBlock'
 import { useToastStore } from '../../store/toastStore'
-import { Card, Input } from '..'
+import { Input, Panel } from '..'
 import { SaveBar } from './SaveBar'
 
 interface HeroContent {
@@ -53,10 +53,11 @@ export function HeroTab() {
   }
 
   return (
-    <Card>
+    <Panel title="Hero" meta="block:hero">
       <div className="space-y-5">
         {/* Hero title */}
         <Input
+          id="hero-title"
           label="Title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
@@ -65,6 +66,7 @@ export function HeroTab() {
 
         {/* Hero subtitle */}
         <Input
+          id="hero-subtitle"
           label="Subtitle"
           value={subtitle}
           onChange={(e) => setSubtitle(e.target.value)}
@@ -73,6 +75,7 @@ export function HeroTab() {
 
         {/* CTA */}
         <Input
+          id="hero-cta"
           label="CTA button text"
           value={ctaText}
           onChange={(e) => setCtaText(e.target.value)}
@@ -80,13 +83,11 @@ export function HeroTab() {
         />
 
         {/* Save */}
-        <div className="flex justify-end border-t border-border-subtle pt-4">
-          <SaveBar
-            onSave={handleSave}
-            isPending={updateBlock.isPending}
-          />
-        </div>
+        <SaveBar
+          onSave={handleSave}
+          isPending={updateBlock.isPending}
+        />
       </div>
-    </Card>
+    </Panel>
   )
 }

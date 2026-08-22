@@ -1,6 +1,6 @@
 import { useSystemConfig } from '../hooks/useSystemConfig'
 
-import { Card } from '../components'
+import { PageHeader, Panel } from '../components'
 import { ConfigField } from '../components/ConfigField'
 import { ConfigToggle } from '../components/ConfigToggle'
 
@@ -9,37 +9,35 @@ export function SystemConfigPanel() {
 
   if (isLoading || !config) {
     return (
-      <p className="text-sm text-text-muted">
-        Loading...
-      </p>
+      <div className="max-w-3xl space-y-6">
+        <PageHeader
+          eyebrow="Administration"
+          title="System configuration"
+          description="System-wide upload, security, access, and synchronisation settings."
+        />
+
+        <Panel title="Settings">
+          <p className="num text-[11px] text-text-dim">Loading…</p>
+        </Panel>
+      </div>
     )
   }
 
   return (
     <div className="max-w-3xl space-y-6">
-      <div>
-        <h1 className="text-xl font-semibold text-text-primary">
-          System Configuration
-        </h1>
-
-        <p className="mt-1 text-sm text-text-muted">
-          Manage system-wide upload, security, access, and synchronization settings.
-        </p>
-      </div>
+      <PageHeader
+        eyebrow="Administration"
+        title="System configuration"
+        description="System-wide upload, security, access, and synchronisation settings."
+      />
 
       {/* Upload Limits */}
-      <Card>
-        <div className="mb-4 border-b border-border-subtle pb-3">
-          <h2 className="text-sm font-semibold text-text-primary">
-            Upload Limits
-          </h2>
+      <Panel title="Upload limits" meta="2 keys">
+        <p className="text-[12px] leading-5 text-text-dim">
+          Restrictions applied to every file entering the archive.
+        </p>
 
-          <p className="mt-1 text-xs text-text-muted">
-            Configure file upload restrictions.
-          </p>
-        </div>
-
-        <div className="space-y-4">
+        <div className="mt-5 space-y-5">
           <ConfigField
             settingKey="maxUploadSizeBytes"
             label="Max upload size (bytes)"
@@ -54,21 +52,15 @@ export function SystemConfigPanel() {
             value={config.allowedExtensions.join(',')}
           />
         </div>
-      </Card>
+      </Panel>
 
       {/* Security */}
-      <Card>
-        <div className="mb-4 border-b border-border-subtle pb-3">
-          <h2 className="text-sm font-semibold text-text-primary">
-            Security
-          </h2>
+      <Panel title="Security" meta="2 keys">
+        <p className="text-[12px] leading-5 text-text-dim">
+          Scanning and download protection.
+        </p>
 
-          <p className="mt-1 text-xs text-text-muted">
-            Configure security and download protection settings.
-          </p>
-        </div>
-
-        <div className="space-y-4">
+        <div className="mt-5 space-y-5">
           <ConfigToggle
             settingKey="virusScanEnabled"
             label="Enable virus scan on upload"
@@ -83,21 +75,15 @@ export function SystemConfigPanel() {
             value={String(config.downloadRateLimitPerHour)}
           />
         </div>
-      </Card>
+      </Panel>
 
       {/* Email / Access */}
-      <Card>
-        <div className="mb-4 border-b border-border-subtle pb-3">
-          <h2 className="text-sm font-semibold text-text-primary">
-            Email / Access
-          </h2>
+      <Panel title="Email / access" meta="1 key">
+        <p className="text-[12px] leading-5 text-text-dim">
+          How long a guest link stays usable.
+        </p>
 
-          <p className="mt-1 text-xs text-text-muted">
-            Configure guest access and expiration settings.
-          </p>
-        </div>
-
-        <div className="space-y-4">
+        <div className="mt-5">
           <ConfigField
             settingKey="guestAccessExpiryDays"
             label="Default guest access expiry (days)"
@@ -105,21 +91,15 @@ export function SystemConfigPanel() {
             value={String(config.guestAccessExpiryDays)}
           />
         </div>
-      </Card>
+      </Panel>
 
       {/* HDD Sync */}
-      <Card>
-        <div className="mb-4 border-b border-border-subtle pb-3">
-          <h2 className="text-sm font-semibold text-text-primary">
-            HDD Sync
-          </h2>
+      <Panel title="HDD sync" meta="1 key">
+        <p className="text-[12px] leading-5 text-text-dim">
+          How often the archive is reconciled against disk.
+        </p>
 
-          <p className="mt-1 text-xs text-text-muted">
-            Configure synchronization frequency.
-          </p>
-        </div>
-
-        <div className="space-y-4">
+        <div className="mt-5">
           <ConfigField
             settingKey="hddSyncIntervalMinutes"
             label="Sync interval (minutes)"
@@ -128,7 +108,7 @@ export function SystemConfigPanel() {
             helpText="Default: 15 minutes."
           />
         </div>
-      </Card>
+      </Panel>
     </div>
   )
 }

@@ -27,18 +27,21 @@ export function ConfirmDialog({
       onClose={onClose}
       title={title}
     >
-      <div className="space-y-5">
-        {/* Message */}
-        <div className="rounded-lg border border-border-subtle bg-surface/50 px-3.5 py-3">
-          <p className="text-sm leading-relaxed text-text-secondary">
-            {message}
-          </p>
-        </div>
+      <div>
+        {/* Message — carried on a tone edge rather than a filled box. */}
+        <p
+          className={`border-l-2 pl-3.5 text-[13px] leading-relaxed text-text-secondary ${
+            variant === 'danger' ? 'border-l-critical' : 'border-l-accent'
+          }`}
+        >
+          {message}
+        </p>
 
         {/* Actions */}
-        <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+        <div className="mt-5 flex flex-col-reverse gap-2 border-t border-border-subtle pt-4 sm:flex-row sm:justify-end">
           <Button
             variant="outline"
+            size="sm"
             onClick={onClose}
             disabled={isSubmitting}
             className="w-full sm:w-auto"
@@ -48,11 +51,12 @@ export function ConfirmDialog({
 
           <Button
             variant={variant}
+            size="sm"
             onClick={onConfirm}
             disabled={isSubmitting}
             className="w-full sm:w-auto"
           >
-            {isSubmitting ? 'Working...' : confirmLabel}
+            {isSubmitting ? 'Working…' : confirmLabel}
           </Button>
         </div>
       </div>

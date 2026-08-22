@@ -1,8 +1,8 @@
-import { Filter, Search, ShieldCheck, Users } from 'lucide-react'
+import { Search } from 'lucide-react'
 import { useState } from 'react'
 import { useUsers, useSuspendUser, useForceLogout, } from '../hooks/useUsers'
 import { useToastStore } from '../store/toastStore'
-import { Table, Badge, Button, Input } from '../components'
+import { Table, Badge, Button, Select, PageHeader, Panel, Avatar } from '../components'
 import { ConfirmDialog } from '../components/ConfirmDialog'
 
 const statusVariant: Record<
@@ -60,125 +60,135 @@ export function UserManagement() {
   const totalUsers = data?.pagination.total ?? 0
 
   return (
-    <div className="space-y-5 sm:space-y-6">
-      {/* Page Header */}
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <div className="flex items-center gap-2">
-            <Users size={15} className="text-accent-light" />
-
-            <span className="text-[10px] font-medium uppercase tracking-widest text-text-muted">
-              Administration
-            </span>
-          </div>
-
-          <h1 className="mt-1 text-xl font-semibold tracking-tight text-text-primary sm:text-2xl">
-            User Management
-          </h1>
-
-          <p className="mt-1 text-xs text-text-muted sm:text-sm">
-            Manage user accounts, roles, access and active sessions.
-          </p>
-        </div>
-
-        <div className="flex items-center gap-2 text-xs text-text-muted">
-          <ShieldCheck size={14} className="text-nominal" />
-          {totalUsers} total users
-        </div>
-      </div>
+    <div className="space-y-6">
+      <PageHeader
+        eyebrow="Administration"
+        title="User management"
+        description="Accounts, roles, access state and live sessions."
+        meta={
+          <span className="num text-[11px] text-text-dim">
+            {totalUsers} accounts
+          </span>
+        }
+      />
 
       {/* Filters */}
-      <div className="rounded-xl border border-border-subtle bg-card p-4 shadow-card">
-        <div className="flex items-center gap-2 mb-3">
-          <Filter size={14} className="text-text-muted" />
-
-          <span className="text-xs font-medium text-text-secondary">
-            Filters
-          </span>
-        </div>
-
+      <Panel title="Filters">
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          <div className="relative">
+          <div className="group relative">
+            <label htmlFor="user-search" className="col-label">
+              Search
+            </label>
+
             <Search
               size={14}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted pointer-events-none"
+              strokeWidth={1.8}
+              aria-hidden="true"
+              className="pointer-events-none absolute bottom-[13px] left-3 text-text-dim transition-colors duration-150 group-focus-within:text-accent-light"
             />
 
-            <Input
-              placeholder="Search name or email..."
+            <input
+              id="user-search"
+              placeholder="Name or email"
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value)
                 setPage(1)
               }}
-              className="pl-9"
+              className="mt-1.5 w-full rounded-md border border-border-default bg-surface py-2.5 pr-3 pl-9 text-sm text-text-primary outline-none transition-colors duration-150 placeholder:text-text-dim hover:border-border-bright focus:border-accent focus:bg-card-hover"
             />
           </div>
 
-          <select
+          <Select
+            id="user-status"
+            label="Status"
             value={status}
             onChange={(e) => {
               setStatus(e.target.value)
               setPage(1)
             }}
-            className="w-full rounded-lg border border-border-default bg-surface px-3 py-2.5 text-sm text-text-primary outline-none transition-all duration-150 focus:border-accent focus:ring-2 focus:ring-accent/20"
           >
             <option value="">All statuses</option>
             <option value="ACTIVE">Active</option>
             <option value="PENDING">Pending</option>
             <option value="SUSPENDED">Suspended</option>
             <option value="REJECTED">Rejected</option>
-          </select>
+          </Select>
 
-          <select
+          <Select
+            id="user-role"
+            label="Role"
             value={role}
             onChange={(e) => {
               setRole(e.target.value)
               setPage(1)
             }}
-            className="w-full rounded-lg border border-border-default bg-surface px-3 py-2.5 text-sm text-text-primary outline-none transition-all duration-150 focus:border-accent focus:ring-2 focus:ring-accent/20"
           >
             <option value="">All roles</option>
             <option value="SUPER_ADMIN">Super Admin</option>
             <option value="DEPT_ADMIN">Dept Admin</option>
             <option value="MEMBER">Member</option>
             <option value="GUEST">Guest</option>
-          </select>
+          </Select>
         </div>
-      </div>
+      </Panel>
 
       {/* Table */}
       {isLoading ? (
-        <div className="rounded-xl border border-border-subtle bg-card p-6 shadow-card">
-          <div className="space-y-4 animate-pulse">
+        <div className="overflow-hidden rounded-xl border border-border-subtle bg-card shadow-card">
+          <div className="animate-pulse divide-y divide-border-subtle">
             {Array.from({ length: 5 }).map((_, index) => (
               <div
                 key={index}
-                className="flex items-center justify-between gap-4"
+                className="flex items-center justify-between gap-4 px-4 py-3.5"
               >
-                <div className="w-32 h-3 rounded bg-card-hover" />
-                <div className="w-40 h-3 rounded bg-card-hover" />
-                <div className="w-20 h-3 rounded bg-card-hover" />
-                <div className="w-16 h-5 rounded-full bg-card-hover" />
+                <div className="h-2.5 w-32 rounded-xs bg-card-hover" />
+                <div className="h-2.5 w-40 rounded-xs bg-card-hover" />
+                <div className="h-2.5 w-20 rounded-xs bg-card-hover" />
+                <div className="h-4 w-16 rounded-xs bg-card-hover" />
               </div>
             ))}
           </div>
         </div>
       ) : (
-        <div className="overflow-hidden rounded-xl border border-border-subtle bg-card shadow-card">
+        <Panel
+          title="Accounts"
+          meta={
+            <span className="num text-[10px] text-text-dim">
+              page {page} / {totalPages}
+            </span>
+          }
+          flush
+        >
           <Table
             columns={[
               {
                 key: 'name',
                 header: 'Name',
+                render: (row) => (
+                  <span className="flex items-center gap-2.5">
+                    <Avatar name={row.name} size="sm" />
+                    <span className="truncate">{row.name}</span>
+                  </span>
+                ),
               },
               {
                 key: 'email',
                 header: 'Email',
+                render: (row) => (
+                  <span className="num text-[11px] text-text-secondary">
+                    {row.email}
+                  </span>
+                ),
               },
               {
                 key: 'role',
                 header: 'Role',
+                render: (row) => (
+                  <span className="num text-[11px] text-text-secondary">
+                    {row.role}
+                  </span>
+                ),
               },
               {
                 key: 'status',
@@ -193,51 +203,45 @@ export function UserManagement() {
                 key: 'id',
                 header: 'Actions',
                 render: (row) => (
-                  <div className="flex items-center gap-3">
+                  <span className="flex items-center gap-4">
                     {row.status === 'ACTIVE' && (
                       <button
+                        type="button"
                         onClick={() =>
                           setSuspendTarget({
                             id: row.id,
                             name: row.name,
                           })
                         }
-                        className="text-xs font-medium text-critical transition-colors hover:text-red-300 hover:underline"
+                        className="text-[11px] font-bold tracking-[0.06em] uppercase text-critical transition-colors duration-150 hover:text-text-primary"
                       >
                         Suspend
                       </button>
                     )}
 
                     <button
+                      type="button"
                       onClick={() => handleForceLogout(row.id, row.name)}
                       disabled={forceLogout.isPending}
-                      className="text-xs font-medium text-warning transition-colors hover:text-amber-300 hover:underline disabled:cursor-not-allowed disabled:opacity-50"
+                      className="text-[11px] font-bold tracking-[0.06em] uppercase text-warning transition-colors duration-150 hover:text-text-primary disabled:cursor-not-allowed disabled:opacity-40"
                     >
-                      Force Logout
+                      Force logout
                     </button>
-                  </div>
+                  </span>
                 ),
               },
             ]}
             data={data?.data ?? []}
-            emptyMessage="No users found."
+            emptyMessage="No users match these filters."
           />
-        </div>
+        </Panel>
       )}
 
       {/* Pagination */}
       {!isLoading && (
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-xs text-text-muted">
-            Page{' '}
-            <span className="text-text-secondary">
-              {page}
-            </span>{' '}
-            of{' '}
-            <span className="text-text-secondary">
-              {totalPages}
-            </span>{' '}
-            · {totalUsers} users
+          <p className="num text-[11px] text-text-dim">
+            Page {page} of {totalPages} · {totalUsers} users
           </p>
 
           <div className="flex gap-2">
@@ -267,7 +271,7 @@ export function UserManagement() {
         isOpen={suspendTarget !== null}
         onClose={() => setSuspendTarget(null)}
         onConfirm={handleSuspendConfirm}
-        title="Suspend User"
+        title="Suspend user"
         message={`Suspend ${suspendTarget?.name}? They will be immediately logged out and unable to sign in until reinstated.`}
         confirmLabel="Suspend"
         isSubmitting={suspendUser.isPending}
